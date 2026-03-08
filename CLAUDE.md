@@ -143,6 +143,35 @@ For every dependency decision, create an entry in `/docs/decisions/` with:
 
 ---
 
+## Professional Boundaries and Safety
+
+Article 11 of the constitution encodes structural obligations. The operational implementation lives here.
+
+### Exclusion register
+
+The live exclusion register is at `docs/operations/exclusion-register.md`. Before routing any user goal that touches regulated advice domains (financial, legal, immigration, medical, psychological therapy, tax, property) or high-risk adjacency domains (mental health crisis, domestic abuse, addiction, child safeguarding, relationship breakdown, eating disorders, debt), consult this register to determine the required handling.
+
+- **Hard exclusions** (personalised financial investment/pension/insurance advice, reserved legal activities, immigration advice to specific individuals) must be enforced architecturally — the routing and matching logic must not route these goals to peer advisers. Warm signposting to the relevant regulated service is the required response.
+- **Sensitive handling** domains may be routed to peer advisers but must include warm professional signposting and must default to the witnessed reflection mode (Article 11.4).
+- The register must be reviewed annually (due 2027-03-08; owner: Claude instance). Out-of-cycle updates are required when relevant UK law changes — see the review schedule in the register.
+- Changes to hard exclusion classifications require panel notification before updating. Changes to sensitive handling protocols are within autonomous authority.
+
+### Emergency override protocol
+
+Article 11.2.4 defines the only circumstance in which the platform would consider acting on thread content in breach of the dyadic privacy architecture: **imminent threat to life where no other protective mechanism is available**.
+
+Four conditions must all be satisfied before any override action:
+1. The threat is **immediate and credible**
+2. **No other protective mechanism** is available
+3. **Legal basis documented**: DPA 2018 s.15 (vital interests) assessed in writing
+4. **Panel notified immediately**: panel@eskp.in
+
+Retrospective review is required after any exercise of this provision. This is a last resort. The platform must not imply it has emergency response capabilities it cannot deliver — if a user is in immediate danger they should call 999.
+
+The full protocol will be documented at `docs/operations/emergency-override-protocol.md` (see backlog item `emergency-override-protocol`).
+
+---
+
 ## User Feedback and Roadmap
 
 This is a constitutional obligation, not a nice-to-have.

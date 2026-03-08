@@ -62,9 +62,26 @@
 11. [ ] First external user (non-panel) through the full flow end-to-end
 12. [ ] Privacy policy formal legal sign-off — target 2026-04-08 (1 month, confirmed by Sunil)
 
+### Constitutional governance (completed this session)
+- [x] Article 10 ratified — Platform Architecture Principles (Constitution v1.1, 2026-03-08)
+- [x] Article 11 ratified — Professional Boundaries, Duty of Care, Trust Directory (Constitution v1.2, 2026-03-08)
+- [x] Research committed: `docs/research/advisory-panel-structures-v2.md`, `docs/research/professional-boundaries-and-directory.md`
+- [x] 24 backlog items generated and committed (9 from Art.10, 15 from Art.11 — see `docs/backlog/`)
+- [x] `docs/operations/exclusion-register.md` created (Article 11.1 obligation; v1.0)
+- [x] `docs/proposals/001` and `docs/proposals/002` — status: Ratified; process sections updated to reflect actual state
+- [x] `CLAUDE.md` updated with Professional Boundaries and Safety operational section
+- [x] `docs/state/recent-decisions.md` updated with Article 10/11 ratification entries
+
+### Article 11 Phase 1 backlog (outstanding — no panel feature required, can start next)
+- [ ] `hard-exclusion-content-triggers`: email webhook warm referral for hard exclusion domains
+- [ ] `privacy-tension-disclosure`: user-facing OSA/dyadic privacy tension disclosure
+- [ ] `safety-resources-page`: public /support page with UK signposting library (content in `docs/operations/exclusion-register.md` Section 3)
+- [ ] `emergency-override-protocol`: document protocol at `docs/operations/emergency-override-protocol.md`
+- [ ] `safeguarding-disclosure-terms`: panel member obligations in `public/terms.html` and `public/join.html`
+
 ## Blockers
 - Off-site backups: need S3-compatible destination + credentials from Sunil
 
 ---
-*Last updated: 2026-03-08 — autonomous operation readiness audit*
+*Last updated: 2026-03-08 — constitutional governance session (Articles 10 + 11 ratified)*
 *Next session should start with: Fix GET /goals/:id bug (item 1), then fix auto-session.sh gaps (items 2–4), then send overdue budget report (item 7)*

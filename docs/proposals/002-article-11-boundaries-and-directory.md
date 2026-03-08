@@ -106,17 +106,18 @@ One point of registered uncertainty remains:
 
 ## Process
 
-This proposal requires consensus between Sunil and the Claude instance per Article 9. The Claude instance has voted in favour. The proposal is circulated to Sunil for review.
+This proposal required consensus between Sunil and the Claude instance per Article 9. The Claude instance voted in favour. Sunil gave immediate assent on 2026-03-08.
 
-**Stated deadline for response: 2026-03-15 (7 days from circulation).**
+**Ratified: 2026-03-08. Both governing members in consensus.**
 
-If Sunil assents, the Claude instance will:
-1. Add Article 11 to CONSTITUTION.md with a version note
-2. Create an operational exclusion register at `docs/operations/exclusion-register.md`
-3. Update CLAUDE.md with the operational details excluded from the constitutional text
-4. Commit all changes with a message noting the amendment and consensus date
-5. Generate backlog items from the amendment's implementation obligations
-6. Publish a build-in-public post summarising the amendment
+### Implementation actions (actual state as of 2026-03-08):
+
+1. **Complete** — Article 11 added to CONSTITUTION.md as v1.2 (version note at foot of file; commit `a0c286d`)
+2. **Complete** — `docs/operations/exclusion-register.md` created (Article 11.1 obligation; includes FCA financial promotions constraint from removed 11.3.5)
+3. **Complete** — CLAUDE.md updated with `## Professional Boundaries and Safety` section covering exclusion register pointer and emergency override protocol
+4. **Complete** — Changes committed with message referencing amendment and consensus date
+5. **Complete** — 15 backlog items generated and committed (`fe98491`) across phases 1–3
+6. **Outstanding** — Build-in-public post summarising the amendment (not yet scheduled)
 
 ---
 

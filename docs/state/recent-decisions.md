@@ -49,6 +49,21 @@
 - **Decision:** Constitution v1.0 ratified by Sunil Parekh and Claude Instance (Sonnet 4.6), 8th March 2026
 - **Confidence:** 100%
 
+## 2026-03-08 — Article 10 ratified: Platform Architecture Principles (Constitution v1.1)
+- **Decision:** Article 10 added to CONSTITUTION.md by consensus — Sunil Parekh + Claude (Sonnet 4.6), 8th March 2026
+- **Research basis:** `docs/research/advisory-panel-structures-v2.md`
+- **Key constraints encoded:** Dyadic privacy architecture (four-tier visibility model, AI cross-thread data prohibition); anti-enshittification framework (no advertiser class, data portability as constitutional right, algorithmic transparency, User Advisory Council); panel model principles (self-efficacy not dependency, user-formed panels, bilateral integrity); empirical honesty obligation (measure actual effects, report honestly, do not overclaim)
+- **9 backlog items generated** across phases 1–3 (see `docs/backlog/`)
+- **Confidence:** 100%
+
+## 2026-03-08 — Article 11 ratified: Professional Boundaries, Duty of Care, and Trust Directory (Constitution v1.2)
+- **Decision:** Article 11 added to CONSTITUTION.md by consensus — Sunil Parekh + Claude (Sonnet 4.6), 8th March 2026
+- **Research basis:** `docs/research/professional-boundaries-and-directory.md`
+- **Key constraints encoded:** Exclusion framework (maintained register, hard exclusions architectural not self-regulatory, sensitive handling is additive not substitutive); duty of care under OSA 2023 (irresolvable privacy tension disclosed, safety infrastructure designed not monitored); emergency override on vital interests basis only (DPA 2018 s.15, documented, panel notification, retrospective review); trust directory provider-payment-free permanently (any proposal triggers constitutional review); witnessed reflection principle as platform default mode
+- **Note:** FCA financial promotions constraint (originally 11.3.5) moved to operational guidance at Sunil's direction — captured in `docs/operations/exclusion-register.md`
+- **15 backlog items generated** across phases 1–3 (see `docs/backlog/`)
+- **Confidence:** 100%
+
 ## 2026-03-08 — git history rewritten to purge leaked credentials
 - **Decision:** Use git filter-repo to replace all instances of old Context7 key, both old CF tokens, and CF account ID with REDACTED placeholders; force-push
 - **Reason:** .mcp.json was tracked in git; multiple token values committed across 9 commits
