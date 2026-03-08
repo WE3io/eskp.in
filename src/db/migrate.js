@@ -94,6 +94,10 @@ const migrations = [
 
   `CREATE INDEX IF NOT EXISTS idx_helper_applications_status ON helper_applications(status)`,
   `CREATE INDEX IF NOT EXISTS idx_helper_applications_email ON helper_applications(email)`,
+
+  `ALTER TABLE matches ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`,
+  `ALTER TABLE matches ADD COLUMN IF NOT EXISTS paid_at TIMESTAMPTZ`,
+  `CREATE INDEX IF NOT EXISTS idx_matches_stripe_session ON matches(stripe_session_id)`,
 ];
 
 async function migrate() {

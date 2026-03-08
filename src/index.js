@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 // Trust Cloudflare proxy for accurate IP rate limiting
 app.set('trust proxy', 1);
 
+// Stripe webhook needs raw body for signature verification — must precede express.json()
+app.use('/webhooks/stripe', express.raw({ type: 'application/json' }));
+
 // Body size limit — reject oversized requests before they hit any handler
 app.use(express.json({ limit: '50kb' }));
 

@@ -7,6 +7,7 @@ const { decompose } = require('./decompose');
 const { findMatches } = require('./match');
 const { send } = require('./email');
 const { renderEmail, textToHtml } = require('./email-template');
+const { createIntroCheckout } = require('./payments');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 
@@ -53,39 +54,45 @@ async function processGoal(userEmail, userName, rawText) {
     return { goal, decomposed, matches: [] };
   }
 
-  // Record top match
+  // Record top match (status: 'proposed' until paid)
   const topMatch = matches[0];
   const { rows: [match] } = await pool.query(
     `INSERT INTO matches (goal_id, helper_id, reasoning, status)
-     VALUES ($1, $2, $3, 'introduced') RETURNING *`,
+     VALUES ($1, $2, $3, 'proposed') RETURNING *`,
     [goal.id, topMatch.helper_id, topMatch.reasoning || `Expertise overlap on: ${topMatch.expertise.join(', ')}`]
   );
 
-  await pool.query(`UPDATE goals SET status = 'introduced', updated_at = NOW() WHERE id = $1`, [goal.id]);
+  // Create Stripe Checkout session
+  const { sessionId, url: paymentUrl } = await createIntroCheckout({
+    goalId: goal.id,
+    matchId: match.id,
+    userEmail: user.email,
+    summary: decomposed.summary,
+  });
 
-  // Send emails
-  await sendAcknowledgement(user, goal, decomposed, topMatch);
-  await sendHelperIntro(user, goal, decomposed, topMatch);
+  await pool.query(
+    `UPDATE matches SET stripe_session_id = $1 WHERE id = $2`,
+    [sessionId, match.id]
+  );
 
-  // Log outbound emails
+  await pool.query(`UPDATE goals SET status = 'matched', updated_at = NOW() WHERE id = $1`, [goal.id]);
+
+  // Send acknowledgement with payment link — helper intro fires after payment
+  await sendAcknowledgement(user, goal, decomposed, topMatch, paymentUrl);
+
   await logEmail('outbound', FROM, user.email, `Re: your goal — we found someone who can help`, goal.id, match.id);
-  await logEmail('outbound', FROM, topMatch.email, `New introduction request from ${user.name || user.email}`, goal.id, match.id);
 
   return { goal, decomposed, match, matches };
 }
 
-async function sendAcknowledgement(user, goal, decomposed, helper) {
-  const helperLine = helper
-    ? `We've matched you with <strong>${helper.name || helper.email}</strong>, who has relevant experience.`
-    : `We're working on finding the right person for you and will be in touch shortly.`;
-
+async function sendAcknowledgement(user, goal, decomposed, helper, paymentUrl) {
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
   const needsList = decomposed.needs.map(n => `• ${n.need}`).join('\n');
-  const nextStep = helper
-    ? `${helper.name || helper.email} will be in touch directly.`
-    : `We'll email you once we've found a match.`;
 
-  const plainText = `${greeting}
+  const hasMatch = !!(helper && paymentUrl);
+
+  const plainText = hasMatch
+    ? `${greeting}
 
 We received your message and here's how we understood your goal:
 
@@ -94,29 +101,60 @@ ${decomposed.summary}
 What you need:
 ${needsList}
 
-${helperLine.replace(/<[^>]+>/g, '')}
+Good news — we found someone who can help: ${helper.name || 'a helper in our network'}.
 
-What happens next: ${nextStep}
+To receive the introduction, complete a one-time payment of £10:
+${paymentUrl}
+
+If we've misunderstood anything, just reply to this email.
+
+— The eskp.in team`
+    : `${greeting}
+
+We received your message and here's how we understood your goal:
+
+${decomposed.summary}
+
+What you need:
+${needsList}
+
+We're working on finding the right person for you and will be in touch shortly.
 
 If we've misunderstood anything, just reply to this email.
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>${greeting}</p>
-    <p>We received your message and here's how we understood your goal:</p>
-    <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
-    <p><strong>What you need:</strong></p>
-    <ul style="margin:8px 0 16px 20px;padding:0;">
-      ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
-    </ul>
-    <p>${helperLine}</p>
-    <p><strong>What happens next:</strong> ${nextStep}</p>
-    <p style="color:#7A6E68;font-size:14px;margin-top:24px;">If we've misunderstood anything, just reply to this email.</p>`;
+  const htmlBody = hasMatch
+    ? `<p>${greeting}</p>
+       <p>We received your message and here's how we understood your goal:</p>
+       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
+       <p><strong>What you need:</strong></p>
+       <ul style="margin:8px 0 16px 20px;padding:0;">
+         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
+       </ul>
+       <p>Good news — we found someone who can help: <strong>${helper.name || 'a helper in our network'}</strong>.</p>
+       <p>To receive the introduction, complete a one-time payment of <strong>£10</strong>:</p>
+       <p style="text-align:center;margin:24px 0;">
+         <a href="${paymentUrl}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
+           Pay £10 and get introduced
+         </a>
+       </p>
+       <p style="color:#7A6E68;font-size:14px;margin-top:24px;">If we've misunderstood anything, just reply to this email.</p>`
+    : `<p>${greeting}</p>
+       <p>We received your message and here's how we understood your goal:</p>
+       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
+       <p><strong>What you need:</strong></p>
+       <ul style="margin:8px 0 16px 20px;padding:0;">
+         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
+       </ul>
+       <p>We're working on finding the right person for you and will be in touch shortly.</p>
+       <p style="color:#7A6E68;font-size:14px;margin-top:24px;">If we've misunderstood anything, just reply to this email.</p>`;
 
   await send({
     to: user.email,
-    subject: `We've received your goal — here's what we understood`,
+    subject: hasMatch
+      ? `We found someone who can help — complete your introduction`
+      : `We've received your goal — here's what we understood`,
     text: plainText,
     html: renderEmail({ preheader: decomposed.summary, body: htmlBody }),
   });
@@ -178,4 +216,44 @@ async function recordInbound(from, to, subject, body, raw) {
   );
 }
 
-module.exports = { processGoal, recordInbound, getOrCreateUser };
+async function sendHelperIntroById(goalId, matchId) {
+  const { rows } = await pool.query(`
+    SELECT
+      g.id AS goal_id, g.decomposed,
+      u.id AS user_id, u.email AS user_email, u.name AS user_name,
+      m.id AS match_id,
+      hu.email AS helper_email, hu.name AS helper_name
+    FROM matches m
+    JOIN goals g ON g.id = m.goal_id
+    JOIN users u ON u.id = g.user_id
+    JOIN helpers h ON h.id = m.helper_id
+    JOIN users hu ON hu.id = h.user_id
+    WHERE m.id = $1 AND g.id = $2
+  `, [matchId, goalId]);
+
+  if (!rows.length) throw new Error(`Match ${matchId} / goal ${goalId} not found`);
+  const r = rows[0];
+  const decomposed = r.decomposed;
+  const user = { id: r.user_id, email: r.user_email, name: r.user_name };
+  const helper = { email: r.helper_email, name: r.helper_name };
+
+  // Mark paid
+  await pool.query(
+    `UPDATE matches SET status = 'introduced', paid_at = NOW(), updated_at = NOW() WHERE id = $1`,
+    [matchId]
+  );
+  await pool.query(
+    `UPDATE goals SET status = 'introduced', updated_at = NOW() WHERE id = $1`,
+    [goalId]
+  );
+
+  const goal = { id: goalId };
+  await sendHelperIntro(user, goal, decomposed, helper);
+
+  await logEmail('outbound', FROM, helper.email,
+    `New introduction request from ${user.name || user.email}`, goalId, matchId);
+
+  console.log(`sendHelperIntroById: introduced match ${matchId}`);
+}
+
+module.exports = { processGoal, recordInbound, getOrCreateUser, sendHelperIntroById };
