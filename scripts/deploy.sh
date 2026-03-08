@@ -7,7 +7,6 @@ set -euo pipefail
 
 COMPOSE_FILE="$(dirname "$0")/../docker-compose.yml"
 APP_NAME="platform-app"
-HEALTH_URL="http://127.0.0.1:3000/health"
 HEALTH_RETRIES=12
 HEALTH_INTERVAL=5
 
@@ -36,10 +35,12 @@ fi
 log "Starting new container..."
 docker compose -f "$COMPOSE_FILE" up -d app
 
-# --- Health check ---
-log "Waiting for health check at ${HEALTH_URL}..."
+# --- Health check (via docker exec — port 3000 is not exposed to host) ---
+log "Waiting for health check..."
 for i in $(seq 1 $HEALTH_RETRIES); do
-  STATUS=$(curl -sf "${HEALTH_URL}" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('status',''))" 2>/dev/null || echo "")
+  STATUS=$(docker exec "${APP_NAME}" node -e \
+    "require('http').get('http://127.0.0.1:3000/health', r => { let d=''; r.on('data', c => d+=c); r.on('end', () => { try { process.stdout.write(JSON.parse(d).status || ''); } catch(e) {} process.exit(0); }); }).on('error', () => process.exit(1));" \
+    2>/dev/null || echo "")
   if [[ "$STATUS" == "ok" ]]; then
     log "Health check passed (attempt ${i}/${HEALTH_RETRIES})"
     break
