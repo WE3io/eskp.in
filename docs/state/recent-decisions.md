@@ -66,10 +66,20 @@
 - **Confidence:** 85% (delimiters reduce risk significantly; semantic attacks remain possible)
 
 ## 2026-03-08 — Autonomous operation readiness audit findings
-- **Decision:** Audit findings logged; no immediate architectural changes; bugs and gaps prioritised in current-sprint.md
-- **Key findings:** GET /goals/:id broken (json_array_elements vs jsonb_array_elements); auto-session lacks lock file + .env export + accomplishment verification; backups on same server, untested, no off-site copy; cron session scope undefined
-- **Blocked on:** Sunil providing off-site backup destination, auto-session scope decision, privacy policy legal review
+- **Decision:** Audit findings logged; bugs and gaps converted to backlog items (fix-goals-endpoint-jsonb, harden-auto-session)
+- **Key findings:** GET /goals/:id broken (json_array_elements vs jsonb_array_elements); auto-session lacks lock file + .env export + accomplishment verification; backups on same server, untested, no off-site copy
+- **Blocked on:** Sunil providing off-site backup destination
 - **Confidence:** 100% (observed, not inferred)
+
+## 2026-03-08 — Auto-session autonomous scope confirmed
+- **Decision:** Claude may operate autonomously within the guidelines of the Constitution (Article 2.2). No separate per-session approval required for cron sessions. Cron sessions may deploy, send emails, and modify state files within constitutional bounds.
+- **Reason:** Sunil confirmed. Consistent with Article 2.2 (operational decisions are autonomous) and Article 8.3 (routine operations do not require escalation).
+- **Confidence:** 100%
+
+## 2026-03-08 — Privacy policy legal review timeline: 1 month
+- **Decision:** Legal review of privacy.html and terms.html to be completed by approximately 2026-04-08. Draft banner remains until review is complete.
+- **Reason:** Sunil confirmed timeline.
+- **Confidence:** 100%
 
 ## 2026-03-08 — $5/month Haiku cost cap on decomposition
 - **Decision:** If monthly Haiku spend on decomposition exceeds $5, submissions queue rather than auto-process

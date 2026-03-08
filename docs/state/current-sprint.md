@@ -52,6 +52,7 @@
 4. [ ] Add session outcome check to auto-session.sh (did state files change? did commit happen?)
 5. [ ] Stage + commit 10 untracked backlog files (docs/backlog/phase-1/, phase-2/)
 6. [ ] **Off-site backup — BLOCKED: needs Sunil to provide S3-compatible bucket + credentials**
+   - Items 1–5 backlogged: fix-goals-endpoint-jsonb.md, harden-auto-session.md (both in docs/backlog/phase-1/)
 
 ### Week 4 product tasks
 7. [ ] Weekly budget/progress report to panel (overdue)
@@ -59,12 +60,10 @@
 9. [ ] Feedback mechanism surfaced to users (currently DB-only, no user-facing UI)
 10. [ ] Grow the helper network — promote /join.html, process applications
 11. [ ] First external user (non-panel) through the full flow end-to-end
-12. [ ] Privacy policy formal legal sign-off — BLOCKED: needs Sunil legal review
+12. [ ] Privacy policy formal legal sign-off — target 2026-04-08 (1 month, confirmed by Sunil)
 
 ## Blockers
 - Off-site backups: need S3-compatible destination + credentials from Sunil
-- Privacy policy legal sign-off: needs Sunil review
-- Auto-session scope: need Sunil decision on which actions cron sessions may take autonomously (see audit)
 
 ---
 *Last updated: 2026-03-08 — autonomous operation readiness audit*
