@@ -1,5 +1,11 @@
 # Recent Decisions
 
+## 2026-03-08 — Orchestration architecture: harden cron now, Agent SDK at Phase 2
+- **Decision:** Keep cron + `claude --print` for Phase 1. Fix root cause (missing `--permission-mode acceptEdits` flag + `Edit` absent from permissions allow list). Agent SDK orchestrator deferred to Phase 2.
+- **Root cause identified:** All auto-session failures trace to one missing flag. The 18:00 session stalled because `Edit` is not in `.claude/settings.json` permissions.allow — Claude hit a permission prompt it could not answer in non-interactive mode.
+- **Agent SDK assessment:** Suitable for Phase 2 when real event-driven volume justifies the orchestrator complexity. Not appropriate at zero external users.
+- **Confidence:** 95%
+
 ## 2026-03-08 — nginx over Caddy as reverse proxy
 - **Decision:** nginx (Docker container) instead of Caddy (host service)
 - **Reason:** Cloudflare terminates public TLS; nginx in Docker is consistent with containerised stack; Caddy's auto-cert advantage irrelevant here. Caddy was failing to start due to port conflicts. Full write-up: docs/decisions/002-nginx-over-caddy.md
