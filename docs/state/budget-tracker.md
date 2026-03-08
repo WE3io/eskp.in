@@ -4,11 +4,20 @@
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $30 | $0.0000 | $30.0000 | 0.0% | ✅ OK |
-| **Total** | **$30** | **$0.0000** | **$30.0000** | **0.0%** | **✅ OK** |
+| Anthropic API tokens | $30 | $0.0000 | $30.0000 | 0.00% | ✅ OK |
+| **Total** | **$30** | **$0.0000** | **$30.0000** | **0.00%** | **✅ OK** |
 
-### Usage detail
-Could not fetch usage: ANTHROPIC_API_KEY not configured
+### Usage detail (from local token_usage table)
+```
+No API calls recorded this month yet
+```
+
+### Pricing reference
+| Model | Input ($/MTok) | Output ($/MTok) |
+|-------|---------------|----------------|
+| claude-haiku-4-5-20251001 | $0.80 | $4.00 |
+| claude-sonnet-4-6 | $3.00 | $15.00 |
+| claude-opus-4-6 | $15.00 | $75.00 |
 
 ### Month progress
 Day 8 of ~31 (~26% of month elapsed)
@@ -31,5 +40,6 @@ Day 8 of ~31 (~26% of month elapsed)
 
 ---
 
-*Last updated: 2026-03-08T04:17:43.489Z*
+*Last updated: 2026-03-08T11:47:10.698Z*
 *Run `pnpm budget` to refresh*
+*Source: local token_usage table (accurate from 2026-03-08 onwards)*

@@ -278,3 +278,17 @@ When in doubt, ask: "Does this serve the people who will use this platform?" If 
 ---
 
 *This document will evolve as the project progresses. Update it as decisions are made and circumstances change. Every significant update should be committed to git with a clear message explaining what changed and why.*
+
+---
+
+## BEFORE ENDING ANY SESSION
+
+This is mandatory. Do not skip it.
+
+1. Update `docs/state/current-sprint.md` — mark completed items, note blockers, write one line at the bottom: "Next session should start with: [specific action]"
+2. Update `docs/state/recent-decisions.md` — add any decisions made this session
+3. Run `pnpm budget` — update `docs/state/budget-tracker.md`
+4. Update `docs/state/feedback-queue.md` if any feedback was received
+5. `git add -A && git commit -m "state: end of session $(date -u +%Y-%m-%d)" && git push`
+
+If the session ends unexpectedly (context limit), the next session will be blind. These files are the handoff. Treat them as such.

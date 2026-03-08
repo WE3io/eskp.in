@@ -1,4 +1,5 @@
 const Anthropic = require('@anthropic-ai/sdk');
+const { pool } = require('../db/connection');
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -26,13 +27,21 @@ Rules:
 - Never invent facts not present in the submission
 - If the submission is too vague to decompose, return a single need asking for clarification`;
 
-async function decompose(rawGoalText) {
+async function decompose(rawGoalText, goalId = null) {
   const message = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 1024,
     system: SYSTEM_PROMPT,
     messages: [{ role: 'user', content: rawGoalText }],
   });
+
+  // Log token usage locally for budget tracking
+  const { input_tokens, output_tokens } = message.usage;
+  pool.query(
+    `INSERT INTO token_usage (model, input_tokens, output_tokens, operation, goal_id)
+     VALUES ($1, $2, $3, 'decompose', $4)`,
+    ['claude-haiku-4-5-20251001', input_tokens, output_tokens, goalId]
+  ).catch(err => console.error('token_usage log error:', err));
 
   let text = message.content[0].text.trim();
   // Strip markdown code fences if model wraps output despite instructions

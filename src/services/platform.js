@@ -33,7 +33,7 @@ async function processGoal(userEmail, userName, rawText) {
   // Decompose
   let decomposed;
   try {
-    decomposed = await decompose(rawText);
+    decomposed = await decompose(rawText, goal.id);
   } catch (err) {
     await pool.query(`UPDATE goals SET status = 'submitted' WHERE id = $1`, [goal.id]);
     throw err;

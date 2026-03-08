@@ -1,111 +1,107 @@
 #!/usr/bin/env node
 /**
- * Budget tracker — queries Anthropic usage API and reports spend vs monthly budget.
+ * Budget tracker — queries local token_usage table for spend vs monthly budget.
+ * Anthropic's usage API requires admin keys (not available here).
+ * All Claude API calls in this platform log to token_usage at call time.
+ *
  * Run: pnpm budget
- * Called daily by cron; outputs to stdout and updates docs/state/budget-tracker.md
  */
 require('dotenv').config();
-const https = require('https');
+const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
 
-const MONTHLY_BUDGET = parseFloat(process.env.MONTHLY_BUDGET || process.env.MONTHLY_TOKEN_BUDGET || 30);
-const API_KEY = process.env.ANTHROPIC_API_KEY;
+const MONTHLY_BUDGET = parseFloat(process.env.MONTHLY_TOKEN_BUDGET || 30);
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-function httpsGet(url, headers) {
-  return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers }, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try { resolve({ status: res.statusCode, body: JSON.parse(data) }); }
-        catch (e) { resolve({ status: res.statusCode, body: data }); }
-      });
-    });
-    req.on('error', reject);
-  });
-}
-
-async function getMonthlyUsage() {
-  if (!API_KEY || API_KEY === 'sk-ant-REPLACE_ME') {
-    return { error: 'ANTHROPIC_API_KEY not configured' };
-  }
-
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-  const today = now.toISOString().split('T')[0];
-
-  const url = `https://api.anthropic.com/v1/usage?start_date=${startOfMonth}&end_date=${today}`;
-  try {
-    const res = await httpsGet(url, {
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-    });
-    return res;
-  } catch (err) {
-    return { error: err.message };
-  }
-}
+const PRICING = {
+  'claude-haiku-4-5-20251001':  { input: 0.80, output: 4.00 },
+  'claude-sonnet-4-6':           { input: 3.00, output: 15.00 },
+  'claude-opus-4-6':             { input: 15.00, output: 75.00 },
+};
+const DEFAULT_PRICING = { input: 3.00, output: 15.00 };
 
 async function main() {
   const now = new Date();
   const monthName = now.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
   const dayOfMonth = now.getDate();
   const pctMonthElapsed = Math.round((dayOfMonth / 31) * 100);
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   console.log(`\n=== Budget Check: ${now.toISOString()} ===`);
   console.log(`Month: ${monthName} (day ${dayOfMonth}, ~${pctMonthElapsed}% elapsed)`);
   console.log(`Budget: $${MONTHLY_BUDGET}/month`);
 
-  const usage = await getMonthlyUsage();
-
   let spentUSD = 0;
+  let usageLines = [];
   let usageNote = '';
 
-  if (usage.error) {
-    usageNote = `Could not fetch usage: ${usage.error}`;
-    console.log(`Warning: ${usageNote}`);
-  } else if (usage.status === 200 && usage.body) {
-    // Anthropic usage API returns token counts; estimate cost
-    const data = usage.body;
-    const inputTokens = data.input_tokens || 0;
-    const outputTokens = data.output_tokens || 0;
-    // Blended estimate: Sonnet pricing ($3/MTok in, $15/MTok out)
-    spentUSD = (inputTokens / 1_000_000 * 3) + (outputTokens / 1_000_000 * 15);
-    usageNote = `Input: ${inputTokens.toLocaleString()} tokens, Output: ${outputTokens.toLocaleString()} tokens`;
-    console.log(`Usage: ${usageNote}`);
-    console.log(`Estimated spend: $${spentUSD.toFixed(4)}`);
-  } else {
-    usageNote = `API returned status ${usage.status}`;
-    console.log(`Warning: ${usageNote}`);
+  try {
+    const { rows } = await pool.query(`
+      SELECT model,
+             SUM(input_tokens)::int  AS input_tokens,
+             SUM(output_tokens)::int AS output_tokens,
+             COUNT(*)::int           AS calls
+      FROM token_usage
+      WHERE created_at >= $1
+      GROUP BY model
+      ORDER BY model
+    `, [startOfMonth]);
+
+    if (rows.length === 0) {
+      usageNote = 'No API calls recorded this month yet';
+    } else {
+      for (const row of rows) {
+        const p = PRICING[row.model] || DEFAULT_PRICING;
+        const cost = (row.input_tokens / 1_000_000 * p.input) +
+                     (row.output_tokens / 1_000_000 * p.output);
+        spentUSD += cost;
+        const line = `  ${row.model}: ${row.calls} calls, ${row.input_tokens.toLocaleString()} in / ${row.output_tokens.toLocaleString()} out = $${cost.toFixed(4)}`;
+        usageLines.push(line);
+        console.log(line);
+      }
+    }
+  } catch (err) {
+    usageNote = `DB query failed: ${err.message}`;
+    console.warn(`Warning: ${usageNote}`);
   }
 
   const pctBudgetUsed = MONTHLY_BUDGET > 0 ? (spentUSD / MONTHLY_BUDGET) * 100 : 0;
   const remaining = MONTHLY_BUDGET - spentUSD;
 
-  console.log(`Budget used: ${pctBudgetUsed.toFixed(1)}% ($${spentUSD.toFixed(4)} / $${MONTHLY_BUDGET})`);
+  console.log(`\nBudget used: ${pctBudgetUsed.toFixed(2)}% ($${spentUSD.toFixed(4)} / $${MONTHLY_BUDGET})`);
   console.log(`Remaining: $${remaining.toFixed(4)}`);
 
-  // Alert if >70% before 21st
   if (pctBudgetUsed > 70 && dayOfMonth < 21) {
     console.warn(`\n⚠️  ALERT: Over 70% of budget used before the 21st. Reduce activity and notify panel@eskp.in`);
   }
 
-  // Update docs/state/budget-tracker.md
-  const trackerPath = path.join(__dirname, '../docs/state/budget-tracker.md');
-  const status = pctBudgetUsed > 70 && dayOfMonth < 21 ? '⚠️ ALERT' : pctBudgetUsed > 90 ? '🔴 CRITICAL' : '✅ OK';
+  const status = pctBudgetUsed > 90 ? '🔴 CRITICAL' :
+                 pctBudgetUsed > 70 && dayOfMonth < 21 ? '⚠️ ALERT' : '✅ OK';
 
+  const usageDetail = usageLines.length > 0 ? usageLines.join('\n') : (usageNote || 'No usage');
+
+  const trackerPath = path.join(__dirname, '../docs/state/budget-tracker.md');
   const content = `# Budget Tracker
 
 ## Current Month: ${monthName}
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $${MONTHLY_BUDGET} | $${spentUSD.toFixed(4)} | $${remaining.toFixed(4)} | ${pctBudgetUsed.toFixed(1)}% | ${status} |
-| **Total** | **$${MONTHLY_BUDGET}** | **$${spentUSD.toFixed(4)}** | **$${remaining.toFixed(4)}** | **${pctBudgetUsed.toFixed(1)}%** | **${status}** |
+| Anthropic API tokens | $${MONTHLY_BUDGET} | $${spentUSD.toFixed(4)} | $${remaining.toFixed(4)} | ${pctBudgetUsed.toFixed(2)}% | ${status} |
+| **Total** | **$${MONTHLY_BUDGET}** | **$${spentUSD.toFixed(4)}** | **$${remaining.toFixed(4)}** | **${pctBudgetUsed.toFixed(2)}%** | **${status}** |
 
-### Usage detail
-${usageNote || 'No data available'}
+### Usage detail (from local token_usage table)
+\`\`\`
+${usageDetail}
+\`\`\`
+
+### Pricing reference
+| Model | Input ($/MTok) | Output ($/MTok) |
+|-------|---------------|----------------|
+| claude-haiku-4-5-20251001 | $0.80 | $4.00 |
+| claude-sonnet-4-6 | $3.00 | $15.00 |
+| claude-opus-4-6 | $15.00 | $75.00 |
 
 ### Month progress
 Day ${dayOfMonth} of ~31 (~${pctMonthElapsed}% of month elapsed)
@@ -130,10 +126,12 @@ Day ${dayOfMonth} of ~31 (~${pctMonthElapsed}% of month elapsed)
 
 *Last updated: ${now.toISOString()}*
 *Run \`pnpm budget\` to refresh*
+*Source: local token_usage table (accurate from 2026-03-08 onwards)*
 `;
 
   fs.writeFileSync(trackerPath, content);
   console.log(`\nBudget tracker updated: docs/state/budget-tracker.md`);
+  await pool.end();
 }
 
-main().catch(console.error);
+main().catch(err => { console.error(err); process.exit(1); });
