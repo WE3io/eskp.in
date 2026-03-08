@@ -1,6 +1,6 @@
 # Current Sprint
 
-## Status: WEEK 2 COMPLETE — Week 3 in progress (security + dogfooding)
+## Status: WEEK 3 COMPLETE — Platform live and revenue-generating
 
 ## Week 1 — Done ✅
 - [x] Git repository initialised + pushed to github.com/WE3io/eskp.in
@@ -27,32 +27,30 @@
 - [x] Cloudflare Worker deployed: eskp-email-handler
 - [x] Docker healthcheck fixed (node, not busybox wget)
 
-## Week 3 — In Progress
-- [x] Infrastructure audit completed
-- [x] Security remediation: rate limiting, input validation, PII fix, prompt injection defence
-- [x] .mcp.json removed from git tracking, history rewritten, credentials rotated
-- [x] CLAUDE.md: Credential Rule + Risk Assessment Protocol added
+## Week 3 — Done ✅
+- [x] Infrastructure audit + security remediation
+- [x] Rate limiting, input validation, PII fix, prompt injection defence
+- [x] Credential hygiene: .mcp.json removed from history, secrets rotated
 - [x] Cron jobs: DB backup (daily 2am) + auto-session (every 6h)
-- [x] docs/decisions/003-post-goals-auth.md
-- [x] Dogfooded goal submitted: privacy policy / T&C (goal bae3d067, matched to Sunil)
-- [x] Build-in-public post #1 — approved draft, ready to publish after sign-off
-- [x] Landing page live at eskp.in (public/index.html)
-- [x] Platform branding: Option A (warm correspondence), email templates, SVG social assets
-- [x] docs/decisions/004-branding.md
-- [x] Privacy policy (public/privacy.html) — GDPR-compliant, draft banner, live
-- [x] Terms of service (public/terms.html) — plain English, England & Wales, live
-- [x] Blog at /blog/ — first post (week 2 update) published
-- [x] README updated to reflect live status
-- [x] Semantic matching — replaced tag-overlap with Claude Haiku relevance scoring (tag-overlap fallback retained)
-- [x] Deploy health check fixed (docker exec, not curl to unexposed port)
-- [x] External user onboarding — helper application flow live (/join.html)
-- [x] Helper network: application email routing, admin CLI (pnpm manage-helpers)
-- [ ] Payment integration — needs Stripe keys from Sunil
+- [x] Landing page live at eskp.in
+- [x] Branding: Option A, email templates, SVG social assets
+- [x] Privacy policy + terms of service (live, draft banner)
+- [x] Blog at /blog/ — first post published
+- [x] Semantic matching (Claude Haiku relevance scoring, tag-overlap fallback)
+- [x] Helper onboarding: /join.html, email routing, pnpm manage-helpers CLI
+- [x] Stripe payment integration: £10/introduction, live mode, webhook verified
+- [x] Deploy health check fixed (docker exec)
+
+## Week 4 — Outstanding
+- [ ] Grow the helper network — promote /join.html, process applications
+- [ ] First external user (non-panel) through the full flow end-to-end
+- [ ] Privacy policy formal legal sign-off (remove draft banner)
+- [ ] Second blog post (payment launch / progress update)
+- [ ] Weekly budget/progress report to panel
+- [ ] Feedback mechanism surfaced to users (currently DB-only, no user-facing UI)
 
 ## Blockers
-- Payment integration: needs Stripe account + keys from Sunil
-
-## Next: payment integration once Stripe keys received; grow helper network by promoting /join.html
+- None.
 
 ---
-*Last updated: 2026-03-08T13:15:00Z*
+*Last updated: 2026-03-08*
