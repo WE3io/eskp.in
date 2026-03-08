@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
-const { processGoal, recordInbound, sendHelperIntroById } = require('../services/platform');
+const { processGoal, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
-const { constructEvent } = require('../services/payments');
 const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -59,33 +58,6 @@ router.post('/email', verifySecret, async (req, res) => {
     console.error('Webhook /email error:', err);
     res.status(500).json({ error: 'internal error' });
   }
-});
-
-// Stripe payment webhook — raw body, no WEBHOOK_SECRET check (uses Stripe signature instead)
-router.post('/stripe', async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
-  try {
-    event = constructEvent(req.body, sig);
-  } catch (err) {
-    console.error('Stripe webhook signature failed:', err.message);
-    return res.status(400).json({ error: `Webhook signature verification failed` });
-  }
-
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-    const { goal_id, match_id } = session.metadata || {};
-    if (goal_id && match_id) {
-      try {
-        await sendHelperIntroById(goal_id, match_id);
-      } catch (err) {
-        console.error('sendHelperIntroById failed:', err);
-        return res.status(500).json({ error: 'internal error' });
-      }
-    }
-  }
-
-  res.json({ received: true });
 });
 
 // Feedback submission
