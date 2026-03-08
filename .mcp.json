@@ -6,6 +6,13 @@
       "env": {
         "CONTEXT7_API_KEY": "CONTEXT7_KEY_REDACTED"
       }
+    },
+    "cloudflare": {
+      "command": "npx",
+      "args": ["-y", "@cloudflare/mcp-server-cloudflare"],
+      "env": {
+        "CLOUDFLARE_API_TOKEN": "CF_TOKEN_REDACTED"
+      }
     }
   }
 }

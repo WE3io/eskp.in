@@ -17,25 +17,27 @@ services:
       timeout: 5s
       retries: 5
 
-  # The application container — placeholder until the Claude instance
-  # builds the actual application. This will be replaced.
-  # app:
-  #   build: .
-  #   container_name: platform-app
-  #   restart: unless-stopped
-  #   ports:
-  #     - "127.0.0.1:3000:3000"
-  #   environment:
-  #     DATABASE_URL: postgresql://platform:${POSTGRES_PASSWORD:-changeme}@postgres:5432/platform
-  #     NODE_ENV: production
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
+  app:
+    build: .
+    image: platform-app:latest
+    container_name: platform-app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      DATABASE_URL: postgresql://platform:${POSTGRES_PASSWORD}@postgres:5432/platform
+      NODE_ENV: production
+      PORT: 3000
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres-data:
