@@ -77,6 +77,23 @@ const migrations = [
   `CREATE INDEX IF NOT EXISTS idx_matches_goal_id ON matches(goal_id)`,
   `CREATE INDEX IF NOT EXISTS idx_emails_goal_id ON emails(goal_id)`,
   `CREATE INDEX IF NOT EXISTS idx_feedback_processed ON feedback(processed)`,
+
+  `
+  CREATE TABLE IF NOT EXISTS helper_applications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT NOT NULL,
+    name TEXT,
+    expertise_description TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending'
+      CHECK (status IN ('pending', 'approved', 'rejected')),
+    reviewer_note TEXT,
+    helper_id UUID REFERENCES helpers(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    reviewed_at TIMESTAMPTZ
+  )`,
+
+  `CREATE INDEX IF NOT EXISTS idx_helper_applications_status ON helper_applications(status)`,
+  `CREATE INDEX IF NOT EXISTS idx_helper_applications_email ON helper_applications(email)`,
 ];
 
 async function migrate() {

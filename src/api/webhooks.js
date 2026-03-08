@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const { processGoal, recordInbound } = require('../services/platform');
+const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -44,9 +45,14 @@ router.post('/email', verifySecret, async (req, res) => {
     // Log the inbound email
     await recordInbound(from, to, subject, text, raw || {});
 
-    // Process as a new goal
-    const result = await processGoal(userEmail, userName, text);
+    // Route by subject
+    if (isHelperApplication(subject)) {
+      const result = await processHelperApplication(userEmail, userName, text);
+      return res.json({ ok: true, type: 'helper-application', duplicate: result.duplicate || false });
+    }
 
+    // Default: process as a new goal
+    const result = await processGoal(userEmail, userName, text);
     res.json({ ok: true, goalId: result.goal.id });
   } catch (err) {
     console.error('Webhook /email error:', err);
