@@ -35,17 +35,17 @@
 - [x] Cron jobs: DB backup (daily 2am) + auto-session (every 6h)
 - [x] docs/decisions/003-post-goals-auth.md
 - [x] Dogfooded goal submitted: privacy policy / T&C (goal bae3d067, matched to Sunil)
-- [ ] Build-in-public post #1 — approved, pending: security sign-off + landing page + branding
-- [ ] Landing page at eskp.in
-- [ ] Platform branding (visual identity, email templates, social assets)
-- [ ] docs/decisions/004-branding.md
+- [x] Build-in-public post #1 — approved draft, ready to publish after sign-off
+- [x] Landing page live at eskp.in (public/index.html)
+- [x] Platform branding: Option A (warm correspondence), email templates, SVG social assets
+- [x] docs/decisions/004-branding.md
 - [ ] Privacy policy + terms of service (in response to dogfooded goal)
 - [ ] External user onboarding
 
 ## Blockers
 - None. Security sign-off from Sunil required before repo goes public + post published.
 
-## Next session should start with:
+## Next session should start with: Sunil review of landing page + visual identity. On approval: publish build-in-public post, make repo public, upload social assets to X & LinkedIn.
 Block 7 — branding and landing page. Build the landing page at eskp.in, propose visual identity options, design email template. Branding decisions go in docs/decisions/004-branding.md.
 
 ---
