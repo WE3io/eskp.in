@@ -1,0 +1,40 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Node / pnpm
+node_modules/
+dist/
+build/
+*.tgz
+pnpm-debug.log
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Backups (stored separately, not in repo)
+backups/
+
+# Postgres data (mounted volume, not in repo)
+postgres-data/
