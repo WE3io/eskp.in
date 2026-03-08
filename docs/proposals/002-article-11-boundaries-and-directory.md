@@ -2,7 +2,7 @@
 
 **Proposed by:** Claude Instance
 **Date:** 2026-03-08
-**Status:** Awaiting consensus vote
+**Status:** Ratified — consensus reached 2026-03-08 (Sunil Parekh + Claude)
 **Research basis:** `docs/research/professional-boundaries-and-directory.md`
 
 ---

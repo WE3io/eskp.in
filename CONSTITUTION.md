@@ -338,6 +338,64 @@ Where the mechanism does not work as claimed, the response is to change the desi
 
 ---
 
+## Article 11: Professional Boundaries, Duty of Care, and the Trust Directory
+
+*Research basis: `docs/research/professional-boundaries-and-directory.md`. Ratified by consensus: Sunil Parekh + Claude (Sonnet 4.6), 8th March 2026.*
+
+### 11.1 The Exclusion Framework
+
+The platform operates in a domain where some advice carries legal and ethical weight that peer guidance cannot safely bear. The platform has an obligation — not a preference — to identify these domains and handle them systematically.
+
+1. **Maintained exclusion register.** The platform must maintain a current register of advice domains that are legally regulated in the UK (or where the platform operates) and advice domains that carry meaningful risk of harm when handled through peer guidance alone. This register must distinguish between domains requiring hard exclusion (domains where facilitating peer advice creates legal liability or serious harm risk) and domains requiring sensitive handling with professional signposting. The register must be reviewed at least annually and updated when relevant law changes.
+
+2. **Hard exclusions are architectural, not optional.** The platform must implement hard exclusions for legally regulated advice domains — currently including personalised financial investment and pension advice, legal reserved activities, and immigration advice to specific individuals — in ways that prevent rather than merely discourage the exchange. A hard exclusion that relies solely on panel member self-regulation is not a hard exclusion. Technical implementation, onboarding, and terms must all enforce the boundary.
+
+3. **Sensitive handling is not abandonment.** Where a user's goal or conversation touches a domain requiring professional input, the platform's response must be additive rather than substitutive: professional signposting supplements the advisory relationship, it does not terminate it. The platform must never communicate, through design or automated response, that a user's problem is too much for the platform. Warm referral — where the relationship is maintained while professional support is introduced — is the standard. Cold signposting (automated deflection to a helpline number without relational continuity) is a design failure.
+
+4. **The exclusion framework is not static.** As UK law changes — including through the FCA's Advice Guidance Boundary Review, OSA secondary legislation, and potential changes to professional title regulation — the exclusion register must be updated accordingly. The Claude instance is responsible for monitoring relevant legal developments and updating the register. Material changes to the register are operational decisions; the obligation to maintain the register is constitutional.
+
+### 11.2 Duty of Care and the Privacy Tension
+
+The platform operates under a genuine tension between two structural commitments: the dyadic privacy architecture (Article 10.1) and the duty of care it owes to users who may disclose distress, crisis, or harm in advisory threads.
+
+1. **Duty of care acknowledged.** The platform acknowledges that it is a user-to-user service under the Online Safety Act 2023 and that proportionate duty of care obligations apply. The dyadic privacy architecture does not exempt the platform from its legal and ethical obligations to users — it shapes how those obligations must be discharged.
+
+2. **The irresolvable tension disclosed.** The platform cannot simultaneously guarantee end-to-end thread privacy and monitor thread content for safety signals. This is not a design failure to be engineered away — it is an inherent property of the privacy architecture. The platform must disclose this clearly in its user-facing documentation: the platform cannot monitor threads; users in crisis should access crisis services directly; the platform is a peer advisory service, not a crisis intervention service.
+
+3. **Safety infrastructure is designed, not monitored.** Because the platform cannot monitor thread content for safety signals, safety infrastructure must be built into the platform experience independently of content detection:
+   - Crisis and professional support resources must be persistently accessible to all users and panel members at all times, not triggered by content detection.
+   - Panel members must be trained, as part of onboarding, in crisis recognition and warm referral before they are permitted to participate in the platform.
+   - Users must be informed during onboarding of the platform's safety limitations and the availability of specialist support.
+
+4. **Emergency override — the vital interests basis.** The only circumstance in which the platform would consider accessing or acting on thread content in breach of the dyadic privacy architecture is an imminent threat to life where no other protective mechanism is available. Any such action requires: (a) a legal basis under Data Protection Act 2018 s.15 (vital interests); (b) documented assessment that the threat is immediate and credible; (c) immediate notification to the panel; and (d) retrospective review. This provision is a last resort, not a routine mechanism. The platform should not design itself as a crisis intervention service and must not imply emergency response capabilities it cannot deliver.
+
+5. **Safeguarding is a shared responsibility.** The platform cannot discharge safeguarding obligations that legally rest with individuals — including mandatory reporting obligations for child welfare concerns. Panel member onboarding must make clear that each panel member retains their own legal safeguarding obligations and must act on them independently of the platform.
+
+### 11.3 The Trust Directory
+
+If the platform builds a directory of professional services, the following constraints are constitutional requirements, not design preferences:
+
+1. **Provider-payment-free, permanently.** Professionals may not pay for any aspect of their listing, placement, prominence, or presentation in the directory. This prohibition applies to subscription fees, per-enquiry fees, referral commissions, advertising, sponsored placement, verification badges, or any other mechanism by which a provider's payment could influence how they appear in the directory. Any internal proposal to introduce any form of provider payment for any directory feature must be treated as a proposal to amend this constitution, and must be reviewed and approved by the full governing body before any implementation discussion proceeds.
+
+2. **The trust signal is relational.** The directory's trust mechanism is network vouching — personal endorsements mediated through existing relationships, directed to specific users, not broadcast publicly. The platform must not alter this mechanism in ways that decouple the trust signal from the pre-existing relationship between voucher and recipient: no anonymous reviews, no aggregated public ratings, no ranking by volume of vouches.
+
+3. **Regulated professionals are verified, not merely listed.** Professionals operating in legally regulated domains (financial advice, legal services, immigration advice, medical practice, regulated therapy titles) must have their professional registration verified against the relevant public register before being listed. The registration number must be displayed and linked to the public register. Unverified professionals may not be listed in regulated domains.
+
+4. **The directory must not create two-tier access.** The directory must not become a mechanism through which users with larger or more affluent networks access better professional referrals than users with smaller or less connected networks, while maintaining the appearance of an egalitarian platform. The platform must monitor for this effect and, if it is detected, take structural steps to address it.
+
+### 11.4 The Witnessed Reflection Principle
+
+The platform's advisory model operates on a distinction between two modes of engagement:
+
+- **Active advice:** a panel member takes a directive position, recommends a specific course of action, and implicitly assumes responsibility for the outcome.
+- **Witnessed reflection:** a panel member holds space, asks questions, and helps the user access their own judgment, without directing the outcome.
+
+The platform's design, onboarding, and interaction patterns should cultivate witnessed reflection as the default mode. This is not merely an ethical preference — it is the interaction model that most reliably builds user self-efficacy (Article 10.3.1), reduces platform liability in sensitive domains, and protects both users and panel members from the failure modes associated with directive peer advice.
+
+This principle does not prohibit panel members from sharing their own experiences, making direct observations, or offering direct input when the user explicitly asks for it. It governs the default posture, not every interaction. The platform must operationalise this principle in panel member onboarding and in-platform guidance, and must measure whether the platform's interactions are, in aggregate, cultivating self-efficacy or dependency.
+
+---
+
 ## Article 9: Amendments
 
 This constitution is ratified when signed by the founder and acknowledged by the Claude instance.
@@ -348,5 +406,6 @@ This constitution is ratified when signed by the founder and acknowledged by the
 
 ---
 
+*Version 1.2 — Article 11 added by consensus (Sunil Parekh + Claude, 8th March 2026)*
 *Version 1.1 — Article 10 added by consensus (Sunil Parekh + Claude, 8th March 2026)*
 *Version 1.0 — Ratified: 8th March 2026*
