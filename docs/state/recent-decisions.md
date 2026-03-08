@@ -65,6 +65,12 @@
 - **Reason:** Raw email body was being injected directly into prompt — injection risk for jailbreak/exfiltration attempts
 - **Confidence:** 85% (delimiters reduce risk significantly; semantic attacks remain possible)
 
+## 2026-03-08 — Autonomous operation readiness audit findings
+- **Decision:** Audit findings logged; no immediate architectural changes; bugs and gaps prioritised in current-sprint.md
+- **Key findings:** GET /goals/:id broken (json_array_elements vs jsonb_array_elements); auto-session lacks lock file + .env export + accomplishment verification; backups on same server, untested, no off-site copy; cron session scope undefined
+- **Blocked on:** Sunil providing off-site backup destination, auto-session scope decision, privacy policy legal review
+- **Confidence:** 100% (observed, not inferred)
+
 ## 2026-03-08 — $5/month Haiku cost cap on decomposition
 - **Decision:** If monthly Haiku spend on decomposition exceeds $5, submissions queue rather than auto-process
 - **Reason:** Open POST /goals could drain budget; $5 cap leaves $25 for other operations; queued submissions alert panel

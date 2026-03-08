@@ -5,7 +5,7 @@ Process this queue at the start of each planning session.
 
 ---
 
-*No feedback yet — platform is pre-deployment.*
+*No feedback yet — platform is live but no external users have submitted feedback. Check DB: `SELECT * FROM feedback ORDER BY created_at DESC LIMIT 10;`*
 
 ---
 

@@ -41,16 +41,31 @@
 - [x] Stripe payment integration: £10/introduction, live mode, webhook verified
 - [x] Deploy health check fixed (docker exec)
 
-## Week 4 — Outstanding
-- [ ] Grow the helper network — promote /join.html, process applications
-- [ ] First external user (non-panel) through the full flow end-to-end
-- [ ] Privacy policy formal legal sign-off (remove draft banner)
-- [ ] Second blog post (payment launch / progress update)
-- [ ] Weekly budget/progress report to panel
-- [ ] Feedback mechanism surfaced to users (currently DB-only, no user-facing UI)
+## Week 4 — Outstanding (priority order)
+
+### Bugs (fix before anything else)
+1. [ ] **Fix GET /goals/:id — uses `json_array_elements` on jsonb column, needs `jsonb_array_elements`** (src/api/goals.js:52) — endpoint returns 500 for all calls
+
+### Autonomous operation gaps (from audit 2026-03-08)
+2. [ ] Add lock file to auto-session.sh to prevent concurrent sessions
+3. [ ] Explicitly load .env vars before `claude --print` call in auto-session.sh
+4. [ ] Add session outcome check to auto-session.sh (did state files change? did commit happen?)
+5. [ ] Stage + commit 10 untracked backlog files (docs/backlog/phase-1/, phase-2/)
+6. [ ] **Off-site backup — BLOCKED: needs Sunil to provide S3-compatible bucket + credentials**
+
+### Week 4 product tasks
+7. [ ] Weekly budget/progress report to panel (overdue)
+8. [ ] Second blog post (payment launch / progress update)
+9. [ ] Feedback mechanism surfaced to users (currently DB-only, no user-facing UI)
+10. [ ] Grow the helper network — promote /join.html, process applications
+11. [ ] First external user (non-panel) through the full flow end-to-end
+12. [ ] Privacy policy formal legal sign-off — BLOCKED: needs Sunil legal review
 
 ## Blockers
-- None.
+- Off-site backups: need S3-compatible destination + credentials from Sunil
+- Privacy policy legal sign-off: needs Sunil review
+- Auto-session scope: need Sunil decision on which actions cron sessions may take autonomously (see audit)
 
 ---
-*Last updated: 2026-03-08*
+*Last updated: 2026-03-08 — autonomous operation readiness audit*
+*Next session should start with: Fix GET /goals/:id bug (item 1), then fix auto-session.sh gaps (items 2–4), then send overdue budget report (item 7)*
