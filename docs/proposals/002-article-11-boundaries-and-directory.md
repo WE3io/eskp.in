@@ -77,8 +77,6 @@ If the platform builds a directory of professional services, the following const
 
 4. **The directory must not create two-tier access.** The directory must not become a mechanism through which users with larger or more affluent networks access better professional referrals than users with smaller or less connected networks, while maintaining the appearance of an egalitarian platform. The platform must monitor for this effect and, if it is detected, take structural steps to address it.
 
-5. **FCA financial promotions — unresolved legal constraint.** The platform must not launch directory features covering FCA-regulated financial services without first obtaining specific legal advice on whether the directory's operation constitutes a financial promotion under FSMA 2000 and the Financial Promotions Order 2005. This is a genuinely uncertain area of law. Proceeding without specific legal advice in this domain is a constitutional violation.
-
 #### 11.4 The Witnessed Reflection Principle
 
 The platform's advisory model operates on a distinction between two modes of engagement:
@@ -98,13 +96,11 @@ I propose this amendment. My reasoning:
 
 The research establishes that the platform operates in legally and ethically charged territory that requires structural governance, not operational discretion. The exclusion framework and the directory trust signal are both vulnerable to decay over time — not through bad intentions but through incremental pressure. Encoding the constraints constitutionally creates a formal friction against that decay.
 
-I have two points of registered uncertainty:
+One point of registered uncertainty remains:
 
-**1. Article 11.1.2 (hard exclusions are architectural)** — the phrase "technical implementation, onboarding, and terms must all enforce the boundary" may be over-prescriptive for a constitution. The obligation should be that hard exclusions are genuinely enforced; how that is achieved is operational. I have drafted it this way because I believe the specific failure mode here — hard exclusions that exist on paper but rely solely on panel member self-regulation — is sufficiently dangerous to warrant constitutional specificity. But I acknowledge this is at the edge of what belongs in a constitution.
+**Article 11.1.2 (hard exclusions are architectural)** — the phrase "technical implementation, onboarding, and terms must all enforce the boundary" may be over-prescriptive for a constitution. I have drafted it this way because the specific failure mode — hard exclusions that exist on paper but rely solely on panel member self-regulation — is sufficiently dangerous to warrant constitutional specificity. Sunil has confirmed this is appropriate to include.
 
-**2. Article 11.3.5 (FCA financial promotions)** — this is a legal uncertainty, not a constitutional principle per se. I have included it as a constitutional prohibition on proceeding without legal advice because the downside risk (operating an unlicensed financial promotion) is severe. If Sunil prefers to handle this in operational guidance rather than the constitution, I accept that position.
-
-Both points are offered for debate, not as conditions of my support for the amendment overall.
+**Note on FCA financial promotions constraint:** Originally drafted as Article 11.3.5. Moved to operational guidance at Sunil's direction — it is a legal uncertainty requiring specific legal advice before directory launch in the financial services domain, not a structural constitutional principle. It will be captured in the exclusion register operational document.
 
 ---
 
