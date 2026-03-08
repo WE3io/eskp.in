@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const { processGoal, recordInbound } = require('../services/platform');
+const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
@@ -12,13 +14,26 @@ function verifySecret(req, res, next) {
   next();
 }
 
-// Inbound email from Cloudflare Worker
+const feedbackLimit = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Rate limit exceeded' },
+});
+
+// Inbound email from Cloudflare Worker — protected by WEBHOOK_SECRET
 router.post('/email', verifySecret, async (req, res) => {
   try {
     const { from, to, subject, text, raw } = req.body;
 
     if (!from || !text) {
       return res.status(400).json({ error: 'Missing from or text' });
+    }
+
+    // Enforce size limit on inbound email body
+    if (typeof text !== 'string' || text.length > 50000) {
+      return res.status(400).json({ error: 'Body too large or invalid' });
     }
 
     // Extract name from "Name <email>" format
@@ -35,16 +50,16 @@ router.post('/email', verifySecret, async (req, res) => {
     res.json({ ok: true, goalId: result.goal.id });
   } catch (err) {
     console.error('Webhook /email error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'internal error' });
   }
 });
 
 // Feedback submission
-router.post('/feedback', verifySecret, async (req, res) => {
+router.post('/feedback', feedbackLimit, verifySecret, async (req, res) => {
   try {
-    const { pool } = require('../db/connection');
     const { user_email, goal_id, content, source } = req.body;
-    if (!content) return res.status(400).json({ error: 'Missing content' });
+    if (!content || typeof content !== 'string') return res.status(400).json({ error: 'Missing content' });
+    if (content.length > 5000) return res.status(400).json({ error: 'Content too long' });
 
     let userId = null;
     if (user_email) {
@@ -60,7 +75,7 @@ router.post('/feedback', verifySecret, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('Webhook /feedback error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'internal error' });
   }
 });
 

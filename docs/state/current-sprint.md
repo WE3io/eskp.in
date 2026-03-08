@@ -12,7 +12,7 @@
 - [x] Dockerfile + docker-compose app service
 - [x] Deployment pipeline: scripts/deploy.sh (build → health check → rollback)
 - [x] Token budget tracker: pnpm budget (local DB tracking, accurate from 2026-03-08)
-- [x] Cloudflare DNS: eskp.in → 157.180.112.245, proxied, active
+- [x] Cloudflare DNS: eskp.in → [server], proxied, active
 - [x] Cloudflare MCP server configured
 - [x] Email sending: hello@mail.eskp.in via Resend (verified, tested)
 - [x] src/services/email.js — reusable send() module

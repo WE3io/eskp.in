@@ -4,14 +4,14 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],
       "env": {
-        "CONTEXT7_API_KEY": "CONTEXT7_KEY_REDACTED"
+        "CONTEXT7_API_KEY": "ctx7sk-REPLACE_ME"
       }
     },
     "cloudflare": {
       "command": "npx",
       "args": ["-y", "@cloudflare/mcp-server-cloudflare"],
       "env": {
-        "CLOUDFLARE_API_TOKEN": "CF_TOKEN_REDACTED"
+        "CLOUDFLARE_API_TOKEN": "REPLACE_ME"
       }
     }
   }

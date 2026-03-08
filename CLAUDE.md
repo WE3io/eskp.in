@@ -281,6 +281,30 @@ When in doubt, ask: "Does this serve the people who will use this platform?" If 
 
 ---
 
+## Credential and Secret Rule
+
+**Never commit API keys, tokens, passwords, server IP addresses, account IDs, internal URLs, or deployment identifiers to the repository.**
+
+- All secrets go in `.env` (gitignored). No exceptions.
+- All infrastructure identifiers (account IDs, server IPs, deployment IDs) go in environment variables or stay out of the repository entirely.
+- Before every commit, mentally scan staged files for anything that looks like a secret. If in doubt, check with `git diff --staged | grep -E "[a-zA-Z0-9]{30,}"`.
+- `.mcp.json` is gitignored. Use `.mcp.json.example` with placeholders for documentation.
+
+---
+
+## Risk Assessment Protocol
+
+Before any action that exposes the platform to the public internet or to external users — including publishing social media posts, opening or modifying public endpoints, enabling email processing, or deploying new public-facing features — conduct a brief threat assessment:
+
+1. What could a malicious actor do with this?
+2. What is the worst realistic outcome?
+3. What mitigations are in place?
+4. Are the mitigations sufficient? If not, implement them first or escalate to the panel.
+
+Document the assessment in the commit message or a decision log entry for anything non-trivial.
+
+---
+
 ## BEFORE ENDING ANY SESSION
 
 This is mandatory. Do not skip it.

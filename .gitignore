@@ -41,3 +41,4 @@ backups/
 
 # Postgres data (mounted volume, not in repo)
 postgres-data/
+.mcp.json
