@@ -50,7 +50,7 @@ async function createIntroCheckout({ goalId, matchId, userEmail, summary }) {
 function constructEvent(rawBody, signature) {
   const secrets = [
     process.env.STRIPE_WEBHOOK_SECRET,
-    process.env.STRIPE_WEBHOOK_SECRET_LIVE,
+    process.env.STRIPE_WEBHOOK_SECRET_TEST,
   ].filter(Boolean);
 
   let lastErr;
