@@ -1,35 +1,113 @@
+const Anthropic = require('@anthropic-ai/sdk');
 const { pool } = require('../db/connection');
 
 /**
  * Find the best helper for a decomposed goal.
- * Phase 1: simple overlap scoring on expertise tags.
- * Phase 2+: semantic matching via embeddings.
+ * Uses Claude Haiku for semantic relevance scoring.
+ * Falls back to tag-overlap if the AI call fails.
  */
-async function findMatches(decomposed) {
-  const allTags = decomposed.needs.flatMap(n => n.expertise);
-  if (allTags.length === 0) return [];
 
-  const { rows } = await pool.query(`
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const HAIKU_INPUT_PRICE  = 0.80 / 1_000_000;
+const HAIKU_OUTPUT_PRICE = 4.00 / 1_000_000;
+
+async function findMatches(decomposed) {
+  const { rows: helpers } = await pool.query(`
     SELECT
       h.id AS helper_id,
       u.name,
       u.email,
       h.expertise,
-      h.bio,
-      (
-        SELECT COUNT(*)
-        FROM unnest(h.expertise) tag
-        WHERE tag = ANY($1::text[])
-      ) AS overlap
+      h.bio
     FROM helpers h
     JOIN users u ON u.id = h.user_id
     WHERE h.is_active = TRUE
       AND u.deleted_at IS NULL
-    ORDER BY overlap DESC, h.created_at ASC
-    LIMIT 3
-  `, [allTags]);
+    ORDER BY h.created_at ASC
+  `);
 
-  return rows;
+  if (helpers.length === 0) return [];
+  if (helpers.length === 1) return helpers;
+
+  try {
+    return await semanticRank(decomposed, helpers);
+  } catch (err) {
+    console.warn('match: semantic ranking failed, falling back to tag-overlap:', err.message);
+    return tagOverlapRank(decomposed, helpers);
+  }
+}
+
+async function semanticRank(decomposed, helpers) {
+  const helperList = helpers.map((h, i) =>
+    `Helper ${i + 1} (id: ${h.helper_id})\n` +
+    `Name: ${h.name || 'anonymous'}\n` +
+    `Expertise: ${h.expertise.join(', ') || 'not specified'}\n` +
+    `Bio: ${h.bio || 'not provided'}`
+  ).join('\n\n');
+
+  const prompt = `You are a matching engine. Given a goal and a list of helpers, rank the helpers by how well they can address the goal.
+
+GOAL SUMMARY: ${decomposed.summary}
+
+NEEDS:
+${decomposed.needs.map(n => `- ${n.need} [urgency: ${n.urgency}]`).join('\n')}
+
+CONTEXT: ${decomposed.context}
+OUTCOME: ${decomposed.outcome}
+
+HELPERS:
+${helperList}
+
+Return ONLY valid JSON — no markdown, no explanation:
+{
+  "ranked": [
+    { "helper_id": "<uuid>", "score": <0-100>, "reason": "<one sentence>" }
+  ]
+}
+
+Rules:
+- Include all helpers in the ranked array
+- Score reflects genuine relevance to the needs (0 = no match, 100 = perfect match)
+- Prefer helpers whose expertise directly addresses the most urgent needs
+- A helper with 0 overlap should score below 20`;
+
+  const message = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 512,
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  // Log token usage
+  const { input_tokens, output_tokens } = message.usage;
+  pool.query(
+    `INSERT INTO token_usage (model, input_tokens, output_tokens, operation)
+     VALUES ($1, $2, $3, 'match')`,
+    ['claude-haiku-4-5-20251001', input_tokens, output_tokens]
+  ).catch(err => console.error('token_usage log error (match):', err));
+
+  let text = message.content[0].text.trim()
+    .replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+
+  const { ranked } = JSON.parse(text);
+
+  // Map ranked IDs back to helper objects, in order
+  const helperMap = Object.fromEntries(helpers.map(h => [h.helper_id, h]));
+  return ranked
+    .sort((a, b) => b.score - a.score)
+    .filter(r => r.score > 0 && helperMap[r.helper_id])
+    .map(r => ({ ...helperMap[r.helper_id], reasoning: r.reason, score: r.score }));
+}
+
+function tagOverlapRank(decomposed, helpers) {
+  const allTags = decomposed.needs.flatMap(n => n.expertise);
+  return helpers
+    .map(h => ({
+      ...h,
+      overlap: h.expertise.filter(tag => allTags.includes(tag)).length,
+    }))
+    .sort((a, b) => b.overlap - a.overlap)
+    .filter(h => h.overlap > 0);
 }
 
 module.exports = { findMatches };

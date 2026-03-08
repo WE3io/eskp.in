@@ -58,7 +58,7 @@ async function processGoal(userEmail, userName, rawText) {
   const { rows: [match] } = await pool.query(
     `INSERT INTO matches (goal_id, helper_id, reasoning, status)
      VALUES ($1, $2, $3, 'introduced') RETURNING *`,
-    [goal.id, topMatch.helper_id, `Expertise overlap on: ${topMatch.expertise.join(', ')}`]
+    [goal.id, topMatch.helper_id, topMatch.reasoning || `Expertise overlap on: ${topMatch.expertise.join(', ')}`]
   );
 
   await pool.query(`UPDATE goals SET status = 'introduced', updated_at = NOW() WHERE id = $1`, [goal.id]);
