@@ -17,6 +17,10 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// API routes
+app.use('/goals', require('./api/goals'));
+app.use('/webhooks', require('./api/webhooks'));
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Platform running on port ${PORT}`);
 });

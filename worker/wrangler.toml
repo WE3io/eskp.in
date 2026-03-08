@@ -1,0 +1,11 @@
+name = "eskp-email-handler"
+main = "email-handler.js"
+compatibility_date = "2024-01-01"
+account_id = "CF_ACCOUNT_REDACTED"
+
+[vars]
+# WEBHOOK_SECRET is set as a secret, not here
+
+[[rules]]
+type = "ESModule"
+globs = ["**/*.js"]
