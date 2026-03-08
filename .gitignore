@@ -33,6 +33,9 @@ Thumbs.db
 *.log
 logs/
 
+# TLS certs (generated on server, not committed)
+config/certs/
+
 # Backups (stored separately, not in repo)
 backups/
 
