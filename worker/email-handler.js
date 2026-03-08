@@ -9,7 +9,6 @@
  */
 
 const PLATFORM_WEBHOOK_URL = 'https://eskp.in/webhooks/email';
-const WEBHOOK_SECRET = WEBHOOK_SECRET_ENV; // injected as env var
 
 export default {
   async email(message, env, ctx) {

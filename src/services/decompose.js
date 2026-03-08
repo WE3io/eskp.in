@@ -34,7 +34,9 @@ async function decompose(rawGoalText) {
     messages: [{ role: 'user', content: rawGoalText }],
   });
 
-  const text = message.content[0].text.trim();
+  let text = message.content[0].text.trim();
+  // Strip markdown code fences if model wraps output despite instructions
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
   return JSON.parse(text);
 }
 
