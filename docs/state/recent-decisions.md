@@ -48,3 +48,24 @@
 ## 2026-03-08 — Constitution ratified
 - **Decision:** Constitution v1.0 ratified by Sunil Parekh and Claude Instance (Sonnet 4.6), 8th March 2026
 - **Confidence:** 100%
+
+## 2026-03-08 — git history rewritten to purge leaked credentials
+- **Decision:** Use git filter-repo to replace all instances of old Context7 key, both old CF tokens, and CF account ID with REDACTED placeholders; force-push
+- **Reason:** .mcp.json was tracked in git; multiple token values committed across 9 commits
+- **Commands:** `git filter-repo --replace-text /tmp/replacements.txt --force` then `git push origin main --force`
+- **Confidence:** 100%
+
+## 2026-03-08 — Rate limiting via express-rate-limit + nginx limit_req
+- **Decision:** Two-layer rate limiting: app-level (express-rate-limit) + nginx (limit_req_zone)
+- **Reason:** Defence in depth; nginx layer catches abuse before it hits Node; app layer enforces per-route limits
+- **Confidence:** 90%
+
+## 2026-03-08 — Prompt injection defence via input delimiters
+- **Decision:** Wrap all user-submitted text in <user_submission> XML tags; system prompt instructs model to treat content as untrusted; strip control characters before passing
+- **Reason:** Raw email body was being injected directly into prompt — injection risk for jailbreak/exfiltration attempts
+- **Confidence:** 85% (delimiters reduce risk significantly; semantic attacks remain possible)
+
+## 2026-03-08 — $5/month Haiku cost cap on decomposition
+- **Decision:** If monthly Haiku spend on decomposition exceeds $5, submissions queue rather than auto-process
+- **Reason:** Open POST /goals could drain budget; $5 cap leaves $25 for other operations; queued submissions alert panel
+- **Confidence:** 95%
