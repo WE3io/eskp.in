@@ -39,14 +39,19 @@
 - [x] Landing page live at eskp.in (public/index.html)
 - [x] Platform branding: Option A (warm correspondence), email templates, SVG social assets
 - [x] docs/decisions/004-branding.md
-- [ ] Privacy policy + terms of service (in response to dogfooded goal)
-- [ ] External user onboarding
+- [x] Privacy policy (public/privacy.html) — GDPR-compliant, draft banner, live
+- [x] Terms of service (public/terms.html) — plain English, England & Wales, live
+- [x] Blog at /blog/ — first post (week 2 update) published
+- [x] README updated to reflect live status
+- [x] Semantic matching — replaced tag-overlap with Claude Haiku relevance scoring (tag-overlap fallback retained)
+- [x] Deploy health check fixed (docker exec, not curl to unexposed port)
+- [ ] External user onboarding — unblocked, ready to proceed
+- [ ] Semantic matching: widen helper network beyond panel
 
 ## Blockers
-- None. Security sign-off from Sunil required before repo goes public + post published.
+- None.
 
-## Next session should start with: Sunil review of landing page + visual identity. On approval: publish build-in-public post, make repo public, upload social assets to X & LinkedIn.
-Block 7 — branding and landing page. Build the landing page at eskp.in, propose visual identity options, design email template. Branding decisions go in docs/decisions/004-branding.md.
+## Next: external user onboarding, add helpers to network, payment integration (needs Stripe keys from Sunil)
 
 ---
 *Last updated: 2026-03-08T13:15:00Z*
