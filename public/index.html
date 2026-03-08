@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Describe what you're trying to do. We'll connect you with someone who can help.">
+  <title>eskp.in — Help that's human</title>
+  <style>
+    /* =============================================
+       VISUAL IDENTITY: Option A — Warm Correspondence
+       To switch options, change the :root variables only.
+
+       Option B (Muted Sage):
+         --bg: #F6F8F4; --text: #1D2E24; --text-muted: #5A6B60;
+         --accent: #3D7A5A; --accent-light: #EAF2EC; --border: #D4E0D8;
+
+       Option C (Quiet Stone):
+         --bg: #FFFFFF; --text: #1A1A2E; --text-muted: #666680;
+         --accent: #5B6DC8; --accent-light: #EEF0FA; --border: #E4E6F0;
+         (also remove font-family: Georgia from h1, h2)
+    ============================================= */
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    /* ---- LAYOUT ---- */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: normal;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+    }
+    .cta-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.75rem 2rem;
+      max-width: 460px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .cta-box p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .cta-email {
+      display: block;
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      padding: 0.75rem 1.25rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.75rem;
+      transition: opacity 0.15s;
+    }
+    .cta-email:hover { opacity: 0.88; color: #fff; }
+    .cta-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ---- SECTIONS ---- */
+    section { padding: 3.5rem 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.4rem;
+      font-weight: normal;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---- HOW IT WORKS ---- */
+    .steps { list-style: none; counter-reset: steps; }
+    .steps li {
+      counter-increment: steps;
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 0 1rem;
+      margin-bottom: 1.75rem;
+      align-items: start;
+    }
+    .steps li::before {
+      content: counter(steps);
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      background: var(--accent-light);
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .steps li strong {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    .steps li p { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* ---- FOR WHO ---- */
+    .use-cases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .use-case {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+    }
+    .use-case strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ---- TRANSPARENCY ---- */
+    .transparency {
+      background: var(--accent-light);
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .transparency a { color: var(--accent); }
+
+    /* ---- FOOTER ---- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    footer a { color: var(--text-muted); }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 480px) {
+      .hero { padding: 3rem 0 2.5rem; }
+      .cta-box { padding: 1.25rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a class="wordmark" href="/">esk<span>p</span>.in</a>
+      <a class="nav-link" href="mailto:hello@mail.eskp.in">Get help</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <section class="hero">
+      <div class="container">
+        <h1>Help that's human.</h1>
+        <p>
+          Describe what you're trying to do. We'll connect you with someone
+          who has navigated it before.
+        </p>
+        <div class="cta-box">
+          <p>Email us what you're working on — no form, no signup.</p>
+          <a class="cta-email" href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with...">
+            Email hello@mail.eskp.in
+          </a>
+          <p class="cta-note">Free to get started. We'll be in touch within 24 hours.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li>
+            <span></span>
+            <div>
+              <strong>Send an email</strong>
+              <p>
+                Write to <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a> and describe
+                what you're trying to do — in plain language, as much or as little as you
+                know. No template required.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span></span>
+            <div>
+              <strong>We structure your goal</strong>
+              <p>
+                The platform breaks down what you actually need into specific, actionable
+                parts. We'll reflect this back to you so you know we've understood correctly.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span></span>
+            <div>
+              <strong>We make an introduction</strong>
+              <p>
+                You're connected by email with someone who has relevant experience.
+                They've agreed to help — there's no obligation on either side beyond
+                that first conversation.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Who it's for</h2>
+        <p style="color:var(--text-muted); margin-bottom:1.25rem; font-size:0.95rem;">
+          Anyone stuck on something they haven't solved before.
+        </p>
+        <div class="use-cases">
+          <div class="use-case">
+            <strong>Career</strong>
+            Changing direction, negotiating, figuring out what's next.
+          </div>
+          <div class="use-case">
+            <strong>Legal</strong>
+            Contracts, compliance, GDPR — questions that need a human, not a search engine.
+          </div>
+          <div class="use-case">
+            <strong>Technical</strong>
+            Architecture decisions, stack choices, debugging something unfamiliar.
+          </div>
+          <div class="use-case">
+            <strong>Business</strong>
+            Pricing, positioning, finding first customers.
+          </div>
+          <div class="use-case">
+            <strong>Creative</strong>
+            Getting unstuck. Outside perspective. Someone who's shipped something similar.
+          </div>
+          <div class="use-case">
+            <strong>Other</strong>
+            If you're not sure whether it fits — send the email. We'll let you know.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Honest about what this is</h2>
+        <div class="transparency">
+          <p>
+            eskp.in is an early-stage platform. The helper network is small right now.
+            We will only introduce you to someone when we think it's a genuinely good match —
+            which means sometimes we'll say we don't have anyone yet.
+          </p>
+          <br>
+          <p>
+            The platform is being built in public. Goal decomposition is assisted by AI
+            (Claude Haiku). Matching and introductions are reviewed before being sent.
+            We don't sell your data. We don't use it for anything other than connecting
+            you with help.
+          </p>
+          <br>
+          <p>
+            Read the <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">source code</a>
+            and the <a href="https://github.com/WE3io/eskp.in/blob/main/CONSTITUTION.md" target="_blank" rel="noopener">project constitution</a>
+            if you want to understand how this works under the hood.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in — a small platform for real help</span>
+      <span>
+        <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

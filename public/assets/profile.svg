@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#F9F6F0"/>
+
+  <!-- Subtle texture ring -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#E8E0D8" stroke-width="1"/>
+
+  <!-- Connection motif: two dots joined by a line -->
+  <circle cx="148" cy="200" r="14" fill="#C4622D" opacity="0.25"/>
+  <circle cx="252" cy="200" r="14" fill="#C4622D" opacity="0.25"/>
+  <line x1="162" y1="200" x2="238" y2="200" stroke="#C4622D" stroke-width="2" opacity="0.4"/>
+  <circle cx="148" cy="200" r="7" fill="#C4622D"/>
+  <circle cx="252" cy="200" r="7" fill="#C4622D"/>
+
+  <!-- Wordmark -->
+  <text x="200" y="258" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="normal"
+        fill="#2A2A2A" text-anchor="middle" letter-spacing="-0.5">esk</text>
+  <text x="260" y="258" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="normal"
+        fill="#C4622D" text-anchor="middle" letter-spacing="-0.5">p</text>
+  <text x="285" y="258" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="normal"
+        fill="#7A6E68" text-anchor="middle" letter-spacing="-0.5">.in</text>
+</svg>
