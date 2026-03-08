@@ -45,13 +45,14 @@
 - [x] README updated to reflect live status
 - [x] Semantic matching — replaced tag-overlap with Claude Haiku relevance scoring (tag-overlap fallback retained)
 - [x] Deploy health check fixed (docker exec, not curl to unexposed port)
-- [ ] External user onboarding — unblocked, ready to proceed
-- [ ] Semantic matching: widen helper network beyond panel
+- [x] External user onboarding — helper application flow live (/join.html)
+- [x] Helper network: application email routing, admin CLI (pnpm manage-helpers)
+- [ ] Payment integration — needs Stripe keys from Sunil
 
 ## Blockers
-- None.
+- Payment integration: needs Stripe account + keys from Sunil
 
-## Next: external user onboarding, add helpers to network, payment integration (needs Stripe keys from Sunil)
+## Next: payment integration once Stripe keys received; grow helper network by promoting /join.html
 
 ---
 *Last updated: 2026-03-08T13:15:00Z*
