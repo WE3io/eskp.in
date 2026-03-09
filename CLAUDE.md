@@ -90,6 +90,14 @@ Query the Anthropic API usage endpoint or check the dashboard. Build a local tra
 
 ---
 
+## Library Documentation
+
+When writing or reviewing code that uses an external library or framework, prefer fetching current documentation via the context7 MCP server (`mcp__context7__resolve-library-id` then `mcp__context7__query-docs`) over relying on training data. Training data may reflect outdated API shapes or deprecated patterns.
+
+If the context7 server is unavailable or does not have the library, fall back to training knowledge and note that the information may not reflect the latest version.
+
+---
+
 ## Technical Stack
 
 ### Core:
