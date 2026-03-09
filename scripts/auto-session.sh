@@ -79,6 +79,10 @@ Execute work in this priority order, completing as many tasks as time allows (ta
 
 After completing each task: commit it immediately with a descriptive message, mark it done in task-queue.md, then move straight to the next task without stopping. Do not treat completing one task as a signal to end the session. Keep working through the queue until fewer than 5 minutes remain or you reach a task that is blocked or requires human input.
 
+Rules and skills:
+- Follow .claude/rules/ for all work: security.md (input validation, no secrets in code, SQL injection prevention), debugging.md (observe→hypothesize→test→fix), testing.md (black-box, deterministic), context-management.md (checkpoint every 10–15 messages)
+- Use available skills where they match the task: 'implementation-executor' when executing a well-formed backlog item, 'work-item-designer' when defining a new task, 'safety-lens' before any risky or public-facing change, 'decision-lens' when evaluating options, 'simplify' after writing new code
+
 Constraints for this automated session:
 - Do not modify CONSTITUTION.md
 - Do not send emails to addresses outside the panel unless processing a legitimate user goal through the standard platform flow
