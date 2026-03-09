@@ -1,5 +1,10 @@
 # Recent Decisions
 
+## 2026-03-09 — Autonomous agent operational model established
+- **Decision:** Claude operates as a self-directing agent, not just a task executor. Self-directed work (research, code quality, infrastructure, mission alignment, growth, communication) added as 5th priority in every auto-session. Task generation formalised as a first-class responsibility. Server stewardship recurring tasks added. Research priorities queued (TSK-026–030). Operational review every 10 sessions.
+- **Constitutional basis:** Art.1 (purpose-driven evolution), Art.2.3 (Claude proposes and critiques), Art.2 (builder and operator role)
+- **Confidence:** 100%
+
 ## 2026-03-09 — Operational hardening complete (blocks 1-6)
 - **Decision:** All six hardening blocks implemented in one session. Root cause fix (Edit permission) verified working by test run. All monitoring, task queue, session-end checks in place.
 - **Key changes:** .claude/settings.json (Edit added), auto-session.sh (6 hardening items), session-end.sh, heartbeat.sh, check-cron-health.sh, task-queue.md, goals.js fix, backup restore test PASS

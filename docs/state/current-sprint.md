@@ -84,6 +84,18 @@
 ## Blockers
 - Off-site backups: need S3-compatible destination + credentials from Sunil
 
+### Autonomous agent operational changes — done 2026-03-09 ✅
+- [x] auto-session.sh: self-directed work phase added (6 categories, rotation tracking)
+- [x] docs/state/self-directed.md created
+- [x] CLAUDE.md: Task Generation section added (6 sources of tasks)
+- [x] CLAUDE.md: Operational Improvement section added (review every 10 sessions)
+- [x] task-queue.md: 9 server stewardship recurring tasks added
+- [x] task-queue.md: 5 research priority tasks added (TSK-026–030)
+- [x] docs/research/ directory created with README
+
+## Blockers
+- Off-site backups: need S3-compatible destination + credentials from Sunil
+
 ---
-*Last updated: 2026-03-09 — TSK-015/016/017/018/010 complete*
-*Next session should start with: TSK-020 (archive completed Week 1–3 checklists from CLAUDE.md) — saves ~40 lines of orientation tokens. Then TSK-021 (account-deletion-flow) or TSK-010 remaining P2 work (grow helper network, first external user)*
+*Last updated: 2026-03-09 — autonomous agent blocks 1–6 complete*
+*Next session should start with: TSK-020 (archive completed Week 1–3 checklists from CLAUDE.md), then begin self-directed work rotation starting with Research (TSK-026 or TSK-027)*
