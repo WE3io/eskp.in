@@ -303,43 +303,15 @@ Claude Code sessions are ephemeral. When a session ends and a new one starts, co
 
 ---
 
-## Initial Build Sequence
+## Build Sequence Status
 
-This is a suggested sequence. You may reorder based on your assessment, but document why.
+Weeks 1–3 complete (infrastructure, core platform, payments, security hardening, monitoring, landing page, blog, legal pages). Week 4 in progress — see `docs/state/current-sprint.md` for open items.
 
-### Week 1: Infrastructure
-- [ ] Server setup (Docker, Node.js, PostgreSQL, git)
-- [ ] Cloudflare DNS configuration via MCP
-- [ ] Email sending capability (transactional email service)
-- [ ] Email receiving capability (webhook or IMAP polling)
-- [ ] Token budget tracking mechanism
-- [ ] Basic deployment pipeline (git push → Docker build → health check → deploy)
-- [ ] This CLAUDE.md and CONSTITUTION.md committed to the repository
-
-### Week 2: Core Platform (Dogfood Version)
-- [ ] Goal decomposition engine — a structured process that takes a vague goal and produces specific, actionable needs
-- [ ] User profiles (minimal — structured abstractions only)
-- [ ] Helper profiles (the human panel, initially)
-- [ ] Matching logic — map a specific need to the most appropriate helper
-- [ ] Email-based interaction flow — user submits goal, system decomposes, system matches, system facilitates introduction via email
-- [ ] Basic data persistence (PostgreSQL)
-- [ ] Feedback collection mechanism — even if it's just a database table and an email address, user feedback must be capturable from day one
-- [ ] `/docs/state/` directory with session continuity files (current-sprint.md, recent-decisions.md, feedback-queue.md, budget-tracker.md)
-
-### Week 3: Self-Use and Iteration
-- [ ] Use the platform to manage your own development needs
-- [ ] Send real requests to the human panel through the platform
-- [ ] Log all friction points and bugs
-- [ ] Fix the most critical issues
-- [ ] First build-in-public post
-
-### Week 4: External Readiness
-- [ ] Landing page explaining what the platform does
-- [ ] Signup flow (email-based, minimal)
-- [ ] Privacy policy and terms of service (draft, flag for legal review by panel)
-- [ ] First external user onboarding
-- [ ] Payment integration if a paid feature is ready
-- [ ] Revenue model documentation
+Outstanding Week 4 items:
+- Off-site backup (blocked — needs S3 credentials from Sunil)
+- Privacy policy legal sign-off (target 2026-04-08)
+- First external user end-to-end (depends on helper network growth)
+- Helper network growth
 
 ---
 
