@@ -1,0 +1,5 @@
+Contact: mailto:admin@eskp.in
+Expires: 2027-01-01T00:00:00.000Z
+Preferred-Languages: en
+Policy: https://eskp.in/privacy.html
+Canonical: https://eskp.in/.well-known/security.txt
