@@ -47,7 +47,7 @@ for f in "${STATE_FILES[@]}"; do
 done
 
 # ── 2. "Next session starts with:" pointer ────────────────────────────────────
-if ! grep -q "Next session starts with:" docs/state/current-sprint.md 2>/dev/null; then
+if ! grep -qiE "Next session (starts|should start) with:" docs/state/current-sprint.md 2>/dev/null; then
   echo "[session-end] WARNING: 'Next session starts with:' pointer missing from current-sprint.md"
   WARNINGS=$((WARNINGS + 1))
 else

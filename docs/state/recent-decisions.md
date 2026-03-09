@@ -1,5 +1,10 @@
 # Recent Decisions
 
+## 2026-03-09 — Operational hardening complete (blocks 1-6)
+- **Decision:** All six hardening blocks implemented in one session. Root cause fix (Edit permission) verified working by test run. All monitoring, task queue, session-end checks in place.
+- **Key changes:** .claude/settings.json (Edit added), auto-session.sh (6 hardening items), session-end.sh, heartbeat.sh, check-cron-health.sh, task-queue.md, goals.js fix, backup restore test PASS
+- **Confidence:** 100%
+
 ## 2026-03-08 — Orchestration architecture: harden cron now, Agent SDK at Phase 2
 - **Decision:** Keep cron + `claude --print` for Phase 1. Fix root cause (missing `--permission-mode acceptEdits` flag + `Edit` absent from permissions allow list). Agent SDK orchestrator deferred to Phase 2.
 - **Root cause identified:** All auto-session failures trace to one missing flag. The 18:00 session stalled because `Edit` is not in `.claude/settings.json` permissions.allow — Claude hit a permission prompt it could not answer in non-interactive mode.
