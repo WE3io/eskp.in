@@ -71,11 +71,13 @@ timeout 1800 claude \
   --print \
   "Read CLAUDE.md (focus on: Identity, Current Phase, Risk Assessment Protocol, Session Continuity, Task Management). Read docs/state/current-sprint.md — the 'Next session starts with' line is your first task. Read docs/state/task-queue.md for the prioritised task list. Read docs/state/budget-tracker.md.
 
-Execute work in this priority order:
+Execute work in this priority order, completing as many tasks as time allows (target: 2–4 tasks per session):
 1. P0 tasks from task-queue.md (critical bugs, security, data loss)
 2. Unprocessed inbound emails or user feedback (check emails table: SELECT id, from_address, subject, created_at FROM emails ORDER BY created_at DESC LIMIT 5)
 3. Overdue recurring tasks (check due dates in task-queue.md)
-4. The highest-priority incomplete task from the queue
+4. The highest-priority incomplete task from the queue — then continue to the next, and the next
+
+After completing each task: commit it immediately with a descriptive message, mark it done in task-queue.md, then move straight to the next task without stopping. Do not treat completing one task as a signal to end the session. Keep working through the queue until fewer than 5 minutes remain or you reach a task that is blocked or requires human input.
 
 Constraints for this automated session:
 - Do not modify CONSTITUTION.md
