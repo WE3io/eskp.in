@@ -19,7 +19,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Task | Frequency | Last completed | Next due | SLA |
 |---|---|---|---|---|
 | Budget report to panel | Weekly (Monday) | 2026-03-09 | 2026-03-16 | Send by EOD Monday |
-| Build-in-public post | Weekly (Friday) | never | **OVERDUE** | Blocked — repo not yet public |
+| Build-in-public post | Weekly (Friday) | 2026-03-09 | 2026-03-13 | — |
 | Backup verification (restore test) | Weekly (Sunday) | 2026-03-09 | 2026-03-15 | See backup-restore-log.md |
 | State file accuracy check | Every session | 2026-03-09 | Next session | Before session ends |
 | Security dependency audit | Monthly | never | 2026-04-08 | — |
@@ -41,7 +41,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-002 | Send first weekly budget report to Sunil | **done** 2026-03-09 | Sent via Resend |
-| TSK-003 | First build-in-public post | blocked | Blocked — repo not yet public |
+| TSK-003 | Second build-in-public post | **done** 2026-03-09 | public/blog/002-week-4-payments-and-governance.html |
 | TSK-004 | Backup restore test (first ever) | **done** 2026-03-09 | PASS — see `docs/operations/backup-restore-log.md` |
 | TSK-005 | Commit all untracked backlog files | **done** 2026-03-09 | Committed in this session |
 | TSK-006 | Implement `harden-auto-session.md` | **done** 2026-03-09 | settings.json + auto-session.sh complete; cron verification at next scheduled run |
