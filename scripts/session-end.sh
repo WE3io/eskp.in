@@ -54,17 +54,24 @@ else
   echo "[session-end] OK: 'Next session starts with:' pointer present"
 fi
 
-# ── 3. Uncommitted changes — auto-commit if found ────────────────────────────
+# ── 3. Uncommitted changes — auto-commit state files only ────────────────────
+# Only commits docs/state/*.md — never source code or other files.
+# If Claude crashed mid-edit, uncommitted source changes are left as-is
+# so they can be reviewed and committed intentionally next session.
 if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
-  echo "[session-end] Uncommitted changes found — auto-committing state files..."
-  git add docs/state/ docs/backlog/ 2>/dev/null || true
+  echo "[session-end] Uncommitted changes found — auto-committing docs/state/*.md only..."
+  git add docs/state/*.md 2>/dev/null || true
   if ! git diff --cached --quiet 2>/dev/null; then
-    git commit -m "state: auto-commit session cleanup ${TIMESTAMP}
+    git commit -m "state: auto-commit at session end $(date +%Y-%m-%d-%H%M)
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>" 2>/dev/null && AUTO_COMMIT="Y" || true
-    echo "[session-end] Auto-commit created"
+    echo "[session-end] Auto-commit created (state files only)"
   else
-    echo "[session-end] No staged changes after git add — skipping commit"
+    echo "[session-end] No staged state changes — skipping commit"
+  fi
+  # Report any remaining uncommitted non-state changes for awareness
+  if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
+    echo "[session-end] WARNING: Uncommitted non-state changes remain — review before next session"
   fi
 else
   echo "[session-end] OK: working tree clean"

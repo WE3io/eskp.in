@@ -94,7 +94,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | — | Work items created for operational hardening blocks 1–4, 6–7 | 2026-03-09 | — |
 | — | `.claude/settings.json` Edit permission fix | 2026-03-09 | Root cause of all auto-session stalls |
 | — | `auto-session.sh` hardened (lock, .env, outcome check, alerting, prompt) | 2026-03-09 | TSK-006 in progress |
+| — | `auto-session.sh` improvements: multi-task, 45min timeout, skills ref, git push, log rotation, shell injection fix, success notification, session-end scope fix | 2026-03-09 | 8-item improvement batch from Sunil |
 
 ---
 
-*Last updated: 2026-03-09 (TSK-010/015/016/017/018 done)*
+*Last updated: 2026-03-09 (auto-session improvements complete; TSK-010/015/016/017/018 done by test session)*
