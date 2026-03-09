@@ -197,24 +197,53 @@
           <li>If both parties agree to proceed, introductions happen by email with both parties in copy</li>
         </ul>
 
+        <p><strong>When you make a payment:</strong></p>
+        <p>
+          If a helper match is found, we invite you to pay a one-time introduction fee of £10
+          via Stripe. Payment is handled entirely by Stripe — we never see or store your
+          card details. Stripe may collect your payment card information, billing address,
+          and device metadata in accordance with their own privacy policy.
+        </p>
+
         <p><strong>What we do not collect:</strong></p>
         <ul>
-          <li>We do not ask for payment details in this phase of the platform</li>
           <li>We do not use cookies for tracking or advertising</li>
           <li>We do not collect data from third-party sources</li>
         </ul>
 
         <h2>3. AI processing</h2>
         <p>
-          Your goal description is processed by an AI model (Claude Haiku, operated by
-          Anthropic, Inc.) to produce a structured breakdown of what you need. This structured
-          output is used to match you with appropriate helpers.
+          We use an AI model (Claude Haiku, operated by Anthropic, Inc.) in two steps
+          of the platform's core service:
+        </p>
+        <ol>
+          <li>
+            <strong>Goal decomposition</strong> — your goal description is analysed to
+            produce a structured breakdown (a summary, a list of specific needs, and
+            context about what success looks like for you).
+          </li>
+          <li>
+            <strong>Helper matching</strong> — the structured summary and need tags
+            (not your email address or name) are passed to the AI to rank helpers in
+            our network by relevance.
+          </li>
+        </ol>
+        <p>
+          The legal basis for this AI processing is <em>legitimate interests</em>: you
+          have contacted us specifically to be matched with a helper, and AI processing
+          is integral to how the matching service works.
         </p>
         <p>
-          We take reasonable steps to minimise the personal information passed to the AI:
-          we process your goal text, not your email address or other identifying details.
-          Your data is processed under Anthropic's API terms, which prohibit training on
-          API inputs by default.
+          <strong>Data minimisation:</strong> we send only your goal text (decomposition)
+          and anonymised need summaries and tags (matching) to Anthropic's API. Your email
+          address and name are never included in API requests.
+        </p>
+        <p>
+          <strong>International transfer:</strong> Anthropic, Inc. is based in the United
+          States. Processing your goal text via their API constitutes a transfer of personal
+          data to the US. This transfer is covered by Anthropic's standard contractual
+          clauses and data processing agreement. Anthropic's API terms prohibit training
+          on API inputs by default.
         </p>
         <div class="note">
           If you would prefer your goal not to be processed by AI, email us and we will
@@ -248,7 +277,13 @@
           </li>
           <li>
             <strong>Anthropic</strong> — the AI provider used for goal decomposition
-            (see section 3).
+            and helper matching (see section 3).
+          </li>
+          <li>
+            <strong>Stripe, Inc.</strong> — our payment processor. When you pay an
+            introduction fee, Stripe receives your payment card details and billing
+            information. We receive only a confirmation of payment. Stripe is based
+            in the US and Ireland and operates under its own privacy policy.
           </li>
           <li>
             <strong>Hetzner Online GmbH</strong> — our server infrastructure provider,
