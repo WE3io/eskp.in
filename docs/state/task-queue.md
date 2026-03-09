@@ -20,9 +20,17 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 |---|---|---|---|---|
 | Budget report to panel | Weekly (Monday) | 2026-03-09 | 2026-03-16 | Send by EOD Monday |
 | Build-in-public post | Weekly (Friday) | 2026-03-09 | 2026-03-13 | — |
-| Backup verification (restore test) | Weekly (Sunday) | 2026-03-09 | 2026-03-15 | See backup-restore-log.md |
+| Backup verification (restore test) | Monthly | 2026-03-09 | 2026-04-09 | See backup-restore-log.md |
 | State file accuracy check | Every session | 2026-03-09 | Next session | Before session ends |
-| Security dependency audit | Monthly | never | 2026-04-08 | — |
+| npm audit / dependency CVE check | Weekly | never | 2026-03-13 | Fix critical immediately; log others |
+| Disk usage check and cleanup | Weekly | never | 2026-03-13 | Alert if >80%; clean Docker images + old logs |
+| Docker image updates (postgres, nginx) | Monthly | never | 2026-04-09 | Check for security patches |
+| Ubuntu security updates (verify) | Weekly | never | 2026-03-13 | Verify unattended-upgrades is current |
+| SSL/TLS certificate check | Monthly | never | 2026-04-09 | Verify Cloudflare origin cert expiry |
+| Server performance baseline | Monthly | never | 2026-04-09 | Record CPU, memory, disk, response times |
+| Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
+| Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
+| Operational review (session logs) | Every 10 sessions | never | After session 10 | See Operational Improvement in CLAUDE.md |
 
 ---
 
@@ -68,6 +76,18 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
+### P2 — Medium (research priorities)
+
+| ID | Task | Status | Notes |
+|---|---|---|---|
+| TSK-026 | Research: privacy-preserving matching architectures | open | Art.3.2 — docs/research/; generate tasks if viable |
+| TSK-027 | Research: goal decomposition approaches (academic + industry) | open | Core platform capability; check for better approaches |
+| TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | open | Legal obligation; feeds into Art.10 backlog |
+| TSK-029 | Research: email-first platform best practices (deliverability, reputation) | open | Infrastructure reliability |
+| TSK-030 | Research: what makes a good first-user experience for this type of platform | open | Growth — feeds into TSK-012 prep |
+
+---
+
 ### P3 — Low
 
 | ID | Task | Status | Notes |
@@ -98,4 +118,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-09 (auto-session improvements complete; TSK-010/015/016/017/018 done by test session)*
+*Last updated: 2026-03-09 (autonomous agent blocks 1–6: self-directed work, task generation, server stewardship, research priorities added; TSK-026–030 new)*

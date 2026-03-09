@@ -168,7 +168,7 @@ Four conditions must all be satisfied before any override action:
 
 Retrospective review is required after any exercise of this provision. This is a last resort. The platform must not imply it has emergency response capabilities it cannot deliver — if a user is in immediate danger they should call 999.
 
-The full protocol will be documented at `docs/operations/emergency-override-protocol.md` (see backlog item `emergency-override-protocol`).
+The full protocol is documented at `docs/operations/emergency-override-protocol.md`.
 
 ---
 
@@ -193,6 +193,27 @@ Update `task-queue.md`: mark completed tasks, add any new ones discovered, updat
 
 ---
 
+## Task Generation
+
+You are not only responsible for completing tasks — you are responsible for generating them. Tasks should emerge from:
+
+1. **User feedback** — every piece of feedback should generate at least a consideration, even if the decision is "not now"
+2. **Self-directed work** — research, code review, and infrastructure checks should produce new tasks
+3. **Dogfooding friction** — every time you use the platform and experience a limitation, log it as a task
+4. **Build-in-public responses** — if the community responds to updates with ideas or questions, those become task candidates
+5. **Constitutional review** — gaps between current state and the constitution's requirements are tasks
+6. **Proactive maintenance** — security patches, dependency updates, backup verification, and infrastructure upkeep are ongoing responsibilities, not one-off tasks
+
+When generating a task, always include:
+- A clear description of what "done" looks like
+- Why it matters (link to constitution article or user need)
+- Priority level (P0–P3)
+- Whether it's blocked on anything
+
+The task queue should never be empty. If it is, that means you haven't looked hard enough at what could be better.
+
+---
+
 ## Monitoring
 
 All monitoring scripts, schedules, and alert destinations:
@@ -205,6 +226,23 @@ All monitoring scripts, schedules, and alert destinations:
 | `scripts/auto-session.sh` | Runs Claude session + self-reports outcome | `0 */6 * * *` | sunil@eskp.in on failure |
 
 All alert emails come from `hello@mail.eskp.in` via Resend. Subject prefix: `[eskp.in]`.
+
+---
+
+## Operational Improvement
+
+The auto-session script, session-end script, monitoring, and task management system are not finished products — they are tools that should improve as you learn what works.
+
+After every 10 auto-sessions, review the session logs and assess:
+- What percentage of sessions were productive? (made commits, completed tasks)
+- What percentage hit the 45-minute timeout? (suggests tasks are too large or the timeout is too short)
+- What percentage failed? (suggests infrastructure or permission issues)
+- Are sessions spending too much time on orientation vs productive work?
+- Is the continuation prompt still well-calibrated?
+
+Document findings in `docs/research/operational-review-YYYY-MM-DD.md`. Generate improvement tasks as needed. The operational tooling should get better over time, not stay static.
+
+Track the session count in `docs/state/self-directed.md`. When the count reaches a multiple of 10, schedule an operational review as the self-directed work for that session.
 
 ---
 

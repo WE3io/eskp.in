@@ -91,8 +91,27 @@ Execute work in this priority order:
 2. Unprocessed inbound emails or user feedback (check emails table: SELECT id, from_address, subject, created_at FROM emails ORDER BY created_at DESC LIMIT 5)
 3. Overdue recurring tasks (check due dates in task-queue.md)
 4. The highest-priority incomplete task from the queue — then continue to the next, and the next
+5. Self-directed improvement (see below) — when the queue is clear or all remaining tasks are blocked
 
-Complete as many tasks as possible within this session. Do not stop after one task — check the queue again and continue with the next priority item. Only stop when: the queue is empty, all remaining tasks are blocked, or you estimate less than 5 minutes remain (budget time for state file updates and commits). Commit after each completed task, not just at the end — this creates clean checkpoints.
+Complete as many tasks as possible within this session. Do not stop after one task — check the queue again and continue with the next priority item. Only stop when fewer than 5 minutes remain (budget time for state file updates and commits). Commit after each completed task, not just at the end — this creates clean checkpoints.
+
+--- SELF-DIRECTED WORK ---
+Read docs/state/self-directed.md to see which category was last done. Pick the next one in rotation. Choose one of:
+
+a) RESEARCH — Search the web for better approaches to something the platform currently does (matching algorithms, security best practices, privacy-preserving architectures, email deliverability, etc.). Create docs/research/YYYY-MM-DD-topic.md. Generate tasks if improvements are viable.
+
+b) CODE QUALITY — Review your own code. Run: cd /root/project && npm audit 2>&1 | head -40. Check for unhandled errors, missing edge cases, insecure patterns. Create tasks for any real issues found.
+
+c) INFRASTRUCTURE — Check server health beyond the basics: disk trends (df -h), memory (free -h), Docker image sizes (docker images), dependency CVEs (npm audit), SSL expiry, backup log freshness. Fix what you can; create tasks for what you cannot.
+
+d) MISSION ALIGNMENT — Re-read CONSTITUTION.md Articles 1 and 3. Review docs/state/recent-decisions.md against constitutional principles. Are there gaps between what the platform does and what it should? Generate tasks if so.
+
+e) GROWTH — Think from the outside: what would attract the next user? What would make an existing helper more effective? What friction exists in the current flow? Generate tasks if ideas are viable.
+
+f) COMMUNICATION — Draft build-in-public content, review and improve the landing page, check whether docs/updates/ reflects real progress, review README currency.
+
+After completing self-directed work: update docs/state/self-directed.md with what category was done and what was found. Commit.
+--- END SELF-DIRECTED WORK ---
 
 Rules and skills:
 - Follow .claude/rules/ for all work: security.md (input validation, no secrets in code, SQL injection prevention), debugging.md (observe→hypothesize→test→fix), testing.md (black-box, deterministic), context-management.md (checkpoint every 10–15 messages)
