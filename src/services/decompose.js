@@ -58,6 +58,29 @@ function sanitiseInput(text) {
   return text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').trim();
 }
 
+async function callHaiku(safeText, goalId) {
+  const message = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1024,
+    system: SYSTEM_PROMPT,
+    messages: [{
+      role: 'user',
+      content: `<user_submission>\n${safeText}\n</user_submission>`,
+    }],
+  });
+
+  const { input_tokens, output_tokens } = message.usage;
+  pool.query(
+    `INSERT INTO token_usage (model, input_tokens, output_tokens, operation, goal_id)
+     VALUES ($1, $2, $3, 'decompose', $4)`,
+    ['claude-haiku-4-5-20251001', input_tokens, output_tokens, goalId]
+  ).catch(err => console.error('token_usage log error:', err));
+
+  let text = message.content[0].text.trim();
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  return validateDecomposition(JSON.parse(text));
+}
+
 async function decompose(rawGoalText, goalId = null) {
   // Cost cap check
   const { spent, overCap } = await checkMonthlyCap();
@@ -70,28 +93,33 @@ async function decompose(rawGoalText, goalId = null) {
   // Sanitise and wrap in delimiter to prevent prompt injection
   const safeText = sanitiseInput(rawGoalText);
 
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    system: SYSTEM_PROMPT,
-    messages: [{
-      role: 'user',
-      content: `<user_submission>\n${safeText}\n</user_submission>`,
-    }],
-  });
+  try {
+    return await callHaiku(safeText, goalId);
+  } catch (firstErr) {
+    console.warn(`decompose: first attempt failed (${firstErr.message}), retrying once`);
+    try {
+      return await callHaiku(safeText, goalId);
+    } catch (retryErr) {
+      console.error(`decompose: retry also failed (${retryErr.message})`);
+      throw retryErr;
+    }
+  }
+}
 
-  // Log token usage locally for budget tracking
-  const { input_tokens, output_tokens } = message.usage;
-  pool.query(
-    `INSERT INTO token_usage (model, input_tokens, output_tokens, operation, goal_id)
-     VALUES ($1, $2, $3, 'decompose', $4)`,
-    ['claude-haiku-4-5-20251001', input_tokens, output_tokens, goalId]
-  ).catch(err => console.error('token_usage log error:', err));
-
-  let text = message.content[0].text.trim();
-  // Strip markdown code fences if model wraps output despite instructions
-  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-  return JSON.parse(text);
+function validateDecomposition(obj) {
+  if (!obj || typeof obj !== 'object') throw new Error('Decomposition: expected object');
+  if (typeof obj.summary !== 'string' || !obj.summary.trim()) throw new Error('Decomposition: missing summary');
+  if (!Array.isArray(obj.needs) || obj.needs.length === 0) throw new Error('Decomposition: needs must be a non-empty array');
+  for (const n of obj.needs) {
+    if (typeof n.need !== 'string' || !n.need.trim()) throw new Error('Decomposition: each need must have a non-empty need string');
+    if (!Array.isArray(n.expertise)) throw new Error('Decomposition: each need must have an expertise array');
+    if (!['low', 'medium', 'high'].includes(n.urgency)) {
+      n.urgency = 'medium'; // coerce unexpected values to a safe default
+    }
+  }
+  if (typeof obj.context !== 'string') obj.context = '';
+  if (typeof obj.outcome !== 'string') obj.outcome = '';
+  return obj;
 }
 
 module.exports = { decompose };

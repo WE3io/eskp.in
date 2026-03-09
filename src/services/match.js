@@ -46,15 +46,18 @@ async function semanticRank(decomposed, helpers) {
     `Bio: ${h.bio || 'not provided'}`
   ).join('\n\n');
 
-  const prompt = `You are a matching engine. Given a goal and a list of helpers, rank the helpers by how well they can address the goal.
+  // Data minimisation: send only the summary and expertise tags to the external API,
+  // not the full context or outcome which may contain personal background information.
+  const needsSummary = decomposed.needs
+    .map(n => `- ${n.need} (tags: ${n.expertise.join(', ') || 'none'}) [urgency: ${n.urgency}]`)
+    .join('\n');
+
+  const prompt = `You are a matching engine. Given a goal summary and a list of helpers, rank the helpers by how well they can address the goal.
 
 GOAL SUMMARY: ${decomposed.summary}
 
 NEEDS:
-${decomposed.needs.map(n => `- ${n.need} [urgency: ${n.urgency}]`).join('\n')}
-
-CONTEXT: ${decomposed.context}
-OUTCOME: ${decomposed.outcome}
+${needsSummary}
 
 HELPERS:
 ${helperList}

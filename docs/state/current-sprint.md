@@ -96,6 +96,14 @@
 ## Blockers
 - Off-site backups: need S3-compatible destination + credentials from Sunil
 
+### Session 2026-03-09 (second session) — done ✅
+- [x] TSK-020: Archived completed Week 1–3 build sequence from CLAUDE.md (saves ~28 lines per session)
+- [x] TSK-026: Research — privacy-preserving matching (docs/research/2026-03-09-privacy-preserving-matching.md); tasks TSK-035–038 generated
+- [x] TSK-027: Research — goal decomposition approaches (docs/research/2026-03-09-goal-decomposition.md); tasks TSK-031–034 generated
+- [x] TSK-031: Inline schema validation added to decompose.js (validateDecomposition function)
+- [x] TSK-032: 1-retry logic added to decompose.js on JSON parse/validation failure
+- [x] TSK-035: Data minimisation in match.js — LLM prompt now sends summary + tags only, not context/outcome (UK GDPR Art.5(1)(c))
+
 ---
-*Last updated: 2026-03-09 — autonomous agent blocks 1–6 complete*
-*Next session should start with: TSK-020 (archive completed Week 1–3 checklists from CLAUDE.md), then begin self-directed work rotation starting with Research (TSK-026 or TSK-027)*
+*Last updated: 2026-03-09 — second auto-session complete*
+*Next session should start with: Code quality rotation (TSK-033 investigate tool_use, or run npm audit per self-directed tracker), then TSK-037 (privacy policy AI processing disclosure), then TSK-028 (UK GDPR compliance checklist research)*

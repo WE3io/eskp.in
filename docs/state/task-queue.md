@@ -80,8 +80,16 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-026 | Research: privacy-preserving matching architectures | open | Art.3.2 — docs/research/; generate tasks if viable |
-| TSK-027 | Research: goal decomposition approaches (academic + industry) | open | Core platform capability; check for better approaches |
+| TSK-026 | Research: privacy-preserving matching architectures | **done** 2026-03-09 | docs/research/2026-03-09-privacy-preserving-matching.md; tasks TSK-035–038 generated |
+| TSK-027 | Research: goal decomposition approaches (academic + industry) | **done** 2026-03-09 | docs/research/2026-03-09-goal-decomposition.md; tasks TSK-031–034 generated |
+| TSK-031 | Add Zod schema validation to decompose.js output before DB write | **done** 2026-03-09 | Inline validateDecomposition() added |
+| TSK-032 | Add 1-retry logic to decompose.js on JSON parse failure | **done** 2026-03-09 | callHaiku() + try/retry wrapper |
+| TSK-033 | Investigate Anthropic tool_use for decompose.js structured output enforcement | open | From research TSK-027; P3 until TSK-031 shipped |
+| TSK-034 | Design clarification loop: route vague goal back to user via email | open | From research TSK-027; requires email reply parsing |
+| TSK-035 | Data minimisation: strip context/outcome from match.js LLM prompt | **done** 2026-03-09 | Now sends summary + tags only; UK GDPR Art.5(1)(c) |
+| TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | open | From research TSK-026; defence in depth |
+| TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | open | From research TSK-026; GDPR transparency |
+| TSK-038 | Tag normalisation at helper onboarding: suggest canonical tags | open | From research TSK-026; improves tag-overlap quality |
 | TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | open | Legal obligation; feeds into Art.10 backlog |
 | TSK-029 | Research: email-first platform best practices (deliverability, reputation) | open | Infrastructure reliability |
 | TSK-030 | Research: what makes a good first-user experience for this type of platform | open | Growth — feeds into TSK-012 prep |
@@ -92,7 +100,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-020 | Archive completed Week 1–3 checklists from CLAUDE.md | open | Saves ~40 lines of orientation token cost |
+| TSK-020 | Archive completed Week 1–3 checklists from CLAUDE.md | **done** 2026-03-09 | Done this session |
 | TSK-021 | `account-deletion-flow` | open | Art.10 Phase 1 |
 | TSK-022 | `data-export-endpoint` | open | Art.10 Phase 1 |
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
@@ -118,4 +126,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-09 (autonomous agent blocks 1–6: self-directed work, task generation, server stewardship, research priorities added; TSK-026–030 new)*
+*Last updated: 2026-03-09 (TSK-020/026/027/031/032/035 done; TSK-033/034/036/037/038 open from research)*
