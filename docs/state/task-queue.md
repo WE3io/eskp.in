@@ -55,15 +55,15 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-009 | Second blog post (payment launch / progress update) | open | Unblocked — write draft, Sunil publishes |
-| TSK-010 | Feedback mechanism surfaced to users | open | Currently DB-only; needs a simple `/feedback` page or email link |
+| TSK-010 | Feedback mechanism surfaced to users | **done** 2026-03-09 | /feedback.html created; linked from index.html |
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |
 | TSK-012 | First external user (non-panel) end-to-end | open | Depends on TSK-003 and helper network |
 | TSK-013 | Off-site backup | **blocked** | Needs Sunil to provide S3-compatible bucket + credentials |
 | TSK-014 | `hard-exclusion-content-triggers` | **done** 2026-03-09 | Art.11 Phase 1 — email webhook warm referral |
-| TSK-015 | `privacy-tension-disclosure` | open | Art.11 Phase 1 — user-facing OSA/dyadic privacy disclosure |
-| TSK-016 | `safety-resources-page` | open | Art.11 Phase 1 — public `/support` page |
-| TSK-017 | `safeguarding-disclosure-terms` | open | Art.11 Phase 1 — panel obligations in terms + join page |
-| TSK-018 | `emergency-override-protocol` | open | Art.11 Phase 1 — document protocol at `docs/operations/` |
+| TSK-015 | `privacy-tension-disclosure` | **done** 2026-03-09 | Art.11 Phase 1 — OSA/dyadic disclosure in privacy.html and terms.html |
+| TSK-016 | `safety-resources-page` | **done** 2026-03-09 | Art.11 Phase 1 — /support.html created, footers updated |
+| TSK-017 | `safeguarding-disclosure-terms` | **done** 2026-03-09 | Art.11 Phase 1 — section 7 in terms.html, section in join.html |
+| TSK-018 | `emergency-override-protocol` | **done** 2026-03-09 | Art.11 Phase 1 — docs/operations/emergency-override-protocol.md + privacy.html ref |
 | TSK-019 | Privacy policy legal sign-off | open | Target 2026-04-08 — remove draft banner when done |
 
 ---
@@ -97,4 +97,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-09 (TSK-014 done)*
+*Last updated: 2026-03-09 (TSK-010/015/016/017/018 done)*

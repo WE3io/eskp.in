@@ -59,7 +59,7 @@
 ### Week 4 product tasks
 7. [ ] Weekly budget/progress report to panel (overdue)
 8. [ ] Second blog post (payment launch / progress update)
-9. [ ] Feedback mechanism surfaced to users (currently DB-only, no user-facing UI)
+9. [x] Feedback mechanism surfaced to users — /feedback.html created 2026-03-09
 10. [ ] Grow the helper network — promote /join.html, process applications
 11. [ ] First external user (non-panel) through the full flow end-to-end
 12. [ ] Privacy policy formal legal sign-off — target 2026-04-08 (1 month, confirmed by Sunil)
@@ -76,14 +76,14 @@
 
 ### Article 11 Phase 1 backlog
 - [x] `hard-exclusion-content-triggers`: email webhook warm referral for hard exclusion domains — done 2026-03-09
-- [ ] `privacy-tension-disclosure`: user-facing OSA/dyadic privacy tension disclosure
-- [ ] `safety-resources-page`: public /support page with UK signposting library (content in `docs/operations/exclusion-register.md` Section 3)
-- [ ] `emergency-override-protocol`: document protocol at `docs/operations/emergency-override-protocol.md`
-- [ ] `safeguarding-disclosure-terms`: panel member obligations in `public/terms.html` and `public/join.html`
+- [x] `privacy-tension-disclosure`: user-facing OSA/dyadic privacy tension disclosure — done 2026-03-09
+- [x] `safety-resources-page`: public /support page with UK signposting library — done 2026-03-09
+- [x] `emergency-override-protocol`: protocol at `docs/operations/emergency-override-protocol.md` — done 2026-03-09
+- [x] `safeguarding-disclosure-terms`: panel obligations in terms.html and join.html — done 2026-03-09
 
 ## Blockers
 - Off-site backups: need S3-compatible destination + credentials from Sunil
 
 ---
-*Last updated: 2026-03-09 — TSK-014 hard-exclusion-content-triggers complete*
-*Next session should start with: TSK-015 (privacy-tension-disclosure) — Art.11 Phase 1 user-facing OSA/dyadic privacy disclosure; see docs/backlog/phase-1/privacy-tension-disclosure.md*
+*Last updated: 2026-03-09 — TSK-015/016/017/018/010 complete*
+*Next session should start with: TSK-020 (archive completed Week 1–3 checklists from CLAUDE.md) — saves ~40 lines of orientation tokens. Then TSK-021 (account-deletion-flow) or TSK-010 remaining P2 work (grow helper network, first external user)*
