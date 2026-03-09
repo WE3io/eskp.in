@@ -104,6 +104,15 @@
 - [x] TSK-032: 1-retry logic added to decompose.js on JSON parse/validation failure
 - [x] TSK-035: Data minimisation in match.js — LLM prompt now sends summary + tags only, not context/outcome (UK GDPR Art.5(1)(c))
 
+### Session 2026-03-09 (third auto-session) — done ✅
+- [x] Code quality rotation: pnpm audit (no CVEs); reviewed 5 core service files; 2 P3 issues logged
+- [x] TSK-037: Privacy policy updated — section 3 now covers both decomposition + matching, legal basis, international transfer, Stripe added to data sharing
+- [x] TSK-028: UK GDPR compliance checklist research complete — docs/research/2026-03-09-uk-gdpr-compliance-checklist.md; tasks TSK-039–045 generated
+- [x] TSK-040: Article 30 ROPA created — docs/operations/ropa.md (8 processing activities)
+- [x] TSK-043: Breach response procedure created — docs/operations/breach-response.md (Art.33/34)
+
+**CRITICAL GAP FOUND**: TSK-039 — ICO registration not yet done. Must register with ICO and pay £52 data protection fee before opening to external users. This is a legal requirement; processing without registration is a criminal offence.
+
 ---
-*Last updated: 2026-03-09 — second auto-session complete*
-*Next session should start with: Code quality rotation (TSK-033 investigate tool_use, or run npm audit per self-directed tracker), then TSK-037 (privacy policy AI processing disclosure), then TSK-028 (UK GDPR compliance checklist research)*
+*Last updated: 2026-03-09 — third auto-session complete*
+*Next session should start with: TSK-039 (ICO registration — check if Sunil has registered, if not escalate to him as it requires a legal entity name and card payment), then TSK-041 (LIA), then TSK-042 (DPIA), then TSK-029 (infrastructure rotation: disk usage, memory, Docker image check)*

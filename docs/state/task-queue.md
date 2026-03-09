@@ -48,6 +48,9 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
+| TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | open | **Must do before opening to external users** — criminal offence to process without paying |
+| TSK-040 | Article 30 ROPA created | **done** 2026-03-09 | docs/operations/ropa.md — 8 processing activities documented |
+| TSK-043 | Breach response procedure | **done** 2026-03-09 | docs/operations/breach-response.md — Art.33/34 procedure + register |
 | TSK-002 | Send first weekly budget report to Sunil | **done** 2026-03-09 | Sent via Resend |
 | TSK-003 | Second build-in-public post | **done** 2026-03-09 | public/blog/002-week-4-payments-and-governance.html |
 | TSK-004 | Backup restore test (first ever) | **done** 2026-03-09 | PASS — see `docs/operations/backup-restore-log.md` |
@@ -88,9 +91,9 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-034 | Design clarification loop: route vague goal back to user via email | open | From research TSK-027; requires email reply parsing |
 | TSK-035 | Data minimisation: strip context/outcome from match.js LLM prompt | **done** 2026-03-09 | Now sends summary + tags only; UK GDPR Art.5(1)(c) |
 | TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | open | From research TSK-026; defence in depth |
-| TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | open | From research TSK-026; GDPR transparency |
+| TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | **done** 2026-03-09 | Section 3 expanded: decomposition + matching, LB, international transfer, Stripe added to s5 |
 | TSK-038 | Tag normalisation at helper onboarding: suggest canonical tags | open | From research TSK-026; improves tag-overlap quality |
-| TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | open | Legal obligation; feeds into Art.10 backlog |
+| TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | **done** 2026-03-09 | docs/research/2026-03-09-uk-gdpr-compliance-checklist.md; tasks TSK-039–045 generated |
 | TSK-029 | Research: email-first platform best practices (deliverability, reputation) | open | Infrastructure reliability |
 | TSK-030 | Research: what makes a good first-user experience for this type of platform | open | Growth — feeds into TSK-012 prep |
 
@@ -101,6 +104,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-020 | Archive completed Week 1–3 checklists from CLAUDE.md | **done** 2026-03-09 | Done this session |
+| TSK-041 | Write LIA (Legitimate Interests Assessment) in docs/operations/lia.md | open | From TSK-028 GDPR research; justifies lawful basis |
+| TSK-042 | Conduct and document DPIA for AI goal decomposition + matching | open | From TSK-028; likely required for AI processing under Art.35 |
+| TSK-044 | Write data subject rights procedure + verify erasure cascade covers all DB tables | open | From TSK-028; Art.15–22 obligations |
+| TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | open | From TSK-028; Art.28 |
 | TSK-021 | `account-deletion-flow` | open | Art.10 Phase 1 |
 | TSK-022 | `data-export-endpoint` | open | Art.10 Phase 1 |
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
@@ -126,4 +133,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-09 (TSK-020/026/027/031/032/035 done; TSK-033/034/036/037/038 open from research)*
+*Last updated: 2026-03-09 (TSK-028/037 done; TSK-039–045 generated from GDPR research; TSK-040/043 also done this session; TSK-039 is P1 must-do before external users)*
