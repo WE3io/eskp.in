@@ -45,7 +45,8 @@ function renderEmail({ preheader = '', body }) {
           <tr>
             <td style="border-top:1px solid #E8E0D8;padding-top:20px;font-family:system-ui,-apple-system,sans-serif;font-size:12px;color:#7A6E68;line-height:1.6;">
               eskp.in &mdash; a small platform for real help<br>
-              Reply to this email if you have questions or if we've got anything wrong.
+              Reply to this email if you have questions or if we've got anything wrong.<br>
+              <a href="https://eskp.in/support.html" style="color:#7A6E68;">Support resources</a> &mdash; specialist services if you need help right now.
             </td>
           </tr>
 
