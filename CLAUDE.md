@@ -172,6 +172,42 @@ The full protocol will be documented at `docs/operations/emergency-override-prot
 
 ---
 
+## Task Management
+
+Every session — automated or manual — consults `docs/state/task-queue.md` before deciding what to work on. The sprint file (`current-sprint.md`) tracks phase-level progress; the task queue tracks individual executable items.
+
+### Priority order (always)
+1. P0 tasks (broken production, security incidents, data loss)
+2. Unprocessed inbound emails or user feedback
+3. Overdue recurring tasks (check the recurring tasks table — `Last completed` and `Next due` columns)
+4. Highest-priority P1 task
+
+### Recurring tasks
+Recurring tasks (budget report, build-in-public post, backup verification, security audit) are tracked in the `## Recurring Tasks` table in `task-queue.md`. After completing a recurring task, update `Last completed` and `Next due` before ending the session. A recurring task with `Next due: OVERDUE` is treated as P1.
+
+### Task IDs
+Tasks use stable IDs (TSK-NNN). Never reuse an ID. Add new tasks at the bottom of the relevant priority section with the next available ID.
+
+### At the end of every session
+Update `task-queue.md`: mark completed tasks, add any new ones discovered, update recurring task dates. This is not optional — a session that doesn't update the task queue has left the system in a worse state than it found it.
+
+---
+
+## Monitoring
+
+All monitoring scripts, schedules, and alert destinations:
+
+| Script | What it checks | Cron schedule | Alert destination |
+|---|---|---|---|
+| `scripts/heartbeat.sh` | App health, PostgreSQL, nginx, disk usage | `*/15 * * * *` | sunil@eskp.in |
+| `scripts/check-cron-health.sh` | Auto-session log freshness (< 7 hours) | `0 4,12,20 * * *` | sunil@eskp.in |
+| `scripts/backup-db.sh` | Runs daily backup (not a check) | `0 2 * * *` | ~/logs/backup.log |
+| `scripts/auto-session.sh` | Runs Claude session + self-reports outcome | `0 */6 * * *` | sunil@eskp.in on failure |
+
+All alert emails come from `hello@mail.eskp.in` via Resend. Subject prefix: `[eskp.in]`.
+
+---
+
 ## User Feedback and Roadmap
 
 This is a constitutional obligation, not a nice-to-have.

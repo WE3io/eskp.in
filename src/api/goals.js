@@ -50,7 +50,7 @@ router.get('/:id', getLimit, async (req, res) => {
     const { rows } = await pool.query(
       `SELECT g.id, g.status, g.created_at,
               (SELECT json_agg(json_build_object('need', n->>'need', 'urgency', n->>'urgency'))
-               FROM json_array_elements(g.decomposed->'needs') n) AS needs,
+               FROM jsonb_array_elements(g.decomposed->'needs') n) AS needs,
               (SELECT COUNT(*) FROM matches m WHERE m.goal_id = g.id AND m.status = 'introduced') AS matches_count
        FROM goals g
        WHERE g.id = $1`,

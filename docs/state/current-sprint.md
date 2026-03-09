@@ -43,16 +43,18 @@
 
 ## Week 4 — Outstanding (priority order)
 
-### Bugs (fix before anything else)
-1. [ ] **Fix GET /goals/:id — uses `json_array_elements` on jsonb column, needs `jsonb_array_elements`** (src/api/goals.js:52) — endpoint returns 500 for all calls
-
-### Autonomous operation gaps (from audit 2026-03-08)
-2. [ ] Add lock file to auto-session.sh to prevent concurrent sessions
-3. [ ] Explicitly load .env vars before `claude --print` call in auto-session.sh
-4. [ ] Add session outcome check to auto-session.sh (did state files change? did commit happen?)
-5. [ ] Stage + commit 10 untracked backlog files (docs/backlog/phase-1/, phase-2/)
-6. [ ] **Off-site backup — BLOCKED: needs Sunil to provide S3-compatible bucket + credentials**
-   - Items 1–5 backlogged: fix-goals-endpoint-jsonb.md, harden-auto-session.md (both in docs/backlog/phase-1/)
+### Operational hardening — done 2026-03-09 ✅
+- [x] Fix GET /goals/:id (`jsonb_array_elements`) — endpoint live and returning 200
+- [x] `.claude/settings.json` — `Edit` added to permissions.allow (root cause fix)
+- [x] `auto-session.sh` — `--permission-mode acceptEdits`, flock lock, `.env` export, outcome check, failure alerting, structured prompt
+- [x] `scripts/session-end.sh` — post-session handoff checks, integrated into auto-session
+- [x] `scripts/heartbeat.sh` — every 15min; alerts Sunil on failure
+- [x] `scripts/check-cron-health.sh` — every 8h; alerts on absent session logs
+- [x] `docs/state/task-queue.md` — structured task queue with P0–P3 priorities and recurring tasks
+- [x] Weekly budget report sent to Sunil (TSK-002) — first ever
+- [x] Backup restore test passed (TSK-004) — see `docs/operations/backup-restore-log.md`
+- [x] All backlog files committed (phase-1, phase-2)
+- [ ] **Off-site backup — BLOCKED: needs Sunil to provide S3-compatible bucket + credentials**
 
 ### Week 4 product tasks
 7. [ ] Weekly budget/progress report to panel (overdue)
@@ -83,5 +85,5 @@
 - Off-site backups: need S3-compatible destination + credentials from Sunil
 
 ---
-*Last updated: 2026-03-08 — constitutional governance session (Articles 10 + 11 ratified)*
-*Next session should start with: Fix GET /goals/:id bug (item 1), then fix auto-session.sh gaps (items 2–4), then send overdue budget report (item 7)*
+*Last updated: 2026-03-09 — operational hardening complete*
+*Next session should start with: TSK-009 (second blog post draft) or TSK-014 (hard-exclusion-content-triggers) — check task-queue.md for current P1 items first*
