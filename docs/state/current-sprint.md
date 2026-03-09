@@ -74,8 +74,8 @@
 - [x] `CLAUDE.md` updated with Professional Boundaries and Safety operational section
 - [x] `docs/state/recent-decisions.md` updated with Article 10/11 ratification entries
 
-### Article 11 Phase 1 backlog (outstanding — no panel feature required, can start next)
-- [ ] `hard-exclusion-content-triggers`: email webhook warm referral for hard exclusion domains
+### Article 11 Phase 1 backlog
+- [x] `hard-exclusion-content-triggers`: email webhook warm referral for hard exclusion domains — done 2026-03-09
 - [ ] `privacy-tension-disclosure`: user-facing OSA/dyadic privacy tension disclosure
 - [ ] `safety-resources-page`: public /support page with UK signposting library (content in `docs/operations/exclusion-register.md` Section 3)
 - [ ] `emergency-override-protocol`: document protocol at `docs/operations/emergency-override-protocol.md`
@@ -85,5 +85,5 @@
 - Off-site backups: need S3-compatible destination + credentials from Sunil
 
 ---
-*Last updated: 2026-03-09 — operational hardening complete*
-*Next session should start with: TSK-009 (second blog post draft) or TSK-014 (hard-exclusion-content-triggers) — check task-queue.md for current P1 items first*
+*Last updated: 2026-03-09 — TSK-014 hard-exclusion-content-triggers complete*
+*Next session should start with: TSK-015 (privacy-tension-disclosure) — Art.11 Phase 1 user-facing OSA/dyadic privacy disclosure; see docs/backlog/phase-1/privacy-tension-disclosure.md*

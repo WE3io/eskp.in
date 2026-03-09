@@ -3,6 +3,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const { processGoal, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
+const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
 const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -49,6 +50,14 @@ router.post('/email', verifySecret, async (req, res) => {
     if (isHelperApplication(subject)) {
       const result = await processHelperApplication(userEmail, userName, text);
       return res.json({ ok: true, type: 'helper-application', duplicate: result.duplicate || false });
+    }
+
+    // Hard exclusion check (Art. 11.1.2) — must run before processGoal
+    const exclusion = detectHardExclusion(text);
+    if (exclusion.triggered) {
+      await sendWarmReferral(userEmail, userName, exclusion.referralKey);
+      console.log(`hard-exclusion: domain=${exclusion.domain} email=${userEmail}`);
+      return res.json({ ok: true, type: 'hard-exclusion', domain: exclusion.domain });
     }
 
     // Default: process as a new goal

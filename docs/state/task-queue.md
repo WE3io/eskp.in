@@ -59,7 +59,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |
 | TSK-012 | First external user (non-panel) end-to-end | open | Depends on TSK-003 and helper network |
 | TSK-013 | Off-site backup | **blocked** | Needs Sunil to provide S3-compatible bucket + credentials |
-| TSK-014 | `hard-exclusion-content-triggers` | open | Art.11 Phase 1 — email webhook warm referral |
+| TSK-014 | `hard-exclusion-content-triggers` | **done** 2026-03-09 | Art.11 Phase 1 — email webhook warm referral |
 | TSK-015 | `privacy-tension-disclosure` | open | Art.11 Phase 1 — user-facing OSA/dyadic privacy disclosure |
 | TSK-016 | `safety-resources-page` | open | Art.11 Phase 1 — public `/support` page |
 | TSK-017 | `safeguarding-disclosure-terms` | open | Art.11 Phase 1 — panel obligations in terms + join page |
@@ -97,4 +97,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-09*
+*Last updated: 2026-03-09 (TSK-014 done)*
