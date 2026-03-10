@@ -106,7 +106,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-050 | Ensure all email templates send both HTML + plain text versions | **done** 2026-03-10 | email.js now sends both html+text when both provided (Resend multipart/alternative) |
-| TSK-051 | Implement Resend webhook handler for bounce/complaint events | **done** 2026-03-10 | POST /webhooks/resend; Svix HMAC-SHA256; email-suppression.js; isSuppressed() in email.js. **Action needed**: add RESEND_WEBHOOK_SECRET to .env from Resend dashboard (Webhooks → signing secret) |
+| TSK-051 | Implement Resend webhook handler for bounce/complaint events | **done** 2026-03-10 | POST /webhooks/resend; Svix HMAC-SHA256; email-suppression.js; isSuppressed() in email.js. RESEND_WEBHOOK_SECRET + REPLY_TOKEN_SECRET added to .env by Sunil 2026-03-10 — reply-token fallback warning eliminated. |
 | TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | **done** 2026-03-10 | All three confirmed: DKIM (resend._domainkey.mail.eskp.in), SPF, DMARC p=quarantine |
 | TSK-048 | Prompt instruction in decompose.js to generalise special category data | **done** 2026-03-10 | From DPIA; data minimisation for sensitive fields |
 | TSK-049 | Flag sensitive-domain goals for human review before sending introduction email | **done** 2026-03-10 | sensitive-flag.js + processGoalSensitive(); 7 domains; panel alert email |
@@ -194,4 +194,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-098 | Bug fix: clarification loop not actually limited | **done** 2026-03-10 | Added clarification_attempts INT column; processGoal sets to 1; processClarification checks < 2 before re-asking; proceeds with best decomp after max |
 | TSK-099 | Bug fix: HTML-unsafe user names in email bodies | **done** 2026-03-10 | Exported escHtml() from email-template.js; applied to userName/rawText in all HTML email bodies in platform.js |
 
-*Last updated: 2026-03-10 (sixteenth auto-session — TSK-075 done (dogfooding confirmed); code quality rotation; TSK-098/099 bugs fixed)*
+*Last updated: 2026-03-10 (seventeenth auto-session — infrastructure rotation; Docker build cache pruned 97MB; platform baseline recorded; all green)*
