@@ -10,7 +10,7 @@ Record what was done so successive sessions don't duplicate effort.
 | Infrastructure | 2026-03-10 | Infrastructure check: disk 12%, memory 27%, pnpm audit clean, no OS updates. Docker images current. TSK-046 (swap), TSK-047 (log rotation) logged. Also completed TSK-029 email deliverability research — TSK-050–053 generated. | — |
 | Mission alignment | 2026-03-10 | Re-read Arts 1 + 3. Found: AI disclosure gap in emails (fixed, TSK-055); raw_text retention no policy (TSK-054); TSK-021/022 promoted to P2 (constitutional rights); TSK-056/057 generated. Existing hard exclusion + sensitive-domain work confirmed aligned. | — |
 | Growth | 2026-03-10 | Reviewed all public pages from a stranger's perspective. Key finding: helper network bottleneck (1 helper = no external matches). Nav inconsistency fixed (4 pages missing "Become a helper"). Tasks TSK-058–063 generated. See docs/research/2026-03-10-growth-first-user.md. | — |
-| Communication | never | — | Draft next build-in-public post; review landing page copy for clarity |
+| Communication | 2026-03-10 | Blog post 004 published (user rights, landing page, helper network bottleneck). Blog index updated. X thread draft for helper recruitment created at docs/updates/002-helper-recruitment-thread.md. | — |
 
 ## Rotation order
 

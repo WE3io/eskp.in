@@ -65,7 +65,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-009 | Second blog post (payment launch / progress update) | open | Unblocked — write draft, Sunil publishes |
+| TSK-009 | Second blog post (payment launch / progress update) | **done** 2026-03-09 | public/blog/002-week-4-payments-and-governance.html |
 | TSK-010 | Feedback mechanism surfaced to users | **done** 2026-03-09 | /feedback.html created; linked from index.html |
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |
 | TSK-012 | First external user (non-panel) end-to-end | open | Depends on TSK-003 and helper network |
@@ -88,7 +88,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-031 | Add Zod schema validation to decompose.js output before DB write | **done** 2026-03-09 | Inline validateDecomposition() added |
 | TSK-032 | Add 1-retry logic to decompose.js on JSON parse failure | **done** 2026-03-09 | callHaiku() + try/retry wrapper |
 | TSK-033 | Investigate Anthropic tool_use for decompose.js structured output enforcement | **done** 2026-03-10 | Implemented: DECOMPOSE_TOOL with JSON Schema, tool_choice: force. Eliminates JSON parse errors. |
-| TSK-034 | Design clarification loop: route vague goal back to user via email | open | From research TSK-027; requires email reply parsing |
+| TSK-034 | Design clarification loop: route vague goal back to user via email | **done** 2026-03-10 | Implemented: needs_clarification flag in decompose, sendClarificationRequest, processClarification, pending_clarification status |
 | TSK-035 | Data minimisation: strip context/outcome from match.js LLM prompt | **done** 2026-03-09 | Now sends summary + tags only; UK GDPR Art.5(1)(c) |
 | TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | open | From research TSK-026; defence in depth |
 | TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | **done** 2026-03-09 | Section 3 expanded: decomposition + matching, LB, international transfer, Stripe added to s5 |
@@ -132,10 +132,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
 | TSK-024 | `revenue-model-constraint-terms` | open | Art.10 Phase 1 |
 | TSK-025 | `exclusion-register-operational` | open | Art.11 Phase 1 (register exists; this covers update process) |
-| TSK-058 | Add 3 concrete example goals to landing page | open | Growth — reduces submission anxiety for first-time users |
-| TSK-059 | Add "What to expect" timeline section to landing page | open | Growth — clarifies 24h ack + match timeline or no-match outcome |
-| TSK-060 | Draft Twitter/X thread for @awebot1529222 — helper recruitment | open | Growth — build-in-public; helper network is primary bottleneck |
-| TSK-061 | Add CTA to end of each blog post (join + submit) | open | Growth — blog visitors are warm leads |
+| TSK-058 | Add 3 concrete example goals to landing page | **done** 2026-03-10 | index.html — career/business/technical examples in 'What does a goal look like?' section |
+| TSK-059 | Add "What to expect" timeline section to landing page | **done** 2026-03-10 | index.html — 4-step timeline: 24h ack, match, no-match, after intro |
+| TSK-060 | Draft Twitter/X thread for @awebot1529222 — helper recruitment | **done** 2026-03-10 | docs/updates/002-helper-recruitment-thread.md — 6 tweets ready to post |
+| TSK-061 | Add CTA to end of each blog post (join + submit) | **done** 2026-03-10 | All 3 blog posts updated with styled 'Try the platform' CTA box |
 | TSK-062 | Grow helper network — reach 3 new helper candidates | open | Growth — TSK-012 (first external user) is blocked without more helpers |
 | TSK-063 | No-match timeout: email user after 7 days if goal still in 'matched' | open | UX — prevents silent dead ends for unmatched goals |
 
@@ -158,4 +158,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (sixth auto-session — TSK-021/022/050 done; growth research + nav fix; TSK-058–063 generated)*
+*Last updated: 2026-03-10 (seventh auto-session — TSK-034/058/059/060/061 done; blog post 004 published; communication rotation complete)*

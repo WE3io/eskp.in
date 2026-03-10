@@ -137,6 +137,16 @@
 - [x] Growth rotation: reviewed all public pages, fixed "Become a helper" missing from nav on 4 pages, generated TSK-058–063
 - [x] DB migrated and app redeployed (health: passing)
 
+### Session 2026-03-10 (seventh auto-session) — done ✅
+- [x] TSK-058: 3 example goals added to landing page (career/business/technical) in new 'What does a goal look like?' section
+- [x] TSK-059: 'What to expect' 4-step timeline added to landing page (24h ack, match, no-match, after intro)
+- [x] TSK-061: Styled CTA boxes (submit + join) added to all 3 existing blog posts
+- [x] TSK-060: X/Twitter helper recruitment thread drafted (6 tweets) at docs/updates/002-helper-recruitment-thread.md
+- [x] TSK-034: Clarification loop implemented — needs_clarification flag, sendClarificationRequest, processClarification, pending_clarification status in DB
+- [x] TSK-009: Marked done (blog post 002 was published last session; task queue was stale)
+- [x] Communication rotation: Blog post 004 published, blog index updated
+- [x] DB migrated, app redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-10 — sixth auto-session complete*
-*Next session should start with: TSK-058 (example goals on landing page), then TSK-059 (timeline section), then TSK-034 (clarification loop design), then TSK-062 (helper network growth)*
+*Last updated: 2026-03-10 — seventh auto-session complete*
+*Next session should start with: TSK-062 (grow helper network — reach 3 new candidates), then TSK-030 (research: first-user experience), then TSK-036 (sensitive goal routing for LLM matching), then TSK-046 (swap file)*
