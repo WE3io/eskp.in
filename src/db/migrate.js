@@ -135,6 +135,15 @@ const migrations = [
   `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_suppressed_at TIMESTAMPTZ`,
   `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_suppression_reason TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_users_email_suppressed ON users(email) WHERE email_suppressed_at IS NOT NULL`,
+
+  // TSK-054: raw_text retention — make column nullable so we can null it after decomposition
+  // (UK GDPR Art.5(1)(e) storage limitation — raw text is not needed once decomposed)
+  `ALTER TABLE goals ALTER COLUMN raw_text DROP NOT NULL`,
+
+  // TSK-054: back-fill — null raw_text for goals that already have a decomposed value
+  // (goals in submitted/decomposing status retain raw_text as it may still be needed)
+  `UPDATE goals SET raw_text = NULL WHERE decomposed IS NOT NULL AND raw_text IS NOT NULL
+   AND status NOT IN ('submitted', 'decomposing', 'pending_clarification')`,
 ];
 
 async function migrate() {

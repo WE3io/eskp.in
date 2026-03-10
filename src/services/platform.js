@@ -47,13 +47,16 @@ async function processGoal(userEmail, userName, rawText) {
       `UPDATE goals SET decomposed = $1, status = 'pending_clarification', updated_at = NOW() WHERE id = $2`,
       [JSON.stringify(decomposed), goal.id]
     );
+    // raw_text is retained while pending_clarification (needed to build combined text on reply)
     await sendClarificationRequest(user, goal, decomposed);
     console.log(`clarification: goal ${goal.id} set to pending_clarification`);
     return { goal, decomposed, needsClarification: true };
   }
 
+  // Null raw_text once decomposition is stored — GDPR Art.5(1)(e) storage limitation.
+  // The decomposed column holds all information needed for matching.
   await pool.query(
-    `UPDATE goals SET decomposed = $1, status = 'matched', updated_at = NOW() WHERE id = $2`,
+    `UPDATE goals SET decomposed = $1, raw_text = NULL, status = 'matched', updated_at = NOW() WHERE id = $2`,
     [JSON.stringify(decomposed), goal.id]
   );
 
@@ -240,8 +243,9 @@ async function processClarification(userEmail, userName, replyText, pendingGoal)
     return { goal: pendingGoal, decomposed, needsClarification: true };
   }
 
+  // Null raw_text once decomposition is stored — GDPR Art.5(1)(e).
   await pool.query(
-    `UPDATE goals SET decomposed = $1, status = 'matched', updated_at = NOW() WHERE id = $2`,
+    `UPDATE goals SET decomposed = $1, raw_text = NULL, status = 'matched', updated_at = NOW() WHERE id = $2`,
     [JSON.stringify(decomposed), pendingGoal.id]
   );
 
