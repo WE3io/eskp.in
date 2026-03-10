@@ -22,6 +22,7 @@ require('dotenv').config();
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
 const { renderEmail } = require('../src/services/email-template');
+const { generateReplyTo } = require('../src/services/email-reply-token');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const DRY_RUN = process.argv.includes('--dry-run');
@@ -88,6 +89,7 @@ If the introduction didn't work out for any reason, let us know and we'll see wh
           preheader: `Checking in — how is your conversation with ${helperName} going?`,
           body: htmlBody,
         }),
+        replyTo: generateReplyTo(row.goal_id),
       });
       await pool.query(
         `UPDATE goals SET follow_up_sent_at = NOW(), updated_at = NOW() WHERE id = $1`,
@@ -162,6 +164,7 @@ Sorry it's taking longer than expected. We'd rather be honest than keep you wait
           preheader: 'An honest update on finding the right match for your goal.',
           body: htmlBody,
         }),
+        replyTo: generateReplyTo(row.goal_id),
       });
       await pool.query(
         `UPDATE goals SET follow_up_sent_at = NOW(), updated_at = NOW() WHERE id = $1`,
@@ -228,6 +231,7 @@ If your situation has changed or you'd like to close this request, just reply an
           preheader: `Your introduction with ${helperName} is still available.`,
           body: htmlBody,
         }),
+        replyTo: generateReplyTo(row.goal_id),
       });
       await pool.query(
         `UPDATE goals SET follow_up_sent_at = NOW(), updated_at = NOW() WHERE id = $1`,

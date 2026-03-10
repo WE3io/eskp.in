@@ -6,6 +6,7 @@ const { isHelperApplication, processHelperApplication } = require('../services/h
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
 const { detectSensitiveDomain } = require('../services/sensitive-flag');
 const { processExportRequest, requestDeletion } = require('../services/account');
+const { parseReplyTo } = require('../services/email-reply-token');
 const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -48,7 +49,33 @@ router.post('/email', verifySecret, async (req, res) => {
     // Log the inbound email
     await recordInbound(from, to, subject, text, raw || {});
 
-    // Route by subject
+    // ── Priority route: reply-to token ────────────────────────────────────────
+    // If the email was sent to a goal-specific reply address
+    // (reply+{goalId}_{token}@mail.eskp.in), route it directly to that goal.
+    // This takes precedence over all subject-based routing and prevents replies
+    // from being misidentified as new goal submissions.
+    const replyContext = parseReplyTo(to);
+    if (replyContext.valid) {
+      const { rows: [goal] } = await pool.query(
+        'SELECT * FROM goals WHERE id = $1',
+        [replyContext.goalId]
+      );
+      if (goal) {
+        if (goal.status === 'pending_clarification') {
+          await processClarification(userEmail, userName, text, goal);
+          console.log(`reply-token: clarification reply for goal ${goal.id}`);
+          return res.json({ ok: true, type: 'clarification-reply', goalId: goal.id });
+        }
+        // For any other status (matched, introduced, etc.) log the reply
+        // but do not create a new goal. Operator can review via email logs.
+        console.log(`reply-token: inbound reply to goal ${goal.id} (status: ${goal.status}), logged`);
+        return res.json({ ok: true, type: 'goal-reply', goalId: goal.id });
+      }
+      // Token valid but goal not found — fall through to subject routing
+      console.warn(`reply-token: valid token but goal ${replyContext.goalId} not found, falling through`);
+    }
+
+    // ── Subject-based routing (new submissions and explicit requests) ─────────
     const subjectLower = (subject || '').toLowerCase();
 
     // TSK-022: data export request

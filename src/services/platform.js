@@ -8,6 +8,7 @@ const { findMatches } = require('./match');
 const { send } = require('./email');
 const { renderEmail, textToHtml } = require('./email-template');
 const { createIntroCheckout } = require('./payments');
+const { generateReplyTo } = require('./email-reply-token');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 
@@ -186,6 +187,7 @@ We're looking for the right person and will get back to you within 24 hours. If 
       : `Here's what we understood — does this look right?`,
     text: plainText,
     html: renderEmail({ preheader: decomposed.summary, body: htmlBody }),
+    replyTo: generateReplyTo(goal.id),
   });
 }
 
@@ -219,6 +221,7 @@ Just reply to this email with your answers — no need to be exhaustive, whateve
     subject: `We need a bit more information about your goal`,
     text: plainText,
     html: renderEmail({ preheader: 'A few quick questions to help us find the right person for you.', body: htmlBody }),
+    replyTo: generateReplyTo(goal.id),
   });
   await logEmail('outbound', FROM, user.email, `We need a bit more information about your goal`, goal.id, null);
 }
@@ -547,6 +550,7 @@ This email was sent automatically. Do not forward it externally.`;
         <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${rawText.substring(0, 1000)}${rawText.length > 1000 ? '\n[truncated]' : ''}</pre>
         <p style="color:#5A5450;font-size:13px;">Review the goal and take appropriate action. The user has been acknowledged but no match has been sent.</p>`,
     }),
+    replyTo: panelEmail,  // admin replies stay off the inbound worker
   });
 
   await logEmail('outbound', FROM, panelEmail, `[eskp.in] Sensitive goal requires review — ${sensitiveLabel}`, goal.id, null);

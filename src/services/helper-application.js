@@ -75,6 +75,7 @@ async function notifyAdmin(app) {
     subject: `New helper application: ${app.email}`,
     text: `New helper application\n\nEmail: ${app.email}\nName: ${app.name || '(not provided)'}\n\nWhat they said:\n${app.expertise_description}\n\nApprove: pnpm manage-helpers approve ${app.id}\nReject: pnpm manage-helpers reject ${app.id}`,
     html: renderEmail({ preheader: `New helper application from ${app.email}`, body }),
+    replyTo: ADMIN_EMAIL,  // admin replies stay off the inbound worker
   });
 }
 
