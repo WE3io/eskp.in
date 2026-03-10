@@ -34,6 +34,26 @@ async function run() {
     ORDER BY g.created_at DESC
   `);
 
+  // 1b. Currently unmatched goals (submitted but no introduction made)
+  const { rows: unmatchedGoals } = await pool.query(`
+    SELECT g.id, g.decomposed
+    FROM goals g
+    WHERE g.status IN ('submitted', 'clarifying', 'pending_clarification', 'proposed', 'matched')
+      AND g.decomposed IS NOT NULL
+  `);
+
+  // Build tag counts for unmatched pipeline
+  const pipelineTagCounts = {};
+  for (const g of unmatchedGoals) {
+    if (g.decomposed && Array.isArray(g.decomposed.needs)) {
+      for (const need of g.decomposed.needs) {
+        for (const tag of (need.expertise || [])) {
+          pipelineTagCounts[tag] = (pipelineTagCounts[tag] || 0) + 1;
+        }
+      }
+    }
+  }
+
   // 2. Active helpers
   const { rows: helpers } = await pool.query(`
     SELECT
@@ -87,17 +107,22 @@ async function run() {
     const helperTagSet = new Set(helper.expertise || []);
     const relevantTags = topTags.filter(([tag]) => helperTagSet.has(tag));
 
+    // Goals in this helper's domain currently awaiting a match (pipeline visibility — TSK-076)
+    const pipelineInDomain = Object.entries(pipelineTagCounts)
+      .filter(([tag]) => helperTagSet.has(tag))
+      .reduce((sum, [, count]) => sum + count, 0);
+
     const greeting = `Hi${helper.name ? ` ${helper.name}` : ''},`;
     const weekOf = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
     const plainText = buildPlainText({
       greeting, weekOf, totalGoals, topTags, relevantTags,
-      introduced, matched, unmatched,
+      introduced, matched, unmatched, pipelineInDomain,
     });
 
     const htmlBody = buildHtmlBody({
       greeting, weekOf, totalGoals, topTags, relevantTags,
-      introduced, matched, unmatched,
+      introduced, matched, unmatched, pipelineInDomain,
     });
 
     if (DRY_RUN) {
@@ -126,7 +151,7 @@ async function run() {
   console.log(`helper-digest: done (${helpers.length} helper(s), ${totalGoals} goal(s) this week)`);
 }
 
-function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched }) {
+function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain }) {
   const lines = [
     greeting,
     '',
@@ -159,6 +184,12 @@ function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, i
     }
   }
 
+  if (pipelineInDomain > 0) {
+    lines.push('');
+    lines.push(`Pipeline in your domain: ${pipelineInDomain} goal${pipelineInDomain === 1 ? '' : 's'} currently awaiting a helper match.`);
+    lines.push('These goals are unmatched — if you know anyone with relevant expertise, you can share the platform: https://eskp.in/join.html');
+  }
+
   lines.push('');
   lines.push('If you have updated your expertise or availability, reply to this email and we\'ll update your profile.');
   lines.push('');
@@ -169,7 +200,7 @@ function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, i
   return lines.join('\n');
 }
 
-function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched }) {
+function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain }) {
   const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   let html = `<p>${esc(greeting)}</p>
     <p>Here's a quick summary of what came through eskp.in in the week ending <strong>${esc(weekOf)}</strong>.</p>`;
@@ -202,6 +233,14 @@ function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, in
       }
       html += `</ul></div>`;
     }
+  }
+
+  if (pipelineInDomain > 0) {
+    html += `<div style="border-left:3px solid #C4753A;padding:10px 16px;margin:20px 0;background:#FDF8F5;">
+      <p style="margin:0 0 6px;font-weight:bold;">Pipeline in your domain</p>
+      <p style="margin:0;">${pipelineInDomain} goal${pipelineInDomain === 1 ? '' : 's'} currently awaiting a helper match in your area.
+        If you know someone who could help, <a href="https://eskp.in/join.html" style="color:#C4753A;">invite them to join</a>.</p>
+      </div>`;
   }
 
   html += `<p style="color:#7A6E68;font-size:14px;margin-top:24px;">If you have updated your expertise or availability, reply to this email and we'll update your profile.</p>
