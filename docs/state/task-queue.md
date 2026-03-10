@@ -201,4 +201,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-105 | Bug fix: SQL string interpolation in data-retention.js | **done** 2026-03-10 | Replaced INTERVAL interpolation with parameterized make_interval() |
 | TSK-106 | Bug fix: invalid 'clarifying' status in helper-digest.js, data-retention.js, outcome-roundup.js | **done** 2026-03-10 | Replaced with correct schema statuses (decomposing, pending_clarification) |
 
-*Last updated: 2026-03-10 (nineteenth auto-session — code quality rotation: XSS fixes, SQL param, invalid status)*
+| TSK-107 | Migrate semanticRank() in match.js to Anthropic tool_use | **done** 2026-03-10 | RANK_HELPERS_TOOL with forced tool_choice; eliminates JSON parse risk; consistent with decompose.js |
+| TSK-108 | Add historical match rating to helper ranking | open | P3 — defer to 3+ helpers; blend avg rating into score |
+| TSK-109 | Add active match count to helper ranking (capacity-aware) | open | P3 — defer to 3+ helpers |
+
+*Last updated: 2026-03-10 (twentieth auto-session — research: matching algorithm quality)*

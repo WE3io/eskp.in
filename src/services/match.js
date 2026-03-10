@@ -18,6 +18,31 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const HAIKU_INPUT_PRICE  = 0.80 / 1_000_000;
 const HAIKU_OUTPUT_PRICE = 4.00 / 1_000_000;
 
+// Tool definition: enforces ranked output schema via API, eliminating JSON parse errors
+const RANK_HELPERS_TOOL = {
+  name: 'rank_helpers',
+  description: 'Rank helpers by relevance to the goal, returning scored results.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      ranked: {
+        type: 'array',
+        description: 'Helpers ranked by relevance, highest score first.',
+        items: {
+          type: 'object',
+          properties: {
+            helper_id: { type: 'string', description: 'UUID of the helper' },
+            score: { type: 'number', description: 'Relevance score 0-100' },
+            reason: { type: 'string', description: 'One sentence explaining the score' },
+          },
+          required: ['helper_id', 'score', 'reason'],
+        },
+      },
+    },
+    required: ['ranked'],
+  },
+};
+
 async function findMatches(decomposed, { localOnly = false } = {}) {
   const { rows: helpers } = await pool.query(`
     SELECT
@@ -72,7 +97,7 @@ async function semanticRank(decomposed, helpers) {
     .map(n => `- ${n.need} (tags: ${n.expertise.join(', ') || 'none'}) [urgency: ${n.urgency}]`)
     .join('\n');
 
-  const prompt = `You are a matching engine. Given a goal summary and a list of helpers, rank the helpers by how well they can address the goal.
+  const prompt = `You are a matching engine. Given a goal summary and a list of helpers, call the rank_helpers tool to rank them by relevance.
 
 GOAL SUMMARY: ${decomposed.summary}
 
@@ -81,13 +106,6 @@ ${needsSummary}
 
 HELPERS:
 ${helperList}
-
-Return ONLY valid JSON — no markdown, no explanation:
-{
-  "ranked": [
-    { "helper_id": "<uuid>", "score": <0-100>, "reason": "<one sentence>" }
-  ]
-}
 
 Rules:
 - Include all helpers in the ranked array
@@ -98,6 +116,8 @@ Rules:
   const message = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 512,
+    tools: [RANK_HELPERS_TOOL],
+    tool_choice: { type: 'tool', name: 'rank_helpers' },
     messages: [{ role: 'user', content: prompt }],
   });
 
@@ -109,15 +129,16 @@ Rules:
     ['claude-haiku-4-5-20251001', input_tokens, output_tokens]
   ).catch(err => console.error('token_usage log error (match):', err));
 
-  let text = message.content[0].text.trim()
-    .replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  const toolBlock = message.content.find(c => c.type === 'tool_use');
+  if (!toolBlock) throw new Error('Match ranking: no tool_use block in response');
 
-  const { ranked } = JSON.parse(text);
+  const { ranked } = toolBlock.input;
+  if (!Array.isArray(ranked)) throw new Error('Match ranking: ranked is not an array');
 
   // Map ranked IDs back to helper objects, in order
   const helperMap = Object.fromEntries(helpers.map(h => [h.helper_id, h]));
   return ranked
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => (b.score || 0) - (a.score || 0))
     .filter(r => r.score > 0 && helperMap[r.helper_id])
     .map(r => ({ ...helperMap[r.helper_id], reasoning: r.reason, score: r.score }));
 }
