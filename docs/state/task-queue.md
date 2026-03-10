@@ -187,4 +187,9 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (fourteenth auto-session — TSK-090/091/092/074 done; infrastructure rotation: backup-db.sh chmod+x bug fixed, crontab cd /root/project fix)*
+| TSK-094 | 1-click match quality rating in follow-up email | **done** 2026-03-10 | GET /api/match-feedback; feedback_token + user_rating + user_rated_at on matches; idempotent |
+| TSK-095 | Average match rating in weekly helper digest | **done** 2026-03-10 | AVG(user_rating) per helper; star display in HTML + plain text |
+| TSK-096 | `pnpm stats` command — match quality + payment rate summary | **done** 2026-03-10 | scripts/stats.js: goal funnel, payment rate, rating breakdown, revenue |
+| TSK-097 | Free-first-message payment model (research spike) | open | Defer to when 5+ users exist; see docs/research/2026-03-10-payment-ux-and-match-quality.md |
+
+*Last updated: 2026-03-10 (fifteenth auto-session — TSK-094/095/096 done; blog post 005 published; research: payment UX + match quality)*
