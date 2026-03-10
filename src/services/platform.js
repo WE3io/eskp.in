@@ -105,67 +105,61 @@ async function sendAcknowledgement(user, goal, decomposed, helper, paymentUrl) {
   const plainText = hasMatch
     ? `${greeting}
 
-We received your message. Our AI analysed your goal and here's what it understood:
+We received your message and here's how we've understood your goal — please reply if anything looks off:
 
 ${decomposed.summary}
 
-What you need:
+What we think you need:
 ${needsList}
 
 Good news — we found someone who can help: ${helper.name || 'a helper in our network'}.
 
-To receive the introduction, complete a one-time payment of £10:
+To get the introduction, complete a one-time £10 payment:
 ${paymentUrl}
-
-If we've misunderstood anything, just reply to this email.
 
 — The eskp.in team`
     : `${greeting}
 
-We received your message. Our AI analysed your goal and here's what it understood:
+We received your message and here's how we've understood your goal — please reply if anything looks off:
 
 ${decomposed.summary}
 
-What you need:
+What we think you need:
 ${needsList}
 
-We're working on finding the right person for you and will be in touch shortly.
-
-If we've misunderstood anything, just reply to this email.
+We're looking for the right person and will get back to you within 24 hours. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.
 
 — The eskp.in team`;
 
   const htmlBody = hasMatch
     ? `<p>${greeting}</p>
-       <p>We received your message. Our AI analysed your goal and here's what it understood:</p>
+       <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
-       <p><strong>What you need:</strong></p>
+       <p><strong>What we think you need:</strong></p>
        <ul style="margin:8px 0 16px 20px;padding:0;">
          ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
        </ul>
        <p>Good news — we found someone who can help: <strong>${helper.name || 'a helper in our network'}</strong>.</p>
-       <p>To receive the introduction, complete a one-time payment of <strong>£10</strong>:</p>
+       <p>To get the introduction, complete a one-time payment of <strong>£10</strong>:</p>
        <p style="text-align:center;margin:24px 0;">
          <a href="${paymentUrl}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
            Pay £10 and get introduced
          </a>
-       </p>
-       <p style="color:#7A6E68;font-size:14px;margin-top:24px;">If we've misunderstood anything, just reply to this email.</p>`
+       </p>`
     : `<p>${greeting}</p>
-       <p>We received your message. Our AI analysed your goal and here's what it understood:</p>
+       <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
-       <p><strong>What you need:</strong></p>
+       <p><strong>What we think you need:</strong></p>
        <ul style="margin:8px 0 16px 20px;padding:0;">
          ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
        </ul>
-       <p>We're working on finding the right person for you and will be in touch shortly.</p>
-       <p style="color:#7A6E68;font-size:14px;margin-top:24px;">If we've misunderstood anything, just reply to this email.</p>`;
+       <p>We're looking for the right person and will get back to you <strong>within 24 hours</strong>. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.</p>`;
 
   await send({
     to: user.email,
     subject: hasMatch
-      ? `We found someone who can help — complete your introduction`
-      : `We've received your goal — here's what we understood`,
+      ? `We found a match — does this look right?`
+      : `Here's what we understood — does this look right?`,
     text: plainText,
     html: renderEmail({ preheader: decomposed.summary, body: htmlBody }),
   });

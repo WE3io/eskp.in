@@ -241,6 +241,57 @@
     }
     .timeline .what { color: var(--text-muted); }
 
+    /* ---- HELPERS ---- */
+    .helper-card {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1rem;
+    }
+    .helper-avatar {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .helper-info { flex: 1; }
+    .helper-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+    .helper-bio {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .helper-tags {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .helper-tag {
+      font-size: 0.72rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 0.15rem 0.5rem;
+      text-transform: lowercase;
+    }
+
     /* ---- TRANSPARENCY ---- */
     .transparency {
       background: var(--accent-light);
@@ -424,6 +475,31 @@
             <span class="what">The conversation is yours. There's no obligation on either side beyond that first exchange. Most people find one call is enough.</span>
           </li>
         </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Meet the helpers</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem;">Real people. Carefully selected. Not a directory.</p>
+        <div class="helper-card">
+          <div class="helper-avatar">S</div>
+          <div class="helper-info">
+            <div class="helper-name">Sunil Parekh</div>
+            <div class="helper-bio">Founder and software developer. Building eskp.in to connect people with genuine help. Available for technical architecture, startup decisions, and product direction.</div>
+            <div class="helper-tags">
+              <span class="helper-tag">software engineering</span>
+              <span class="helper-tag">startups</span>
+              <span class="helper-tag">product</span>
+              <span class="helper-tag">javascript / node.js</span>
+              <span class="helper-tag">AI / LLMs</span>
+              <span class="helper-tag">devops</span>
+            </div>
+          </div>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.825rem;margin-top:1rem;">
+          The helper network is growing. <a href="/join.html" style="color:var(--accent);">Apply to become a helper →</a>
+        </p>
       </div>
     </section>
 
