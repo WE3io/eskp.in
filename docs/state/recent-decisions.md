@@ -1,5 +1,16 @@
 # Recent Decisions
 
+## 2026-03-10 — reply-to default changed to hello@mail.eskp.in
+- **Decision:** `email.js` default `REPLY_TO` changed from `panel@eskp.in` to `hello@mail.eskp.in`.
+- **Reason:** Sunil reported that when he replied to an escalation email, replies went to `panel@eskp.in` (the escalation address) instead of the platform's inbound processing pipeline (`hello@mail.eskp.in`). This means user replies would have been misrouted.
+- **Side effect:** Decoupled `ALERT_EMAIL` env var in auto-session.sh — operational alerts now use `ALERT_EMAIL` not `EMAIL_REPLY_TO`.
+- **Confidence:** 100%
+
+## 2026-03-10 — ICO registration complete (TSK-039)
+- **Decision:** Sunil registered eskp.in with the ICO and paid the Tier 1 data protection fee. ICO number: **C1889388**.
+- **Action taken:** Privacy policy updated (section 1 now displays ICO number); ROPA updated with registration number; TSK-039 marked complete.
+- **Confidence:** 100%
+
 ## 2026-03-10 — raw_text nulled immediately after decomposition (TSK-054)
 - **Decision:** `goals.raw_text` is now set to NULL in the same DB transaction that writes the `decomposed` column. The column was changed from NOT NULL to nullable.
 - **Reason:** UK GDPR Art.5(1)(e) storage limitation — raw_text serves only the decomposition step, which completes in seconds. The decomposed JSONB contains all matching-relevant data.

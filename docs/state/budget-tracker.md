@@ -4,12 +4,12 @@
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $30 | $0.0092 | $29.9908 | 0.03% | ✅ OK |
-| **Total** | **$30** | **$0.0092** | **$29.9908** | **0.03%** | **✅ OK** |
+| Anthropic API tokens | $30 | $0.0140 | $29.9860 | 0.05% | ✅ OK |
+| **Total** | **$30** | **$0.0140** | **$29.9860** | **0.05%** | **✅ OK** |
 
 ### Usage detail (from local token_usage table)
 ```
-  claude-haiku-4-5-20251001: 7 calls, 3,276 in / 1,654 out = $0.0092
+  claude-haiku-4-5-20251001: 8 calls, 6,814 in / 2,128 out = $0.0140
 ```
 
 ### Pricing reference
@@ -36,10 +36,10 @@ Day 10 of ~31 (~32% of month elapsed)
 
 | Month | Budget | Spent | Revenue | Net |
 |-------|--------|-------|---------|-----|
-| March 2026 | $30 | $0.0092 | $0 | -$0.0092 |
+| March 2026 | $30 | $0.0140 | $0 | -$0.0140 |
 
 ---
 
-*Last updated: 2026-03-10T07:09:52.848Z*
+*Last updated: 2026-03-10T08:15:49.378Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*

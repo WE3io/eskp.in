@@ -173,6 +173,22 @@
 - [x] Self-directed (Infrastructure): disk 15%, memory OK, 0 CVEs, unattended-upgrades clean, all containers healthy. TSK-082 generated (cert check tooling).
 - [x] This session is the 10th — operational review is overdue per CLAUDE.md (every 10 sessions). Generated as next priority.
 
+### Session 2026-03-10 (eleventh auto-session) — done ✅
+- [x] Inbound email from Sunil: ICO registration number C1889388 confirmed
+- [x] TSK-039: ICO number added to privacy.html (section 1) + ROPA — registration complete
+- [x] Bug fix: email.js default REPLY_TO changed from panel@eskp.in → hello@mail.eskp.in (Sunil's feedback)
+- [x] Bug fix: ALERT_EMAIL decoupled from EMAIL_REPLY_TO in auto-session.sh
+- [x] FB-001 logged (reply-to bug, resolved)
+- [x] Operational review complete (session 10 milestone): docs/research/operational-review-2026-03-10.md
+- [x] TSK-084: session-end.sh feedback-queue.md false-positive warning eliminated
+- [x] TSK-083: session duration now logged in auto-session.sh summary line
+- [x] TSK-068/063: follow-up emails — post-intro check-in + no-match/unpaid timeout (scripts/followup.js, daily cron)
+- [x] TSK-069: plain-language data-handling/AI disclosure in first AI response email
+- [x] TSK-023: algorithmic transparency — "Our AI matched your goal to X" in emails, opt-out line, landing page
+- [x] TSK-024: revenue model clause (no advertising, no data sale) in terms.html section 11 (Art.10.2.1)
+- [x] TSK-025: exclusion register confirmed complete (all acceptance criteria already met)
+- [x] TSK-038: tag normalisation in manage-helpers.js — CANONICAL_TAGS (56), suggestCanonical(), suggest-tags cmd
+
 ---
-*Last updated: 2026-03-10 — tenth auto-session complete*
-*Next session should start with: Operational review (session 10 milestone per CLAUDE.md — review logs, assess session productivity, generate improvement tasks), then TSK-068 (post-introduction follow-up email), then TSK-063 (no-match timeout), then TSK-069 (data-handling statement in first email)*
+*Last updated: 2026-03-10 — eleventh auto-session complete*
+*Next session should start with: TSK-075 (dogfooding — invite Sunil to submit a real goal via the platform), then TSK-070 (lightweight commitment signal), then TSK-085 (document ALERT_EMAIL env var)*

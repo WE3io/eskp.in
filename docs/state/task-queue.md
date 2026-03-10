@@ -30,7 +30,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Server performance baseline | Monthly | never | 2026-04-09 | Record CPU, memory, disk, response times |
 | Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
-| Operational review (session logs) | Every 10 sessions | never | **OVERDUE — session 10 reached** | See Operational Improvement in CLAUDE.md |
+| Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 11) | Session 20 | See Operational Improvement in CLAUDE.md |
 
 ---
 
@@ -48,7 +48,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | open | **Must do before opening to external users** — criminal offence to process without paying |
+| TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | **done** 2026-03-10 | Sunil registered, ICO number C1889388; privacy.html + ROPA updated |
 | TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | open | **Requires Sunil** — navigate to Account → Data Protection in Hetzner Robot/Cloud |
 | TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | open | **Requires Sunil** — Account → Configurations → Privacy → DPA |
 | TSK-040 | Article 30 ROPA created | **done** 2026-03-09 | docs/operations/ropa.md — 8 processing activities documented |
@@ -94,7 +94,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-035 | Data minimisation: strip context/outcome from match.js LLM prompt | **done** 2026-03-09 | Now sends summary + tags only; UK GDPR Art.5(1)(c) |
 | TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | **done** 2026-03-10 | detectSensitiveDomain() on decomposed summary in match.js; falls back to tag-overlap |
 | TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | **done** 2026-03-09 | Section 3 expanded: decomposition + matching, LB, international transfer, Stripe added to s5 |
-| TSK-038 | Tag normalisation at helper onboarding: suggest canonical tags | open | From research TSK-026; improves tag-overlap quality |
+| TSK-038 | Tag normalisation at helper onboarding: suggest canonical tags | **done** 2026-03-10 | CANONICAL_TAGS list (56 tags) + suggestCanonical() + 'suggest-tags' subcommand in manage-helpers.js |
 | TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | **done** 2026-03-09 | docs/research/2026-03-09-uk-gdpr-compliance-checklist.md; tasks TSK-039–045 generated |
 | TSK-029 | Research: email-first platform best practices (deliverability, reputation) | **done** 2026-03-10 | docs/research/2026-03-10-email-deliverability.md; TSK-050–053 generated |
 | TSK-030 | Research: what makes a good first-user experience for this type of platform | **done** 2026-03-10 | docs/research/2026-03-10-first-user-experience.md; 24 findings, tasks TSK-064–071 generated |
@@ -131,21 +131,21 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
 | TSK-056 | Design basic data retention/deletion automation | open | From mission alignment; goals with no activity after N months auto-closed |
 | TSK-057 | Create public roadmap page (/roadmap.html) | **done** 2026-03-10 | public/roadmap.html; live features, coming next, planned, user requests; footer links added to all 6 pages |
-| TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
-| TSK-024 | `revenue-model-constraint-terms` | open | Art.10 Phase 1 |
-| TSK-025 | `exclusion-register-operational` | open | Art.11 Phase 1 (register exists; this covers update process) |
+| TSK-023 | `algorithmic-transparency-disclosure` | **done** 2026-03-10 | Match email: "Our AI matched your goal to X"; opt-out line added; landing page timeline updated; Art.10.2.3 |
+| TSK-024 | `revenue-model-constraint-terms` | **done** 2026-03-10 | New section 11 in terms.html; explicit no-advertising/no-data-sale commitment; Art.10.2.1 |
+| TSK-025 | `exclusion-register-operational` | **done** 2026-03-10 | Register already complete with all acceptance criteria: 10 regulated domains, 9 adjacency, signposting, FCA note, review schedule |
 | TSK-058 | Add 3 concrete example goals to landing page | **done** 2026-03-10 | index.html — career/business/technical examples in 'What does a goal look like?' section |
 | TSK-059 | Add "What to expect" timeline section to landing page | **done** 2026-03-10 | index.html — 4-step timeline: 24h ack, match, no-match, after intro |
 | TSK-060 | Draft Twitter/X thread for @awebot1529222 — helper recruitment | **done** 2026-03-10 | docs/updates/002-helper-recruitment-thread.md — 6 tweets ready to post |
 | TSK-061 | Add CTA to end of each blog post (join + submit) | **done** 2026-03-10 | All 3 blog posts updated with styled 'Try the platform' CTA box |
 | TSK-062 | Grow helper network — reach 3 new helper candidates | open | LinkedIn post + personal outreach template drafted (docs/updates/003-linkedin-helper-recruitment.md); awaiting Sunil to post/send |
-| TSK-063 | No-match timeout: email user after 7 days if goal still in 'matched' | open | UX — prevents silent dead ends for unmatched goals |
+| TSK-063 | No-match timeout: email user after 7 days if goal still in 'matched' | **done** 2026-03-10 | scripts/followup.js — no-match + unpaid reminder variants; daily 09:00 cron; follow_up_sent_at column |
 | TSK-064 | AI goal-decomposition email reframed as hypothesis | **done** 2026-03-10 | "Here's how we've understood your goal — reply if anything looks off" |
 | TSK-065 | Add 24-hour SLA to no-match acknowledgement email | **done** 2026-03-10 | "We'll get back to you within 24 hours" added to no-match variant |
 | TSK-066 | Add "Meet the helpers" section to landing page | **done** 2026-03-10 | Sunil's name, bio, expertise tags; social proof for first visitors |
 | TSK-067 | Add helper bio to match notification email | **done** 2026-03-10 | HTML (styled card) + plain text; humanises the helper match |
-| TSK-068 | Build post-session follow-up email (24h after goal 'introduced') | open | Research finding 23: frequency of communication is top retention predictor |
-| TSK-069 | Add plain-language data-handling statement to first AI response email | open | Research finding 18: privacy transparency enables richer user context |
+| TSK-068 | Build post-session follow-up email (24h after goal 'introduced') | **done** 2026-03-10 | scripts/followup.js — 24h check-in email; cron daily 09:00; follow_up_sent_at prevents duplicates |
+| TSK-069 | Add plain-language data-handling statement to first AI response email | **done** 2026-03-10 | HTML footer + plain-text equivalent in sendAcknowledgement(); links to privacy.html |
 | TSK-070 | Design lightweight commitment signal for goal submissions | open | P3 — filters low-intent submissions once platform has volume |
 | TSK-071 | Research and draft plan for community layer (5+ active users) | open | P3 — community is retention layer independent of match quality |
 | TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | **done** 2026-03-10 | scripts/helper-digest.js; cron Monday 08:00 UTC; personalised by expertise overlap |
@@ -155,6 +155,9 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | open | P3 — signals demand is building without requiring completed connections |
 | TSK-079 | Add `restricted` flag to users table for Art.18 restriction requests | open | From data-subject-rights-procedure.md; implement when volume warrants |
 | TSK-082 | Add cert expiry check to heartbeat.sh or create standalone cert-check script | open | Infrastructure — openssl not available in containers; need cert expiry monitoring |
+| TSK-083 | Log session duration in auto-session.sh summary line | **done** 2026-03-10 | SESSION_START_EPOCH + elapsed calculation; format: Xm Ys in Summary line |
+| TSK-084 | session-end.sh: feedback-queue.md false-positive warning | **done** 2026-03-10 | Changed from 30min WARNING to 24h NOTE; eliminates persistent false-positive per session |
+| TSK-085 | Document ALERT_EMAIL env var in .env.example or README | open | P3 — auto-session.sh now uses ALERT_EMAIL for alert recipients; add to env documentation |
 
 ---
 
@@ -175,4 +178,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (tenth auto-session — TSK-044/054/057/045 done; data subject rights procedure, raw_text retention policy, roadmap page, processor DPA register; TSK-080/081/082 generated)*
+*Last updated: 2026-03-10 (eleventh auto-session — TSK-039/063/068/069/023/024/025/038/083/084 done; operational review; ICO registration; reply-to bug fix; TSK-085 generated)*
