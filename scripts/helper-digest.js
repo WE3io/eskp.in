@@ -54,17 +54,21 @@ async function run() {
     }
   }
 
-  // 2. Active helpers
+  // 2. Active helpers — with average match rating (TSK-095)
   const { rows: helpers } = await pool.query(`
     SELECT
       h.id AS helper_id,
       h.expertise,
       u.name,
-      u.email
+      u.email,
+      ROUND(AVG(m.user_rating), 1) AS avg_rating,
+      COUNT(m.user_rating) AS rating_count
     FROM helpers h
     JOIN users u ON u.id = h.user_id
+    LEFT JOIN matches m ON m.helper_id = h.id AND m.user_rating IS NOT NULL
     WHERE h.is_active = TRUE
       AND u.deleted_at IS NULL
+    GROUP BY h.id, h.expertise, u.name, u.email
   `);
 
   if (helpers.length === 0) {
@@ -118,11 +122,13 @@ async function run() {
     const plainText = buildPlainText({
       greeting, weekOf, totalGoals, topTags, relevantTags,
       introduced, matched, unmatched, pipelineInDomain,
+      avgRating: helper.avg_rating, ratingCount: parseInt(helper.rating_count, 10),
     });
 
     const htmlBody = buildHtmlBody({
       greeting, weekOf, totalGoals, topTags, relevantTags,
       introduced, matched, unmatched, pipelineInDomain,
+      avgRating: helper.avg_rating, ratingCount: parseInt(helper.rating_count, 10),
     });
 
     if (DRY_RUN) {
@@ -151,7 +157,7 @@ async function run() {
   console.log(`helper-digest: done (${helpers.length} helper(s), ${totalGoals} goal(s) this week)`);
 }
 
-function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain }) {
+function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain, avgRating, ratingCount }) {
   const lines = [
     greeting,
     '',
@@ -190,6 +196,12 @@ function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, i
     lines.push('These goals are unmatched — if you know anyone with relevant expertise, you can share the platform: https://eskp.in/join.html');
   }
 
+  if (avgRating && ratingCount > 0) {
+    lines.push('');
+    lines.push(`Your match rating: ${avgRating}/5 (based on ${ratingCount} rating${ratingCount === 1 ? '' : 's'})`);
+    lines.push('Ratings are submitted by goal-submitters after their introduction.');
+  }
+
   lines.push('');
   lines.push('If you have updated your expertise or availability, reply to this email and we\'ll update your profile.');
   lines.push('');
@@ -200,7 +212,7 @@ function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, i
   return lines.join('\n');
 }
 
-function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain }) {
+function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain, avgRating, ratingCount }) {
   const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   let html = `<p>${esc(greeting)}</p>
     <p>Here's a quick summary of what came through eskp.in in the week ending <strong>${esc(weekOf)}</strong>.</p>`;
@@ -241,6 +253,15 @@ function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, in
       <p style="margin:0;">${pipelineInDomain} goal${pipelineInDomain === 1 ? '' : 's'} currently awaiting a helper match in your area.
         If you know someone who could help, <a href="https://eskp.in/join.html" style="color:#C4753A;">invite them to join</a>.</p>
       </div>`;
+  }
+
+  if (avgRating && ratingCount > 0) {
+    const stars = '★'.repeat(Math.round(Number(avgRating))) + '☆'.repeat(5 - Math.round(Number(avgRating)));
+    html += `<div style="background:#F0F7F1;border-radius:6px;padding:14px 18px;margin:16px 0;">
+      <p style="margin:0 0 4px;font-weight:bold;">Your match rating</p>
+      <p style="margin:0;font-size:1.1em;">${stars} <strong>${avgRating}/5</strong> <span style="color:#7A6E68;font-size:14px;">(${ratingCount} rating${ratingCount === 1 ? '' : 's'})</span></p>
+      <p style="margin:6px 0 0;font-size:13px;color:#7A6E68;">Submitted by goal-submitters after their introduction.</p>
+    </div>`;
   }
 
   html += `<p style="color:#7A6E68;font-size:14px;margin-top:24px;">If you have updated your expertise or availability, reply to this email and we'll update your profile.</p>

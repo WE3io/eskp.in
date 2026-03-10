@@ -147,6 +147,12 @@ const migrations = [
 
   // TSK-068/063: follow-up tracking — one follow-up email per goal (post-intro check-in or no-match timeout)
   `ALTER TABLE goals ADD COLUMN IF NOT EXISTS follow_up_sent_at TIMESTAMPTZ`,
+
+  // TSK-094: match quality feedback — 1-click rating from follow-up email
+  `ALTER TABLE matches ADD COLUMN IF NOT EXISTS feedback_token UUID DEFAULT gen_random_uuid()`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_matches_feedback_token ON matches(feedback_token)`,
+  `ALTER TABLE matches ADD COLUMN IF NOT EXISTS user_rating SMALLINT CHECK (user_rating BETWEEN 1 AND 5)`,
+  `ALTER TABLE matches ADD COLUMN IF NOT EXISTS user_rated_at TIMESTAMPTZ`,
 ];
 
 async function migrate() {

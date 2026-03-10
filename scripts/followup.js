@@ -34,9 +34,10 @@ async function run() {
   let noMatchCount = 0;
   let unpaidCount = 0;
 
-  // ── 1. Post-introduction check-in (TSK-068) ───────────────────────────────
+  // ── 1. Post-introduction check-in (TSK-068, TSK-094) ─────────────────────
   // Goals in 'introduced' status where matched was introduced ≥20h ago (gives 4h buffer
   // either side of the 24h mark for cron timing), and no follow-up has been sent yet.
+  // TSK-094: feedback_token included so we can embed 1-click rating links.
   const { rows: introGoals } = await pool.query(`
     SELECT
       g.id AS goal_id,
@@ -44,7 +45,8 @@ async function run() {
       u.email AS user_email,
       u.name AS user_name,
       hu.name AS helper_name,
-      m.paid_at
+      m.paid_at,
+      m.feedback_token
     FROM goals g
     JOIN users u ON u.id = g.user_id
     JOIN matches m ON m.goal_id = g.id AND m.status = 'introduced'
@@ -58,15 +60,42 @@ async function run() {
       AND u.deleted_at IS NULL
   `);
 
+  const BASE_URL = process.env.APP_BASE_URL || 'https://eskp.in';
+
   for (const row of introGoals) {
     const greeting = `Hi${row.user_name ? ` ${row.user_name}` : ''},`;
     const helperName = row.helper_name || 'your helper';
 
+    // TSK-094: 1-click rating links (only if feedback_token exists)
+    const ratingLinks = row.feedback_token
+      ? {
+          helpful:  `${BASE_URL}/api/match-feedback?t=${row.feedback_token}&r=5`,
+          somewhat: `${BASE_URL}/api/match-feedback?t=${row.feedback_token}&r=3`,
+          notHelpful: `${BASE_URL}/api/match-feedback?t=${row.feedback_token}&r=1`,
+        }
+      : null;
+
+    const ratingPlain = ratingLinks
+      ? `\nWas the match helpful?\n  Yes, very helpful: ${ratingLinks.helpful}\n  Somewhat helpful: ${ratingLinks.somewhat}\n  Not helpful: ${ratingLinks.notHelpful}\n`
+      : '';
+
+    const ratingHtml = ratingLinks
+      ? `<p style="margin:20px 0 8px;font-weight:600;">Was this match helpful?</p>
+         <table cellpadding="0" cellspacing="0" style="margin:0 0 16px;">
+           <tr>
+             <td style="padding-right:8px;"><a href="${ratingLinks.helpful}" style="background:#3a7d44;color:#fff;padding:8px 16px;border-radius:4px;text-decoration:none;font-size:14px;">Yes, very helpful</a></td>
+             <td style="padding-right:8px;"><a href="${ratingLinks.somewhat}" style="background:#7A6E68;color:#fff;padding:8px 16px;border-radius:4px;text-decoration:none;font-size:14px;">Somewhat helpful</a></td>
+             <td><a href="${ratingLinks.notHelpful}" style="background:#C4622D;color:#fff;padding:8px 16px;border-radius:4px;text-decoration:none;font-size:14px;">Not helpful</a></td>
+           </tr>
+         </table>
+         <p style="color:#7A6E68;font-size:13px;margin:0 0 16px;">One click — no account needed. Your feedback shapes future matches.</p>`
+      : '';
+
     const plainText = `${greeting}
 
 We introduced you to ${helperName} yesterday. We hope the conversation is going well.
-
-We'd love to hear how it's going — just reply to this email with a line or two. Your feedback helps us improve the matching process and find better helpers.
+${ratingPlain}
+We'd love to hear how it's going — you can also just reply to this email with a line or two.
 
 If the introduction didn't work out for any reason, let us know and we'll see what else we can do.
 
@@ -75,7 +104,8 @@ If the introduction didn't work out for any reason, let us know and we'll see wh
     const htmlBody = `
       <p>${greeting}</p>
       <p>We introduced you to <strong>${helperName}</strong> yesterday. We hope the conversation is going well.</p>
-      <p>We'd love to hear how it's going — just <strong>reply to this email</strong> with a line or two. Your feedback helps us improve the matching process.</p>
+      ${ratingHtml}
+      <p>You can also just <strong>reply to this email</strong> with a line or two — whatever's easier.</p>
       <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
         If the introduction didn't work out for any reason, let us know and we'll see what else we can do.
       </p>`;

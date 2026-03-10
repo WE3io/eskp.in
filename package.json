@@ -8,7 +8,8 @@
     "dev": "nodemon src/index.js",
     "budget": "node scripts/budget-check.js",
     "manage-helpers": "node scripts/manage-helpers.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stats": "node scripts/stats.js"
   },
   "keywords": [],
   "author": "Sunil Parekh",
