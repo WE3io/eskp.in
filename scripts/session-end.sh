@@ -23,24 +23,42 @@ cd "${PROJECT_DIR}"
 echo "[session-end ${TIMESTAMP}] Running handoff checks..."
 
 # ── 1. State file freshness ───────────────────────────────────────────────────
-STATE_FILES=(
+# Critical: must be updated every session (30 min window)
+CRITICAL_STATE_FILES=(
   "docs/state/current-sprint.md"
   "docs/state/recent-decisions.md"
-  "docs/state/feedback-queue.md"
   "docs/state/budget-tracker.md"
   "docs/state/task-queue.md"
 )
 
-for f in "${STATE_FILES[@]}"; do
+# Conditional: only needs updating when new feedback arrives (24h window)
+CONDITIONAL_STATE_FILES=(
+  "docs/state/feedback-queue.md"
+)
+
+for f in "${CRITICAL_STATE_FILES[@]}"; do
   if [ ! -f "${f}" ]; then
     echo "[session-end] WARNING: ${f} does not exist"
     WARNINGS=$((WARNINGS + 1))
     continue
   fi
-  # Find files NOT modified in the last WINDOW_MINUTES
   if find "${f}" -mmin "+${WINDOW_MINUTES}" 2>/dev/null | grep -q .; then
     echo "[session-end] WARNING: ${f} not updated this session (older than ${WINDOW_MINUTES} min)"
     WARNINGS=$((WARNINGS + 1))
+  else
+    echo "[session-end] OK: ${f}"
+  fi
+done
+
+for f in "${CONDITIONAL_STATE_FILES[@]}"; do
+  if [ ! -f "${f}" ]; then
+    echo "[session-end] WARNING: ${f} does not exist"
+    WARNINGS=$((WARNINGS + 1))
+    continue
+  fi
+  # Warn only if older than 24 hours (feedback doesn't arrive every session)
+  if find "${f}" -mmin "+1440" 2>/dev/null | grep -q .; then
+    echo "[session-end] NOTE: ${f} not updated in 24h (update if new feedback received)"
   else
     echo "[session-end] OK: ${f}"
   fi
