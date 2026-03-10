@@ -200,6 +200,47 @@
       letter-spacing: 0.05em;
     }
 
+    /* ---- EXAMPLES ---- */
+    .examples { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+    .example-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .example-card .example-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ---- TIMELINE ---- */
+    .timeline { list-style: none; margin-top: 1rem; }
+    .timeline li {
+      display: grid;
+      grid-template-columns: 7rem 1fr;
+      gap: 0 1.25rem;
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--border);
+      align-items: start;
+      font-size: 0.9rem;
+    }
+    .timeline li:last-child { border-bottom: 1px solid var(--border); }
+    .timeline .when {
+      font-weight: 600;
+      color: var(--accent);
+      padding-top: 0.05rem;
+      font-size: 0.85rem;
+    }
+    .timeline .what { color: var(--text-muted); }
+
     /* ---- TRANSPARENCY ---- */
     .transparency {
       background: var(--accent-light);
@@ -336,6 +377,53 @@
             If you're not sure whether it fits — send the email. We'll let you know.
           </div>
         </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>What does a goal look like?</h2>
+        <p style="color:var(--text-muted); margin-bottom:1.25rem; font-size:0.95rem;">
+          Write naturally — there's no template. Here are three examples of the kind of emails we receive.
+        </p>
+        <div class="examples">
+          <div class="example-card">
+            <div class="example-label">Career</div>
+            "I've been a backend developer for six years and want to move into product management. I'm not sure if my experience qualifies, how to position myself in interviews, or whether I should try to make the transition at my current company or find a new role first."
+          </div>
+          <div class="example-card">
+            <div class="example-label">Business</div>
+            "I'm building a small SaaS product for freelance designers and have about 40 users. I have no idea what to charge — I'm worried about pricing too high and losing people, but also that I'm leaving money on the table. I'd like to talk to someone who's been through this."
+          </div>
+          <div class="example-card">
+            <div class="example-label">Technical</div>
+            "I'm redesigning our data pipeline at work and need to decide between keeping everything in Postgres or moving some of it to a document store. The tradeoffs aren't obvious to me. I'd value a conversation with someone who's built something similar at scale."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>What to expect</h2>
+        <ul class="timeline">
+          <li>
+            <span class="when">Within 24 hours</span>
+            <span class="what">You'll receive an acknowledgement email. We'll summarise what we think you're trying to do — so you can confirm we've understood correctly before we search for a match.</span>
+          </li>
+          <li>
+            <span class="when">Within a few days</span>
+            <span class="what">If we find a good match, we'll send an introduction email to both you and the helper. A £10 fee applies at this point — no charge if there's no match.</span>
+          </li>
+          <li>
+            <span class="when">No match found</span>
+            <span class="what">We'll tell you honestly. We won't leave you waiting. If you're happy for us to keep your goal on file as the helper network grows, just say so.</span>
+          </li>
+          <li>
+            <span class="when">After the intro</span>
+            <span class="what">The conversation is yours. There's no obligation on either side beyond that first exchange. Most people find one call is enough.</span>
+          </li>
+        </ul>
       </div>
     </section>
 
