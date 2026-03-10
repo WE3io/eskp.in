@@ -150,7 +150,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-071 | Research and draft plan for community layer (5+ active users) | **done** 2026-03-10 | docs/research/2026-03-10-community-layer.md — phased plan; TSK-091/092 generated |
 | TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | **done** 2026-03-10 | scripts/helper-digest.js; cron Monday 08:00 UTC; personalised by expertise overlap |
 | TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | **done** 2026-03-10 | sendPreMatchNotification() in platform.js; score >= 40 threshold; no user contact details |
-| TSK-074 | Create private helper channel (Slack/email) as community space | open | P3 — GrowthMentor built helper community before product matured |
+| TSK-074 | Create private helper channel (Slack/email) as community space | **done** 2026-03-10 | docs/operations/helper-community.md — email-first now; Slack deferred to 5+ helpers with full setup instructions |
 | TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | **done** 2026-03-10 | Invitation email sent via Resend (id: 1a65c72f). Awaiting Sunil to submit a real goal. |
 | TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | **done** 2026-03-10 | Added to weekly helper digest: 'Pipeline in your domain: N goals awaiting match' section |
 | TSK-079 | Add `restricted` flag to users table for Art.18 restriction requests | open | From data-subject-rights-procedure.md; implement when volume warrants |
@@ -158,9 +158,9 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-083 | Log session duration in auto-session.sh summary line | **done** 2026-03-10 | SESSION_START_EPOCH + elapsed calculation; format: Xm Ys in Summary line |
 | TSK-084 | session-end.sh: feedback-queue.md false-positive warning | **done** 2026-03-10 | Changed from 30min WARNING to 24h NOTE; eliminates persistent false-positive per session |
 | TSK-085 | Document ALERT_EMAIL env var in .env.example or README | **done** 2026-03-10 | Added to .env.example with description |
-| TSK-090 | Add pre-submission checklist copy to landing page CTA section | open | P3 — soft friction filter for low-intent submissions (from TSK-070 research) |
-| TSK-091 | Monthly outcome roundup email to past goal-submitters | open | P3 — zero-infrastructure community retention (from TSK-071 research) |
-| TSK-092 | "Notes" field for helper profiles (manage-helpers + DB) | open | P3 — allows helpers to surface context/capacity (from TSK-071 research) |
+| TSK-090 | Add pre-submission checklist copy to landing page CTA section | **done** 2026-03-10 | Three-point 'What to include' guide below CTA box on index.html |
+| TSK-091 | Monthly outcome roundup email to past goal-submitters | **done** 2026-03-10 | scripts/outcome-roundup.js; cron 1st of month 10:00 UTC; dry-run tested |
+| TSK-092 | "Notes" field for helper profiles (manage-helpers + DB) | **done** 2026-03-10 | helpers.notes TEXT column; manage-helpers set-notes + list updated |
 | TSK-093 | Bug fix: "close" command in no-match email now handled | **done** 2026-03-10 | closeGoal() in platform.js; reply-token webhook now processes "close" replies; app redeployed |
 
 ---
@@ -187,4 +187,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (thirteenth auto-session — TSK-070/071/052 done; TSK-093 bug fix (close command); code quality rotation; TSK-090/091/092 generated)*
+*Last updated: 2026-03-10 (fourteenth auto-session — TSK-090/091/092/074 done; infrastructure rotation: backup-db.sh chmod+x bug fixed, crontab cd /root/project fix)*

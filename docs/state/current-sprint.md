@@ -208,6 +208,16 @@
 - [x] TSK-093: Bug fix — "close" command in no-match email was not handled; closeGoal() added to platform.js; reply-token webhook processes /^\s*close\b/i replies; app redeployed (health: passing)
 - [x] Self-directed (Code quality): pnpm audit clean; reviewed platform.js/followup.js/webhooks.js/sensitive-flag.js/data-retention.js; one real bug found and fixed (TSK-093); STALE_ACTIVE_DAYS interpolation in data-retention.js noted (non-security, const value)
 
+### Session 2026-03-10 (fourteenth auto-session) — done ✅
+- [x] TSK-090: Pre-submission checklist ('What to include') added to landing page CTA section
+- [x] TSK-074: docs/operations/helper-community.md — email-first now; Slack deferred to 5+ helpers with setup instructions
+- [x] TSK-091: Monthly outcome roundup email (scripts/outcome-roundup.js); cron 1st of month 10:00 UTC; dry-run tested
+- [x] TSK-092: Helper notes field — helpers.notes TEXT column; manage-helpers set-notes subcommand
+- [x] Infrastructure rotation: disk 15%, memory OK, 0 CVEs, unattended-upgrades clean, containers healthy
+  - Bug fix: backup-db.sh was missing execute permission — cron backups were silently failing since creation; chmod +x applied
+  - Bug fix: crontab entries for helper-digest.js and followup.js were missing 'cd /root/project &&' prefix; all node script cron entries now correct
+- All remaining open tasks (TSK-079, TSK-080/081, TSK-011/012/062/019) require Sunil action or are deferred
+
 ---
-*Last updated: 2026-03-10 — thirteenth auto-session complete*
-*Next session should start with: check for Sunil's dogfooding goal submission, then TSK-090 (pre-submission checklist copy), then TSK-074 (private helper channel setup instructions)*
+*Last updated: 2026-03-10 — fourteenth auto-session complete*
+*Next session should start with: check for Sunil's dogfooding goal submission (TSK-075 awaiting), then TSK-079 (restricted flag for Art.18) if warranted, then Growth self-directed rotation (focus: what would attract the next external user — consider refining helper recruitment copy or submitting the Twitter thread)*
