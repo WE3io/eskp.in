@@ -129,7 +129,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
 | TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
 | TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
-| TSK-056 | Design basic data retention/deletion automation | open | From mission alignment; goals with no activity after N months auto-closed |
+| TSK-056 | Design basic data retention/deletion automation | **done** 2026-03-10 | scripts/data-retention.js: auto-close stale goals (90d active, 180d introduced), purge decomposed JSONB (365d closed). Monthly cron 1st 06:00 UTC. |
 | TSK-057 | Create public roadmap page (/roadmap.html) | **done** 2026-03-10 | public/roadmap.html; live features, coming next, planned, user requests; footer links added to all 6 pages |
 | TSK-023 | `algorithmic-transparency-disclosure` | **done** 2026-03-10 | Match email: "Our AI matched your goal to X"; opt-out line added; landing page timeline updated; Art.10.2.3 |
 | TSK-024 | `revenue-model-constraint-terms` | **done** 2026-03-10 | New section 11 in terms.html; explicit no-advertising/no-data-sale commitment; Art.10.2.1 |
@@ -151,13 +151,13 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | **done** 2026-03-10 | scripts/helper-digest.js; cron Monday 08:00 UTC; personalised by expertise overlap |
 | TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | **done** 2026-03-10 | sendPreMatchNotification() in platform.js; score >= 40 threshold; no user contact details |
 | TSK-074 | Create private helper channel (Slack/email) as community space | open | P3 — GrowthMentor built helper community before product matured |
-| TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | open | Side-switching reduces supply-side churn; generates product feedback |
-| TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | open | P3 — signals demand is building without requiring completed connections |
+| TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | **done** 2026-03-10 | Invitation email sent via Resend (id: 1a65c72f). Awaiting Sunil to submit a real goal. |
+| TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | **done** 2026-03-10 | Added to weekly helper digest: 'Pipeline in your domain: N goals awaiting match' section |
 | TSK-079 | Add `restricted` flag to users table for Art.18 restriction requests | open | From data-subject-rights-procedure.md; implement when volume warrants |
-| TSK-082 | Add cert expiry check to heartbeat.sh or create standalone cert-check script | open | Infrastructure — openssl not available in containers; need cert expiry monitoring |
+| TSK-082 | Add cert expiry check to heartbeat.sh or create standalone cert-check script | **done** 2026-03-10 | Added openssl s_client check to heartbeat.sh; alerts if <30 days to expiry; tested: 87 days remaining (Jun 2026) |
 | TSK-083 | Log session duration in auto-session.sh summary line | **done** 2026-03-10 | SESSION_START_EPOCH + elapsed calculation; format: Xm Ys in Summary line |
 | TSK-084 | session-end.sh: feedback-queue.md false-positive warning | **done** 2026-03-10 | Changed from 30min WARNING to 24h NOTE; eliminates persistent false-positive per session |
-| TSK-085 | Document ALERT_EMAIL env var in .env.example or README | open | P3 — auto-session.sh now uses ALERT_EMAIL for alert recipients; add to env documentation |
+| TSK-085 | Document ALERT_EMAIL env var in .env.example or README | **done** 2026-03-10 | Added to .env.example with description |
 
 ---
 
@@ -176,6 +176,11 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | — | `auto-session.sh` hardened (lock, .env, outcome check, alerting, prompt) | 2026-03-09 | TSK-006 in progress |
 | — | `auto-session.sh` improvements: multi-task, 45min timeout, skills ref, git push, log rotation, shell injection fix, success notification, session-end scope fix | 2026-03-09 | 8-item improvement batch from Sunil |
 
+| TSK-086 | Add "What if there's no match?" section to landing page | **done** 2026-03-10 | Highlighted callout with no-match guarantee before "Honest about what this is" section |
+| TSK-087 | Add privacy micro-copy to goal submission CTA (data handling at decision point) | **done** 2026-03-10 | Privacy note + link below email CTA button on landing page |
+| TSK-088 | Add "24-hour response" commitment to landing page hero area | **done** 2026-03-10 | Already present in cta-note ("We'll be in touch within 24 hours") — no change needed |
+| TSK-089 | Add activity signal to helper card on landing page | **done** 2026-03-10 | "● Active this month" indicator next to Sunil's name |
+
 ---
 
-*Last updated: 2026-03-10 (eleventh auto-session — TSK-039/063/068/069/023/024/025/038/083/084 done; operational review; ICO registration; reply-to bug fix; TSK-085 generated)*
+*Last updated: 2026-03-10 (twelfth auto-session — TSK-075/082/085/076/056/086/087/089 done; trust signals research; data retention automation; pipeline visibility in helper digest)*

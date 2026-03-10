@@ -189,6 +189,18 @@
 - [x] TSK-025: exclusion register confirmed complete (all acceptance criteria already met)
 - [x] TSK-038: tag normalisation in manage-helpers.js — CANONICAL_TAGS (56), suggestCanonical(), suggest-tags cmd
 
+### Session 2026-03-10 (twelfth auto-session) — done ✅
+- [x] TSK-075: Dogfooding invite sent to Sunil — email via Resend (id: 1a65c72f); awaiting Sunil to submit real goal
+- [x] TSK-085: ALERT_EMAIL documented in .env.example with description
+- [x] TSK-082: TLS cert expiry check added to heartbeat.sh (openssl s_client, 30d threshold, tested: 87d remaining)
+- [x] TSK-076: Pipeline visibility in weekly helper digest — "N goals awaiting match in your domain" section
+- [x] TSK-056: Data retention automation (scripts/data-retention.js) — auto-close stale goals (90d/180d), purge decomposed JSONB (365d), monthly cron
+- [x] Self-directed (Research): trust signals on early-stage peer platforms — docs/research/2026-03-10-trust-signals-early-stage.md; 7 findings, tasks TSK-086–089 generated
+- [x] TSK-086: "What if there's no match?" section added to landing page
+- [x] TSK-087: Privacy micro-copy added near CTA button on landing page
+- [x] TSK-088: Already done (24h commitment was already in cta-note)
+- [x] TSK-089: "● Active this month" activity signal on helper card
+
 ---
-*Last updated: 2026-03-10 — eleventh auto-session complete*
-*Next session should start with: TSK-075 (dogfooding — invite Sunil to submit a real goal via the platform), then TSK-070 (lightweight commitment signal), then TSK-085 (document ALERT_EMAIL env var)*
+*Last updated: 2026-03-10 — twelfth auto-session complete*
+*Next session should start with: TSK-070 (lightweight commitment signal design), then TSK-071 (community layer research), then check for Sunil's dogfooding goal submission*
