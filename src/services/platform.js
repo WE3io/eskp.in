@@ -256,4 +256,107 @@ async function sendHelperIntroById(goalId, matchId) {
   console.log(`sendHelperIntroById: introduced match ${matchId}`);
 }
 
-module.exports = { processGoal, recordInbound, getOrCreateUser, sendHelperIntroById };
+/**
+ * TSK-049: Handle a goal that has been flagged as touching a sensitive domain.
+ *
+ * Creates the goal record with a sensitive_domain flag and status='submitted',
+ * sends the user a basic acknowledgement (no match or payment link),
+ * and alerts the panel for human review before any introduction is sent.
+ *
+ * @param {string} userEmail
+ * @param {string|null} userName
+ * @param {string} rawText
+ * @param {string} sensitiveDomain - e.g. 'mental_health_crisis'
+ * @param {string} sensitiveLabel  - human-readable label for the panel alert
+ */
+async function processGoalSensitive(userEmail, userName, rawText, sensitiveDomain, sensitiveLabel) {
+  const user = await getOrCreateUser(userEmail, userName);
+
+  // Record goal with sensitive_domain flag; status stays 'submitted' pending review
+  const { rows: [goal] } = await pool.query(
+    `INSERT INTO goals (user_id, raw_text, status, sensitive_domain)
+     VALUES ($1, $2, 'submitted', $3) RETURNING *`,
+    [user.id, rawText, sensitiveDomain]
+  );
+
+  // Send user a basic acknowledgement (no match, no payment link)
+  const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
+  const plainText = `${greeting}
+
+Thank you for getting in touch with eskp.in.
+
+We've received your message and a member of our team will review it shortly. We'll be in touch soon.
+
+If this is an emergency or you need immediate support, please contact:
+• Samaritans: 116 123 (free, 24/7)
+• NHS 111: call 111
+• Emergency services: 999
+
+— The eskp.in team`;
+
+  const htmlBody = `
+    <p>${greeting}</p>
+    <p>Thank you for getting in touch with eskp.in.</p>
+    <p>We've received your message and a member of our team will review it shortly. We'll be in touch soon.</p>
+    <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;font-size:14px;">
+      <strong>If this is an emergency or you need immediate support:</strong><br>
+      <strong>Samaritans:</strong> 116 123 (free, 24/7) &nbsp;|&nbsp;
+      <strong>NHS 111:</strong> call 111 &nbsp;|&nbsp;
+      <strong>Emergency:</strong> 999
+    </p>`;
+
+  await send({
+    to: user.email,
+    subject: `We've received your message`,
+    text: plainText,
+    html: renderEmail({ preheader: 'We\'ve received your message and will be in touch shortly.', body: htmlBody }),
+  });
+
+  await logEmail('outbound', FROM, user.email, `We've received your message`, goal.id, null);
+
+  // Alert panel for human review
+  const panelEmail = process.env.PANEL_EMAIL || 'panel@eskp.in';
+  const panelText = `Sensitive-domain goal flagged for human review.
+
+Goal ID: ${goal.id}
+User: ${user.email}${user.name ? ` (${user.name})` : ''}
+Domain: ${sensitiveLabel} (${sensitiveDomain})
+
+Raw text:
+---
+${rawText.substring(0, 1000)}${rawText.length > 1000 ? '\n[truncated]' : ''}
+---
+
+Action required: review the goal in the database and either:
+  - Approve for normal matching (update goals SET sensitive_domain = NULL WHERE id = '${goal.id}')
+  - Route manually using sendHelperIntroById() after creating a match
+  - Close as unsuitable and reply to the user
+
+This email was sent automatically. Do not forward it externally.`;
+
+  await send({
+    to: panelEmail,
+    subject: `[eskp.in] Sensitive goal requires review — ${sensitiveLabel}`,
+    text: panelText,
+    html: renderEmail({
+      preheader: `Sensitive goal flagged: ${sensitiveLabel}`,
+      body: `<p>A goal has been flagged as touching a sensitive domain and requires human review before any introduction is sent.</p>
+        <table style="border-collapse:collapse;width:100%;margin:16px 0;">
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${goal.id}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${user.email}${user.name ? ` (${user.name})` : ''}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">Domain</td><td style="padding:6px 12px;">${sensitiveLabel} (${sensitiveDomain})</td></tr>
+        </table>
+        <p><strong>Raw text:</strong></p>
+        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${rawText.substring(0, 1000)}${rawText.length > 1000 ? '\n[truncated]' : ''}</pre>
+        <p style="color:#5A5450;font-size:13px;">Review the goal and take appropriate action. The user has been acknowledged but no match has been sent.</p>`,
+    }),
+  });
+
+  await logEmail('outbound', FROM, panelEmail, `[eskp.in] Sensitive goal requires review — ${sensitiveLabel}`, goal.id, null);
+
+  console.log(`sensitive-flag: domain=${sensitiveDomain} goalId=${goal.id} email=${user.email}`);
+
+  return { goal, user };
+}
+
+module.exports = { processGoal, processGoalSensitive, recordInbound, getOrCreateUser, sendHelperIntroById };

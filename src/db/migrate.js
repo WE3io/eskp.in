@@ -98,6 +98,9 @@ const migrations = [
   `ALTER TABLE matches ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`,
   `ALTER TABLE matches ADD COLUMN IF NOT EXISTS paid_at TIMESTAMPTZ`,
   `CREATE INDEX IF NOT EXISTS idx_matches_stripe_session ON matches(stripe_session_id)`,
+
+  // TSK-049: sensitive-domain review flag
+  `ALTER TABLE goals ADD COLUMN IF NOT EXISTS sensitive_domain TEXT`,
 ];
 
 async function migrate() {

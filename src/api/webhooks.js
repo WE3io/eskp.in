@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
-const { processGoal, recordInbound } = require('../services/platform');
+const { processGoal, processGoalSensitive, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
+const { detectSensitiveDomain } = require('../services/sensitive-flag');
 const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -58,6 +59,14 @@ router.post('/email', verifySecret, async (req, res) => {
       await sendWarmReferral(userEmail, userName, exclusion.referralKey);
       console.log(`hard-exclusion: domain=${exclusion.domain} email=${userEmail}`);
       return res.json({ ok: true, type: 'hard-exclusion', domain: exclusion.domain });
+    }
+
+    // Sensitive-domain check (TSK-049 / DPIA risk 3) — hold for human review
+    const sensitive = detectSensitiveDomain(text);
+    if (sensitive.flagged) {
+      const result = await processGoalSensitive(userEmail, userName, text, sensitive.domain, sensitive.label);
+      console.log(`sensitive-domain: ${sensitive.domain} email=${userEmail}`);
+      return res.json({ ok: true, type: 'sensitive-review', domain: sensitive.domain, goalId: result.goal.id });
     }
 
     // Default: process as a new goal
