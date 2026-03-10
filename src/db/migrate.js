@@ -144,6 +144,9 @@ const migrations = [
   // (goals in submitted/decomposing status retain raw_text as it may still be needed)
   `UPDATE goals SET raw_text = NULL WHERE decomposed IS NOT NULL AND raw_text IS NOT NULL
    AND status NOT IN ('submitted', 'decomposing', 'pending_clarification')`,
+
+  // TSK-068/063: follow-up tracking — one follow-up email per goal (post-intro check-in or no-match timeout)
+  `ALTER TABLE goals ADD COLUMN IF NOT EXISTS follow_up_sent_at TIMESTAMPTZ`,
 ];
 
 async function migrate() {

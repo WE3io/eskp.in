@@ -112,6 +112,8 @@ async function sendAcknowledgement(user, goal, decomposed, helper, paymentUrl) {
 
   const hasMatch = !!(helper && paymentUrl);
 
+  const privacyFooter = `\n\n---\nYour message was analysed by AI to identify what kind of help you need. We store your email and goal description to find you a match — nothing else. Privacy policy: https://eskp.in/privacy.html`;
+
   const plainText = hasMatch
     ? `${greeting}
 
@@ -127,7 +129,7 @@ Good news — we found someone who can help: ${helper.name || 'a helper in our n
 To get the introduction, complete a one-time £10 payment:
 ${paymentUrl}
 
-— The eskp.in team`
+— The eskp.in team${privacyFooter}`
     : `${greeting}
 
 We received your message and here's how we've understood your goal — please reply if anything looks off:
@@ -139,7 +141,13 @@ ${needsList}
 
 We're looking for the right person and will get back to you within 24 hours. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.
 
-— The eskp.in team`;
+— The eskp.in team${privacyFooter}`;
+
+  const privacyNote = `<p style="color:#9A8E88;font-size:13px;border-top:1px solid #E8E0D8;margin-top:24px;padding-top:14px;">
+       Your message was analysed by AI to identify what kind of help you need.
+       We store your email address and goal description to find you a match — nothing else.
+       <a href="https://eskp.in/privacy.html" style="color:#9A8E88;">Privacy policy</a>.
+     </p>`;
 
   const htmlBody = hasMatch
     ? `<p>${greeting}</p>
@@ -156,7 +164,8 @@ We're looking for the right person and will get back to you within 24 hours. If 
          <a href="${paymentUrl}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
            Pay £10 and get introduced
          </a>
-       </p>`
+       </p>
+       ${privacyNote}`
     : `<p>${greeting}</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
@@ -164,7 +173,8 @@ We're looking for the right person and will get back to you within 24 hours. If 
        <ul style="margin:8px 0 16px 20px;padding:0;">
          ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
        </ul>
-       <p>We're looking for the right person and will get back to you <strong>within 24 hours</strong>. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.</p>`;
+       <p>We're looking for the right person and will get back to you <strong>within 24 hours</strong>. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.</p>
+       ${privacyNote}`;
 
   await send({
     to: user.email,
