@@ -27,7 +27,7 @@ if [ -z "${RECENT_LOG}" ]; then
     require('dotenv').config();
     const {send} = require('./src/services/email');
     send({
-      to: process.env.EMAIL_REPLY_TO || 'sunil@eskp.in',
+      to: process.env.ALERT_EMAIL || 'sunil@eskp.in',
       subject: '[eskp.in] Cron health alert — no auto-session in ${MAX_AGE_HOURS}h',
       text: 'No auto-session log found in the last ${MAX_AGE_HOURS} hours.\n\nTimestamp: ${TIMESTAMP}\nLog directory: ${LOG_DIR}\n\nThe auto-session cron job may have stopped or failed silently.\n\nCheck: crontab -l\nCheck: cat /root/logs/cron.log'
     }).catch(console.error);

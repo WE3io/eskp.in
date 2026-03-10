@@ -65,7 +65,7 @@ if [ "${#FAILURES[@]}" -gt 0 ]; then
     require('dotenv').config();
     const {send} = require('./src/services/email');
     send({
-      to: process.env.EMAIL_REPLY_TO || 'sunil@eskp.in',
+      to: process.env.ALERT_EMAIL || 'sunil@eskp.in',
       subject: '[eskp.in] Heartbeat alert — ${#FAILURES[@]} check(s) failed',
       text: 'Platform health check failed at ${TIMESTAMP}.\n\nFailed checks:\n${FAILURE_LIST}\n\nServer: $(hostname)'
     }).catch(console.error);

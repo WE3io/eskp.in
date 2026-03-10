@@ -22,6 +22,7 @@ const { renderEmail } = require('./email-template');
 const { getOrCreateUser } = require('./platform');
 
 const BASE_URL = process.env.BASE_URL || 'https://eskp.in';
+const PANEL_EMAIL = process.env.PANEL_EMAIL || 'panel@eskp.in';
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const TOKEN_TTL_HOURS = 48;
 
@@ -296,7 +297,7 @@ Your eskp.in account has been deleted.
 
 All data associated with your account has been permanently removed from our systems.
 
-If you have any questions, you can contact us at panel@eskp.in.
+If you have any questions, you can contact us at ${PANEL_EMAIL}.
 
 — The eskp.in team`;
 
@@ -304,7 +305,7 @@ If you have any questions, you can contact us at panel@eskp.in.
     <p>Hi${userName ? ` ${userName}` : ''},</p>
     <p>Your eskp.in account has been deleted.</p>
     <p>All data associated with your account has been permanently removed from our systems.</p>
-    <p style="color:#7A6E68;font-size:14px;">If you have any questions, contact us at <a href="mailto:panel@eskp.in" style="color:#C4622D;">panel@eskp.in</a>.</p>`;
+    <p style="color:#7A6E68;font-size:14px;">If you have any questions, contact us at <a href="mailto:${PANEL_EMAIL}" style="color:#C4622D;">${PANEL_EMAIL}</a>.</p>`;
 
   await send({
     to: userEmail,

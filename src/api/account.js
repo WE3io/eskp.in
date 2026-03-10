@@ -47,7 +47,7 @@ router.get('/delete/confirm', async (req, res) => {
     res.send(deletionPage('Account deleted', 'Your account and all associated data have been permanently deleted. A confirmation has been sent to your email.', true));
   } catch (err) {
     console.error('/account/delete/confirm error:', err);
-    res.status(500).send(deletionPage('Error', 'Something went wrong. Please contact panel@eskp.in.', false));
+    res.status(500).send(deletionPage('Error', `Something went wrong. Please contact ${process.env.PANEL_EMAIL || 'panel@eskp.in'}.`, false));
   }
 });
 

@@ -2,7 +2,7 @@ const https = require('https');
 const { isSuppressed } = require('./email-suppression');
 
 const API_KEY = process.env.EMAIL_API_KEY;
-const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@eskp.in';
+const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const REPLY_TO = process.env.EMAIL_REPLY_TO || 'hello@mail.eskp.in';
 
 async function send({ to, subject, text, html, from, replyTo }) {

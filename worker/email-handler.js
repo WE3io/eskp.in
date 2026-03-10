@@ -5,7 +5,7 @@
  * extracts headers + body, and forwards to the platform webhook.
  *
  * Deploy to: Cloudflare Workers
- * Bind to email routing: hello@mail.eskp.in
+ * Bind to email routing: catch-all on @mail.eskp.in
  */
 
 const PLATFORM_WEBHOOK_URL = 'https://eskp.in/webhooks/email';
