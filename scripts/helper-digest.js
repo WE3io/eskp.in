@@ -38,7 +38,7 @@ async function run() {
   const { rows: unmatchedGoals } = await pool.query(`
     SELECT g.id, g.decomposed
     FROM goals g
-    WHERE g.status IN ('submitted', 'decomposing', 'pending_clarification', 'proposed', 'matched')
+    WHERE g.status IN ('submitted', 'decomposing', 'pending_clarification', 'matched')
       AND g.decomposed IS NOT NULL
   `);
 

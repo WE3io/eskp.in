@@ -55,7 +55,7 @@ async function run() {
       u.email_suppressed_at
     FROM goals g
     JOIN users u ON u.id = g.user_id
-    WHERE g.status IN ('submitted', 'matched', 'pending_clarification', 'decomposing', 'proposed')
+    WHERE g.status IN ('submitted', 'matched', 'pending_clarification', 'decomposing')
       AND g.updated_at < NOW() - make_interval(days => $1)
       AND u.deleted_at IS NULL
   `, [STALE_ACTIVE_DAYS]);
