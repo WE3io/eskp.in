@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="eskp.in public roadmap — what we're building, what's next, and what users have asked for.">
+  <title>Roadmap — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    nav {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+    .nav-link:hover { color: var(--text); opacity: 1; }
+
+    .prose {
+      padding: 3rem 0 4rem;
+    }
+    .prose h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2rem;
+      font-weight: normal;
+      line-height: 1.25;
+      margin-bottom: 0.5rem;
+    }
+    .prose .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+    }
+    .prose h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.25rem;
+      font-weight: normal;
+      margin: 2.5rem 0 1rem;
+    }
+    .prose p { margin-bottom: 1rem; }
+    .prose ul { margin: 0 0 1rem 1.25rem; }
+    .prose li { margin-bottom: 0.35rem; }
+
+    .phase-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .phase-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .phase-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      font-weight: normal;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .badge-live    { background: #D4EDDA; color: #1A5C2A; }
+    .badge-next    { background: var(--accent-light); color: var(--accent); }
+    .badge-later   { background: #E8E0D8; color: #5A5450; }
+    .badge-users   { background: #E8F4F8; color: #1A5C8A; }
+
+    .item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
+    }
+    .item-icon {
+      flex-shrink: 0;
+      width: 1.2rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding-top: 0.15rem;
+    }
+    .item-done .item-icon { color: #1A5C2A; }
+    .item-text { color: var(--text); }
+    .item-done .item-text { color: var(--text-muted); }
+    .item-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+    .user-request {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .user-request strong { display: block; font-size: 0.75rem; color: var(--accent); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    .cta-box {
+      background: var(--accent-light);
+      border: 1px solid #E8C4AA;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 2.5rem;
+      text-align: center;
+    }
+    .cta-box p { margin-bottom: 0.75rem; font-size: 0.95rem; }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .btn:hover { opacity: 0.88; }
+
+    .updated {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a class="wordmark" href="/">eskp<span>.</span>in</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/blog/">Blog</a>
+      <a class="nav-link" href="/join.html">Become a helper</a>
+      <a class="nav-link" href="mailto:hello@mail.eskp.in">Get help</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <section class="prose">
+
+      <h1>Roadmap</h1>
+      <p class="subtitle">What we've built, what's coming next, and what users have asked for.<br>Updated 2026-03-10.</p>
+
+      <!-- LIVE -->
+      <div class="phase-block">
+        <div class="phase-header">
+          <span class="phase-title">Phase 1 — Core platform</span>
+          <span class="badge badge-live">Live</span>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">Submit a goal by email</div>
+            <div class="item-note">Email hello@mail.eskp.in — we'll do the rest.</div>
+          </div>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">AI goal decomposition</div>
+            <div class="item-note">Your submission is structured into specific, actionable needs using Claude Haiku.</div>
+          </div>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">Helper matching</div>
+            <div class="item-note">Goals are matched to helpers by expertise. You see a summary before paying.</div>
+          </div>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">Pay for an introduction (£10)</div>
+            <div class="item-note">Stripe Checkout — one payment, one introduction.</div>
+          </div>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">Clarification loop</div>
+            <div class="item-note">If your goal is too vague, we ask focused questions before matching.</div>
+          </div>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">Data export and account deletion</div>
+            <div class="item-note">Email us to download your data or delete your account. Both are automated.</div>
+          </div>
+        </div>
+
+        <div class="item item-done">
+          <span class="item-icon">✓</span>
+          <div>
+            <div class="item-text">Sensitive domain handling</div>
+            <div class="item-note">Goals in health, legal, and financial domains are flagged and handled with extra care — including warm signposting to regulated services.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEXT -->
+      <div class="phase-block">
+        <div class="phase-header">
+          <span class="phase-title">Coming next</span>
+          <span class="badge badge-next">In progress</span>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">→</span>
+          <div>
+            <div class="item-text">Post-introduction follow-up</div>
+            <div class="item-note">A check-in email 24 hours after an introduction fires, to make sure the connection is working.</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">→</span>
+          <div>
+            <div class="item-text">No-match timeout notification</div>
+            <div class="item-note">If your goal hasn't been matched within 7 days, you'll get an honest update.</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">→</span>
+          <div>
+            <div class="item-text">Grow the helper network</div>
+            <div class="item-note">Currently 1 active helper. Recruiting 3–5 more in specific expertise areas. <a href="/join.html">Apply to be a helper.</a></div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">→</span>
+          <div>
+            <div class="item-text">Privacy policy legal sign-off</div>
+            <div class="item-note">Draft banner will be removed once formally reviewed. Target: April 2026.</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">→</span>
+          <div>
+            <div class="item-text">ICO registration</div>
+            <div class="item-note">UK data protection fee registration — required before accepting external users at scale. Pending action by the founding team.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LATER -->
+      <div class="phase-block">
+        <div class="phase-header">
+          <span class="phase-title">Later</span>
+          <span class="badge badge-later">Planned</span>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">·</span>
+          <div>
+            <div class="item-text">Helper profiles page</div>
+            <div class="item-note">Public page listing all active helpers with their areas of expertise.</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">·</span>
+          <div>
+            <div class="item-text">Goal status page</div>
+            <div class="item-note">See the status of your active goals without emailing in.</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">·</span>
+          <div>
+            <div class="item-text">Community layer</div>
+            <div class="item-note">A space for helpers and users to exchange knowledge beyond 1-to-1 introductions. Planned for Phase 2 (5+ active users).</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">·</span>
+          <div>
+            <div class="item-text">Algorithmic transparency report</div>
+            <div class="item-note">An explanation of how the matching algorithm works, what factors it considers, and how to request a human review.</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="item-icon">·</span>
+          <div>
+            <div class="item-text">Tag normalisation for helper onboarding</div>
+            <div class="item-note">Suggested canonical expertise tags to improve match quality at scale.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USER REQUESTS -->
+      <h2>User-requested features</h2>
+      <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1rem;">Features requested by users. These take priority over our own ideas — see our <a href="/blog/003-gdpr-and-platform-improvements.html">build-in-public commitment</a>.</p>
+
+      <p style="font-size:0.9rem;color:var(--text-muted);font-style:italic;">No user requests yet — we're still early. <a href="mailto:hello@mail.eskp.in?subject=Feature%20request">Email us your ideas.</a></p>
+
+      <div class="cta-box">
+        <p><strong>Want to influence what gets built next?</strong></p>
+        <p style="color:var(--text-muted);">Submit a goal or join as a helper — your experience on the platform directly shapes our priorities.</p>
+        <a href="mailto:hello@mail.eskp.in" class="btn">Submit a goal</a>
+        &nbsp;&nbsp;
+        <a href="/join.html" class="btn" style="background:#3D3530;">Become a helper</a>
+      </div>
+
+      <p class="updated">Last updated: 2026-03-10. This page is updated after each development session. The full development log is on our <a href="/blog/">blog</a>.</p>
+
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <span>© 2026 eskp.in</span>
+    <a href="/support.html">Support</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/roadmap.html" style="color:var(--accent);">Roadmap</a>
+    <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>
+    <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
