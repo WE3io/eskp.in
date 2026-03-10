@@ -1,5 +1,16 @@
 # Recent Decisions
 
+## 2026-03-10 — raw_text nulled immediately after decomposition (TSK-054)
+- **Decision:** `goals.raw_text` is now set to NULL in the same DB transaction that writes the `decomposed` column. The column was changed from NOT NULL to nullable.
+- **Reason:** UK GDPR Art.5(1)(e) storage limitation — raw_text serves only the decomposition step, which completes in seconds. The decomposed JSONB contains all matching-relevant data.
+- **Scope:** Applies to both `processGoal()` and `processClarification()`. raw_text retained while `pending_clarification` (needed to build combined text on reply).
+- **Confidence:** 95%
+
+## 2026-03-10 — Erasure cascade now covers helpers + helper_applications (TSK-044)
+- **Decision:** `executeDeletion()` now also deletes records from `helpers` (user_id) and `helper_applications` (email). Data export now includes both.
+- **Reason:** Cascade audit found these tables contained PII but were not covered. UK GDPR Art.17 right to erasure covers all personal data regardless of table.
+- **Confidence:** 100%
+
 ## 2026-03-10 — tool_use replaces JSON-in-text for decompose.js (TSK-033)
 - **Decision:** Switched decompose.js from system-prompt-described JSON schema to Anthropic tool_use with explicit `input_schema` and `tool_choice: { type: 'tool', name: 'decompose_goal' }`.
 - **Reason:** API enforces schema compliance; eliminates JSON parse failures; schema is self-documenting in code.

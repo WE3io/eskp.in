@@ -165,6 +165,14 @@
 - [x] TSK-051: Resend bounce/complaint webhook — POST /webhooks/resend with Svix HMAC-SHA256 signature verification; email-suppression.js service; isSuppressed() check in email.js before every send; DB migration for email_suppressed_at/email_suppression_reason columns
 - [x] Self-directed (Code quality): pnpm audit clean; reviewed all new session code; fixed double blank line; timingSafeEqual edge case confirmed safe via try-catch
 
+### Session 2026-03-10 (tenth auto-session) — done ✅
+- [x] TSK-044: Data subject rights procedure written (docs/operations/data-subject-rights-procedure.md); erasure cascade fixed — helpers (user_id) + helper_applications (email) now covered; getExportData now includes helper_profile + helper_applications
+- [x] TSK-054: raw_text retention policy — goals.raw_text now nulled immediately after decomposition (UK GDPR Art.5(1)(e)); column made nullable; back-fill migration applied; docs/operations/raw-text-retention-policy.md
+- [x] TSK-057: Public roadmap page (/roadmap.html) — live features, coming next, planned, user requests; roadmap link added to all 6 page footers
+- [x] TSK-045: Processor DPA register — docs/operations/processor-dpas.md; all 5 processors documented; Hetzner/Cloudflare DPAs need formal acceptance by Sunil (TSK-080/081 generated; email sent)
+- [x] Self-directed (Infrastructure): disk 15%, memory OK, 0 CVEs, unattended-upgrades clean, all containers healthy. TSK-082 generated (cert check tooling).
+- [x] This session is the 10th — operational review is overdue per CLAUDE.md (every 10 sessions). Generated as next priority.
+
 ---
-*Last updated: 2026-03-10 — ninth auto-session complete*
-*Next session should start with: TSK-044 (data subject rights procedure + erasure cascade audit), then TSK-054 (raw_text retention policy), then TSK-057 (public roadmap page), then TSK-045 (processor DPA documentation)*
+*Last updated: 2026-03-10 — tenth auto-session complete*
+*Next session should start with: Operational review (session 10 milestone per CLAUDE.md — review logs, assess session productivity, generate improvement tasks), then TSK-068 (post-introduction follow-up email), then TSK-063 (no-match timeout), then TSK-069 (data-handling statement in first email)*

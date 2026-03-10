@@ -25,12 +25,12 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | npm audit / dependency CVE check | Weekly | 2026-03-10 | 2026-03-17 | Fix critical immediately; log others |
 | Disk usage check and cleanup | Weekly | 2026-03-10 | 2026-03-17 | Alert if >80%; clean Docker images + old logs |
 | Docker image updates (postgres, nginx) | Monthly | never | 2026-04-09 | Check for security patches |
-| Ubuntu security updates (verify) | Weekly | never | 2026-03-13 | Verify unattended-upgrades is current |
+| Ubuntu security updates (verify) | Weekly | 2026-03-10 | 2026-03-17 | Verify unattended-upgrades is current |
 | SSL/TLS certificate check | Monthly | never | 2026-04-09 | Verify Cloudflare origin cert expiry |
 | Server performance baseline | Monthly | never | 2026-04-09 | Record CPU, memory, disk, response times |
 | Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
-| Operational review (session logs) | Every 10 sessions | never | After session 10 | See Operational Improvement in CLAUDE.md |
+| Operational review (session logs) | Every 10 sessions | never | **OVERDUE — session 10 reached** | See Operational Improvement in CLAUDE.md |
 
 ---
 
@@ -49,6 +49,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | open | **Must do before opening to external users** — criminal offence to process without paying |
+| TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | open | **Requires Sunil** — navigate to Account → Data Protection in Hetzner Robot/Cloud |
+| TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | open | **Requires Sunil** — Account → Configurations → Privacy → DPA |
 | TSK-040 | Article 30 ROPA created | **done** 2026-03-09 | docs/operations/ropa.md — 8 processing activities documented |
 | TSK-043 | Breach response procedure | **done** 2026-03-09 | docs/operations/breach-response.md — Art.33/34 procedure + register |
 | TSK-002 | Send first weekly budget report to Sunil | **done** 2026-03-09 | Sent via Resend |
@@ -108,7 +110,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | **done** 2026-03-10 | All three confirmed: DKIM (resend._domainkey.mail.eskp.in), SPF, DMARC p=quarantine |
 | TSK-048 | Prompt instruction in decompose.js to generalise special category data | **done** 2026-03-10 | From DPIA; data minimisation for sensitive fields |
 | TSK-049 | Flag sensitive-domain goals for human review before sending introduction email | **done** 2026-03-10 | sensitive-flag.js + processGoalSensitive(); 7 domains; panel alert email |
-| TSK-054 | Define and implement raw_text retention policy | open | From mission alignment 2026-03-10; Art.5(1)(e) GDPR storage limitation |
+| TSK-054 | Define and implement raw_text retention policy | **done** 2026-03-10 | raw_text nulled immediately after decomposition; column made nullable; back-fill migration applied; docs/operations/raw-text-retention-policy.md |
 | TSK-055 | Add AI disclosure line to acknowledgement emails | **done** 2026-03-10 | "Our AI analysed your goal" — Art.3.3 Constitution |
 
 ---
@@ -120,15 +122,15 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-020 | Archive completed Week 1–3 checklists from CLAUDE.md | **done** 2026-03-09 | Done this session |
 | TSK-041 | Write LIA (Legitimate Interests Assessment) in docs/operations/lia.md | **done** 2026-03-10 | docs/operations/lia.md — Art.6(1)(f) established for AI decomposition + matching |
 | TSK-042 | Conduct and document DPIA for AI goal decomposition + matching | **done** 2026-03-10 | docs/operations/dpia.md — 5 risks, TSK-048/049 generated |
-| TSK-044 | Write data subject rights procedure + verify erasure cascade covers all DB tables | open | From TSK-028; Art.15–22 obligations |
-| TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | open | From TSK-028; Art.28 |
+| TSK-044 | Write data subject rights procedure + verify erasure cascade covers all DB tables | **done** 2026-03-10 | docs/operations/data-subject-rights-procedure.md; cascade fixed (helpers + helper_applications added) |
+| TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | **done** 2026-03-10 | docs/operations/processor-dpas.md; TSK-080/081 generated for Hetzner/Cloudflare DPA acceptance |
 | TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | **done** 2026-03-10 | fallocate -l 1G /swapfile + fstab entry; 1GB swap now active |
 | TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | **done** 2026-03-10 | /etc/logrotate.d/eskp-logs; daily rotate, 14-day retention; session log cleanup cron |
 | TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
 | TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
 | TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
 | TSK-056 | Design basic data retention/deletion automation | open | From mission alignment; goals with no activity after N months auto-closed |
-| TSK-057 | Create public roadmap page (/roadmap.html) | open | Art.3.4 User-Driven Development; transparency commitment |
+| TSK-057 | Create public roadmap page (/roadmap.html) | **done** 2026-03-10 | public/roadmap.html; live features, coming next, planned, user requests; footer links added to all 6 pages |
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
 | TSK-024 | `revenue-model-constraint-terms` | open | Art.10 Phase 1 |
 | TSK-025 | `exclusion-register-operational` | open | Art.11 Phase 1 (register exists; this covers update process) |
@@ -151,6 +153,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-074 | Create private helper channel (Slack/email) as community space | open | P3 — GrowthMentor built helper community before product matured |
 | TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | open | Side-switching reduces supply-side churn; generates product feedback |
 | TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | open | P3 — signals demand is building without requiring completed connections |
+| TSK-079 | Add `restricted` flag to users table for Art.18 restriction requests | open | From data-subject-rights-procedure.md; implement when volume warrants |
+| TSK-082 | Add cert expiry check to heartbeat.sh or create standalone cert-check script | open | Infrastructure — openssl not available in containers; need cert expiry monitoring |
 
 ---
 
@@ -171,4 +175,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (ninth auto-session — TSK-072/073/047/051 done; weekly digest, pre-match notification, log rotation, bounce/complaint suppression)*
+*Last updated: 2026-03-10 (tenth auto-session — TSK-044/054/057/045 done; data subject rights procedure, raw_text retention policy, roadmap page, processor DPA register; TSK-080/081/082 generated)*
