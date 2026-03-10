@@ -22,8 +22,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Build-in-public post | Weekly (Friday) | 2026-03-09 | 2026-03-13 | — |
 | Backup verification (restore test) | Monthly | 2026-03-09 | 2026-04-09 | See backup-restore-log.md |
 | State file accuracy check | Every session | 2026-03-09 | Next session | Before session ends |
-| npm audit / dependency CVE check | Weekly | never | 2026-03-13 | Fix critical immediately; log others |
-| Disk usage check and cleanup | Weekly | never | 2026-03-13 | Alert if >80%; clean Docker images + old logs |
+| npm audit / dependency CVE check | Weekly | 2026-03-10 | 2026-03-17 | Fix critical immediately; log others |
+| Disk usage check and cleanup | Weekly | 2026-03-10 | 2026-03-17 | Alert if >80%; clean Docker images + old logs |
 | Docker image updates (postgres, nginx) | Monthly | never | 2026-04-09 | Check for security patches |
 | Ubuntu security updates (verify) | Weekly | never | 2026-03-13 | Verify unattended-upgrades is current |
 | SSL/TLS certificate check | Monthly | never | 2026-04-09 | Verify Cloudflare origin cert expiry |
@@ -99,15 +99,30 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
+### P2 — Medium (email deliverability — from TSK-029 research)
+
+| ID | Task | Status | Notes |
+|---|---|---|---|
+| TSK-050 | Ensure all email templates send both HTML + plain text versions | open | From TSK-029; deliverability best practice |
+| TSK-051 | Implement Resend webhook handler for bounce/complaint events | open | From TSK-029; list hygiene |
+| TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | open | From TSK-029; foundation of deliverability |
+| TSK-048 | **done** 2026-03-10 — Prompt instruction in decompose.js to generalise special category data | **done** | From DPIA; data minimisation for sensitive fields |
+| TSK-049 | Flag sensitive-domain goals for human review before sending introduction email | open | From DPIA TSK-042; reduces automated matching risk |
+
+---
+
 ### P3 — Low
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-020 | Archive completed Week 1–3 checklists from CLAUDE.md | **done** 2026-03-09 | Done this session |
-| TSK-041 | Write LIA (Legitimate Interests Assessment) in docs/operations/lia.md | open | From TSK-028 GDPR research; justifies lawful basis |
-| TSK-042 | Conduct and document DPIA for AI goal decomposition + matching | open | From TSK-028; likely required for AI processing under Art.35 |
+| TSK-041 | Write LIA (Legitimate Interests Assessment) in docs/operations/lia.md | **done** 2026-03-10 | docs/operations/lia.md — Art.6(1)(f) established for AI decomposition + matching |
+| TSK-042 | Conduct and document DPIA for AI goal decomposition + matching | **done** 2026-03-10 | docs/operations/dpia.md — 5 risks, TSK-048/049 generated |
 | TSK-044 | Write data subject rights procedure + verify erasure cascade covers all DB tables | open | From TSK-028; Art.15–22 obligations |
 | TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | open | From TSK-028; Art.28 |
+| TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | open | From infrastructure check 2026-03-10; low urgency |
+| TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | open | From infrastructure check; prevent unbounded growth |
+| TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
 | TSK-021 | `account-deletion-flow` | open | Art.10 Phase 1 |
 | TSK-022 | `data-export-endpoint` | open | Art.10 Phase 1 |
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
@@ -133,4 +148,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-09 (TSK-028/037 done; TSK-039–045 generated from GDPR research; TSK-040/043 also done this session; TSK-039 is P1 must-do before external users)*
+*Last updated: 2026-03-10 (TSK-041/042 done; TSK-048 done; TSK-039 escalated to Sunil; TSK-029 email deliverability research done; TSK-046–053 generated; infrastructure check clean)*
