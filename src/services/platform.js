@@ -157,13 +157,13 @@ We're looking for the right person and will get back to you within 24 hours. If 
   const htmlBody = hasMatch
     ? `<p>${greetingHtml}</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
-       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
+       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${escHtml(decomposed.summary)}</p>
        <p><strong>What we think you need:</strong></p>
        <ul style="margin:8px 0 16px 20px;padding:0;">
-         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
+         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${escHtml(n.need)}</li>`).join('')}
        </ul>
-       <p>Our AI matched your goal to <strong>${helper.name || 'a helper in our network'}</strong> based on their expertise and your needs.</p>
-       ${helper.bio ? `<p style="color:#5A5450;font-size:0.9em;background:#F7EDE6;border-radius:5px;padding:10px 14px;margin:12px 0;">${helper.bio}</p>` : ''}
+       <p>Our AI matched your goal to <strong>${escHtml(helper.name || 'a helper in our network')}</strong> based on their expertise and your needs.</p>
+       ${helper.bio ? `<p style="color:#5A5450;font-size:0.9em;background:#F7EDE6;border-radius:5px;padding:10px 14px;margin:12px 0;">${escHtml(helper.bio)}</p>` : ''}
        <p style="color:#7A6E68;font-size:14px;">Not the right fit? Reply to this email and we'll take another look.</p>
        <p>To confirm and get the introduction, complete a one-time payment of <strong>£10</strong>:</p>
        <p style="text-align:center;margin:24px 0;">
@@ -174,10 +174,10 @@ We're looking for the right person and will get back to you within 24 hours. If 
        ${privacyNote}`
     : `<p>${greetingHtml}</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
-       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
+       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${escHtml(decomposed.summary)}</p>
        <p><strong>What we think you need:</strong></p>
        <ul style="margin:8px 0 16px 20px;padding:0;">
-         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
+         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${escHtml(n.need)}</li>`).join('')}
        </ul>
        <p>We're looking for the right person and will get back to you <strong>within 24 hours</strong>. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.</p>
        ${privacyNote}`;
@@ -197,7 +197,7 @@ async function sendClarificationRequest(user, goal, decomposed) {
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
   const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
   const questionsList = decomposed.clarification_questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
-  const questionsHtml = decomposed.clarification_questions.map(q => `<li style="margin-bottom:10px;">${q}</li>`).join('');
+  const questionsHtml = decomposed.clarification_questions.map(q => `<li style="margin-bottom:10px;">${escHtml(q)}</li>`).join('');
 
   const plainText = `${greeting}
 
@@ -351,7 +351,7 @@ This is just a heads-up so you're not caught off-guard. We'll follow up with ful
       <p>A new goal has come in on eskp.in that looks relevant to your expertise.</p>
       <p><strong>What they need:</strong></p>
       <ul style="margin:8px 0 16px 20px;padding:0;">
-        ${decomposed.needs.map(n => `<li style="margin-bottom:7px;">${n.need}</li>`).join('')}
+        ${decomposed.needs.map(n => `<li style="margin-bottom:7px;">${escHtml(n.need)}</li>`).join('')}
       </ul>
       <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
         We're working on finding them the best match. <strong>No action needed right now</strong> — if you're selected, we'll send you full contact details.
@@ -398,10 +398,10 @@ This introduction is made because your expertise overlaps with what they need. T
     <p>Someone on the platform is looking for help and we think you're a good match.</p>
     <p><strong>What they need:</strong></p>
     <ul style="margin:8px 0 16px 20px;padding:0;">
-      ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
+      ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${escHtml(n.need)}</li>`).join('')}
     </ul>
-    <p><strong>Context:</strong> ${decomposed.context}</p>
-    <p><strong>What success looks like for them:</strong> ${decomposed.outcome}</p>
+    <p><strong>Context:</strong> ${escHtml(decomposed.context)}</p>
+    <p><strong>What success looks like for them:</strong> ${escHtml(decomposed.outcome)}</p>
     <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;">
       <strong>Their contact:</strong> <a href="mailto:${safeUserEmail}" style="color:#C4622D;">${safeUserEmail}</a>${safeUserName ? ` (${safeUserName})` : ''}
     </p>

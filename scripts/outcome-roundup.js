@@ -98,7 +98,7 @@ You received this because you submitted a goal via eskp.in. Reply with "unsubscr
 
     const htmlBody = `<p>${escHtml(greeting)}</p>
 <p>This is a short monthly note from eskp.in.</p>
-<p>${statsLine}</p>
+<p>${escHtml(statsLine)}</p>
 <p>If you've had an introduction and it was useful — we'd love to hear what happened. <strong>Just reply to this email.</strong> If it wasn't useful, we'd like to know that too.</p>
 <p>You can see what we're building next at <a href="https://eskp.in/roadmap.html">eskp.in/roadmap.html</a></p>
 <p>If you have a new goal you'd like help with, send an email to <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a></p>
