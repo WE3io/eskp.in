@@ -130,6 +130,11 @@ const migrations = [
   `ALTER TABLE goals DROP CONSTRAINT IF EXISTS goals_status_check`,
   `ALTER TABLE goals ADD CONSTRAINT goals_status_check
      CHECK (status IN ('submitted','decomposing','matched','introduced','resolved','closed','pending_clarification'))`,
+
+  // TSK-051: email suppression columns for bounce/complaint tracking
+  `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_suppressed_at TIMESTAMPTZ`,
+  `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_suppression_reason TEXT`,
+  `CREATE INDEX IF NOT EXISTS idx_users_email_suppressed ON users(email) WHERE email_suppressed_at IS NOT NULL`,
 ];
 
 async function migrate() {

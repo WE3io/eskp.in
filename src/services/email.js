@@ -1,10 +1,23 @@
 const https = require('https');
+const { isSuppressed } = require('./email-suppression');
 
 const API_KEY = process.env.EMAIL_API_KEY;
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@eskp.in';
 const REPLY_TO = process.env.EMAIL_REPLY_TO || 'panel@eskp.in';
 
-function send({ to, subject, text, html, from, replyTo }) {
+async function send({ to, subject, text, html, from, replyTo }) {
+  // TSK-051: skip suppressed addresses (bounced / complained)
+  const recipient = Array.isArray(to) ? to[0] : to;
+  try {
+    if (await isSuppressed(recipient)) {
+      console.log(`email: skipping suppressed address ${recipient} (subject: ${subject})`);
+      return { skipped: true, reason: 'suppressed' };
+    }
+  } catch (err) {
+    // Non-fatal: if suppression check fails, attempt send anyway
+    console.warn(`email: suppression check failed for ${recipient}: ${err.message}`);
+  }
+
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       from: from || `Platform <${FROM}>`,
@@ -41,5 +54,6 @@ function send({ to, subject, text, html, from, replyTo }) {
     req.end();
   });
 }
+
 
 module.exports = { send };
