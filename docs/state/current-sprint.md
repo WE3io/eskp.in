@@ -271,6 +271,16 @@
 - [x] Bug fix (TSK-106): Invalid 'clarifying' status in helper-digest.js, data-retention.js, outcome-roundup.js replaced with correct schema statuses
 - [x] App redeployed (health: passing)
 
+### Session 2026-03-10 (twentieth auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Self-directed (Research): matching algorithm quality & multi-helper ranking — docs/research/2026-03-10-matching-algorithm-quality.md
+- [x] TSK-107: Migrated semanticRank() in match.js to Anthropic tool_use (RANK_HELPERS_TOOL, forced tool_choice); eliminates JSON parse failures
+- [x] TSK-103: Skip helpers with empty expertise in findMatches() — array_length filter in SQL query
+- [x] TSK-108/109 generated (feedback-weighted ranking + capacity-aware matching — defer to 3+ helpers)
+- [x] App redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-10 — nineteenth auto-session*
-*Next session should start with: Check for Sunil responses (DPA acceptances TSK-080/081); all open tasks blocked on Sunil or deferred to volume; infrastructure is next in self-directed rotation*
+*Last updated: 2026-03-10 — twentieth auto-session*
+*Next session starts with: Check for Sunil responses (DPA acceptances TSK-080/081); all open tasks blocked on Sunil or deferred to volume; code quality is next in self-directed rotation*
