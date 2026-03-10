@@ -30,7 +30,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Server performance baseline | Monthly | never | 2026-04-09 | Record CPU, memory, disk, response times |
 | Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
-| Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 11) | Session 20 | Track count in docs/state/self-directed.md |
+| Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 21) | Session 30 | Track count in docs/state/self-directed.md |
 | Public claims coherence check | Weekly | 2026-03-10 | 2026-03-17 | Verify all rows in docs/state/public-claims-register.md are still "Aligned" |
 
 ---
@@ -205,5 +205,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-107 | Migrate semanticRank() in match.js to Anthropic tool_use | **done** 2026-03-10 | RANK_HELPERS_TOOL with forced tool_choice; eliminates JSON parse risk; consistent with decompose.js |
 | TSK-108 | Add historical match rating to helper ranking | open | P3 — defer to 3+ helpers; blend avg rating into score |
 | TSK-109 | Add active match count to helper ranking (capacity-aware) | open | P3 — defer to 3+ helpers |
+| TSK-110 | Bug fix: 11 unescaped AI-generated fields in HTML email bodies (platform.js, outcome-roundup.js) | **done** 2026-03-10 | escHtml() applied to decomposed.summary, needs[].need, context, outcome, helper.bio, clarification_questions, statsLine |
+| TSK-111 | Status enum module (src/db/statuses.js) + fix residual invalid 'proposed' goal status | **done** 2026-03-10 | Single source of truth for goal/match/application statuses; removed 'proposed' from goal queries in data-retention.js and helper-digest.js |
+| TSK-112 | Consolidated blocker reminder email to Sunil | **done** 2026-03-10 | 7 blocked items listed with aging; sent via Resend |
 
-*Last updated: 2026-03-10 (twentieth auto-session — research: matching algorithm quality)*
+*Last updated: 2026-03-10 (twenty-first auto-session — operational review + code quality)*
