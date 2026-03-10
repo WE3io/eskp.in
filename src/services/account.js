@@ -103,7 +103,7 @@ async function getExportData(token) {
   if (!row) return null;
   const userId = row.user_id;
 
-  const [userRows, goalRows, matchRows, emailRows, feedbackRows] = await Promise.all([
+  const [userRows, goalRows, matchRows, emailRows, feedbackRows, helperRows, helperAppRows] = await Promise.all([
     pool.query(`SELECT id, email, name, created_at FROM users WHERE id = $1`, [userId]),
     pool.query(`SELECT id, raw_text, decomposed, status, sensitive_domain, created_at, updated_at FROM goals WHERE user_id = $1 ORDER BY created_at`, [userId]),
     pool.query(`
@@ -114,6 +114,8 @@ async function getExportData(token) {
       ORDER BY m.created_at`, [userId]),
     pool.query(`SELECT id, direction, from_address, to_address, subject, created_at FROM emails WHERE from_address = (SELECT email FROM users WHERE id = $1) OR to_address = (SELECT email FROM users WHERE id = $1) ORDER BY created_at`, [userId]),
     pool.query(`SELECT id, goal_id, source, content, created_at FROM feedback WHERE user_id = $1 ORDER BY created_at`, [userId]),
+    pool.query(`SELECT id, expertise, bio, is_active, created_at FROM helpers WHERE user_id = $1`, [userId]),
+    pool.query(`SELECT id, name, expertise_description, status, created_at FROM helper_applications WHERE email = (SELECT email FROM users WHERE id = $1)`, [userId]),
   ]);
 
   return {
@@ -124,6 +126,8 @@ async function getExportData(token) {
     matches: matchRows.rows,
     emails: emailRows.rows,
     feedback: feedbackRows.rows,
+    helper_profile: helperRows.rows[0] || null,
+    helper_applications: helperAppRows.rows,
   };
 }
 
@@ -150,6 +154,7 @@ What will be deleted:
 • All matches and introductions
 • All emails in our system associated with your account
 • Any feedback you submitted
+• Any helper application you submitted
 
 This action cannot be undone. Your data will be permanently removed within 30 days (usually immediately).
 
@@ -245,6 +250,21 @@ async function executeDeletion(userId, userEmail, userName) {
     // Delete goals
     await client.query(`DELETE FROM goals WHERE user_id = $1`, [userId]);
 
+    // Delete helper record (user may also be a helper)
+    const { rows: [helperCountRow] } = await client.query(
+      `SELECT COUNT(*) FROM helpers WHERE user_id = $1`, [userId]
+    );
+    await client.query(`DELETE FROM helpers WHERE user_id = $1`, [userId]);
+    const helperCount = parseInt(helperCountRow.count, 10);
+
+    // Delete helper applications by email (separate entity but contains personal data)
+    const { rows: [helperAppCount] } = await client.query(
+      `SELECT COUNT(*) FROM helper_applications WHERE email = $1`,
+      [userEmail]
+    );
+    await client.query(`DELETE FROM helper_applications WHERE email = $1`, [userEmail]);
+    const helperApplicationCount = parseInt(helperAppCount.count, 10);
+
     // Soft-delete user row (set deleted_at); we keep the stub for referential integrity
     // but email is cleared so the account is effectively gone
     await client.query(
@@ -253,11 +273,11 @@ async function executeDeletion(userId, userEmail, userName) {
     );
 
     // Write anonymised audit log
-    const totalRows = feedbackCount + emailCount + matchCount + goalCount + 1;
+    const totalRows = feedbackCount + emailCount + matchCount + goalCount + helperCount + helperApplicationCount + 1;
     await client.query(
       `INSERT INTO deletion_log (tables_affected, rows_deleted)
        VALUES ($1, $2)`,
-      [['users', 'goals', 'matches', 'emails', 'feedback', 'account_tokens'], totalRows]
+      [['users', 'goals', 'matches', 'emails', 'feedback', 'account_tokens', 'helpers', 'helper_applications'], totalRows]
     );
 
     await client.query('COMMIT');
