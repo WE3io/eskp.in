@@ -27,6 +27,7 @@ fi
 # Lock is held via fd 200 for the lifetime of this process.
 # Released automatically on exit (including crash or kill).
 
+SESSION_START_EPOCH=$(date +%s)
 echo "[${TIMESTAMP}] Auto-session starting" | tee -a "${LOG_FILE}"
 
 # ── Environment: load .env explicitly ────────────────────────────────────────
@@ -157,7 +158,13 @@ fi
 
 OUTPUT_LINES=$(wc -l < "${LOG_FILE}" 2>/dev/null | tr -d ' ' || echo 0)
 
-SUMMARY_LINE="[${TIMESTAMP}] Summary: Commits: ${COMMITS_MADE}. State updated: ${STATE_UPDATED}. Output lines: ${OUTPUT_LINES}. Exit: ${SESSION_EXIT}."
+# TSK-083: calculate session duration
+SESSION_END_EPOCH=$(date +%s)
+SESSION_DURATION_S=$(( SESSION_END_EPOCH - SESSION_START_EPOCH ))
+SESSION_DURATION_MIN=$(( SESSION_DURATION_S / 60 ))
+SESSION_DURATION_SEC=$(( SESSION_DURATION_S % 60 ))
+
+SUMMARY_LINE="[${TIMESTAMP}] Summary: Commits: ${COMMITS_MADE}. State updated: ${STATE_UPDATED}. Output lines: ${OUTPUT_LINES}. Exit: ${SESSION_EXIT}. Duration: ${SESSION_DURATION_MIN}m${SESSION_DURATION_SEC}s."
 echo "${SUMMARY_LINE}" | tee -a "${LOG_FILE}"
 
 # ── Failure alerting ──────────────────────────────────────────────────────────
