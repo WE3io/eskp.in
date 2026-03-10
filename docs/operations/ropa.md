@@ -3,7 +3,8 @@
 **Article 30, UK General Data Protection Regulation**
 **Organisation:** eskp.in (legal entity: TBC — see privacy.html)
 **Data controller contact:** hello@mail.eskp.in
-**Last updated:** 2026-03-09
+**ICO registration number:** C1889388
+**Last updated:** 2026-03-10
 **Review due:** 2027-03-09 (annual)
 
 ---

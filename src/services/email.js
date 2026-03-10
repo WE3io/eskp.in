@@ -3,7 +3,7 @@ const { isSuppressed } = require('./email-suppression');
 
 const API_KEY = process.env.EMAIL_API_KEY;
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@eskp.in';
-const REPLY_TO = process.env.EMAIL_REPLY_TO || 'panel@eskp.in';
+const REPLY_TO = process.env.EMAIL_REPLY_TO || 'hello@mail.eskp.in';
 
 async function send({ to, subject, text, html, from, replyTo }) {
   // TSK-051: skip suppressed addresses (bounced / complained)
