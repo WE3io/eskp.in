@@ -55,6 +55,7 @@ async function findMatches(decomposed, { localOnly = false } = {}) {
     JOIN users u ON u.id = h.user_id
     WHERE h.is_active = TRUE
       AND u.deleted_at IS NULL
+      AND array_length(h.expertise, 1) > 0
     ORDER BY h.created_at ASC
   `);
 

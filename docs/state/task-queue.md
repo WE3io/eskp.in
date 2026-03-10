@@ -196,7 +196,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-100 | Tag normalization in match.js tagOverlapRank | **done** 2026-03-10 | normaliseTag() collapses case/whitespace/slash/dot before comparison |
 | TSK-101 | Canonical tags in decompose.js prompt | **done** 2026-03-10 | 56 canonical tags added to system prompt; Haiku prefers them for consistent vocabulary |
 | TSK-102 | Missing migrations in migrate.js | **done** 2026-03-10 | Added ALTER TABLE for helpers.notes and goals.clarification_attempts |
-| TSK-103 | Skip helpers with empty expertise in findMatches | open | P3 — defer to 2+ helpers; prevents matchless helpers from appearing |
+| TSK-103 | Skip helpers with empty expertise in findMatches | **done** 2026-03-10 | Added array_length(h.expertise, 1) > 0 filter to helper query |
 | TSK-104 | Bug fix: XSS in email scripts (data-retention, followup, helper-application, outcome-roundup) | **done** 2026-03-10 | escHtml() applied to all user-controlled strings in HTML email bodies |
 | TSK-105 | Bug fix: SQL string interpolation in data-retention.js | **done** 2026-03-10 | Replaced INTERVAL interpolation with parameterized make_interval() |
 | TSK-106 | Bug fix: invalid 'clarifying' status in helper-digest.js, data-retention.js, outcome-roundup.js | **done** 2026-03-10 | Replaced with correct schema statuses (decomposing, pending_clarification) |
