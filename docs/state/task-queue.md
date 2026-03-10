@@ -193,5 +193,9 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-097 | Free-first-message payment model (research spike) | open | Defer to when 5+ users exist; see docs/research/2026-03-10-payment-ux-and-match-quality.md |
 | TSK-098 | Bug fix: clarification loop not actually limited | **done** 2026-03-10 | Added clarification_attempts INT column; processGoal sets to 1; processClarification checks < 2 before re-asking; proceeds with best decomp after max |
 | TSK-099 | Bug fix: HTML-unsafe user names in email bodies | **done** 2026-03-10 | Exported escHtml() from email-template.js; applied to userName/rawText in all HTML email bodies in platform.js |
+| TSK-100 | Tag normalization in match.js tagOverlapRank | **done** 2026-03-10 | normaliseTag() collapses case/whitespace/slash/dot before comparison |
+| TSK-101 | Canonical tags in decompose.js prompt | **done** 2026-03-10 | 56 canonical tags added to system prompt; Haiku prefers them for consistent vocabulary |
+| TSK-102 | Missing migrations in migrate.js | **done** 2026-03-10 | Added ALTER TABLE for helpers.notes and goals.clarification_attempts |
+| TSK-103 | Skip helpers with empty expertise in findMatches | open | P3 — defer to 2+ helpers; prevents matchless helpers from appearing |
 
-*Last updated: 2026-03-10 (seventeenth auto-session — infrastructure rotation; Docker build cache pruned 97MB; platform baseline recorded; all green)*
+*Last updated: 2026-03-10 (eighteenth auto-session — research rotation: helper onboarding quality; tag normalization fixes; canonical tags in decompose)*

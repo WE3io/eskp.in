@@ -252,6 +252,16 @@
 - [x] Fixed stale reference in task-queue.md
 - [x] Always-on context reduced from ~7,300 to ~3,800 tokens (~48%)
 
+### Session 2026-03-10 (eighteenth auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] Self-directed (Research): helper onboarding quality & tag accuracy — docs/research/2026-03-10-helper-onboarding-quality.md
+- [x] TSK-100: Tag normalization in match.js tagOverlapRank — normaliseTag() collapses case/whitespace/slash/dot
+- [x] TSK-101: Canonical tag list (56 tags) added to decompose.js system prompt for Haiku
+- [x] TSK-102: Missing migrations added to migrate.js (helpers.notes, goals.clarification_attempts)
+- [x] Sunil's helper expertise tags migrated from ad-hoc to canonical form (13 → 9 tags)
+- [x] App redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-10 — agent context architecture restructure*
-*Next session should start with: Check for Sunil responses (dogfooding follow-up, DPA acceptances); TSK-097 deferred to 5+ users; growth category is next in self-directed rotation*
+*Last updated: 2026-03-10 — eighteenth auto-session*
+*Next session should start with: Check for Sunil responses (DPA acceptances TSK-080/081); all open tasks blocked on Sunil or deferred to volume; code quality is next in self-directed rotation*
