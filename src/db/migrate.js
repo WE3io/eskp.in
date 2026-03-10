@@ -148,6 +148,12 @@ const migrations = [
   // TSK-068/063: follow-up tracking — one follow-up email per goal (post-intro check-in or no-match timeout)
   `ALTER TABLE goals ADD COLUMN IF NOT EXISTS follow_up_sent_at TIMESTAMPTZ`,
 
+  // TSK-092: helper admin notes field
+  `ALTER TABLE helpers ADD COLUMN IF NOT EXISTS notes TEXT`,
+
+  // TSK-098: clarification loop limiter
+  `ALTER TABLE goals ADD COLUMN IF NOT EXISTS clarification_attempts INT NOT NULL DEFAULT 0`,
+
   // TSK-094: match quality feedback — 1-click rating from follow-up email
   `ALTER TABLE matches ADD COLUMN IF NOT EXISTS feedback_token UUID DEFAULT gen_random_uuid()`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_matches_feedback_token ON matches(feedback_token)`,

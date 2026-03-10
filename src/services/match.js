@@ -122,12 +122,16 @@ Rules:
     .map(r => ({ ...helperMap[r.helper_id], reasoning: r.reason, score: r.score }));
 }
 
+function normaliseTag(tag) {
+  return tag.toLowerCase().replace(/[\s\-\/\.]+/g, ' ').trim();
+}
+
 function tagOverlapRank(decomposed, helpers) {
-  const allTags = decomposed.needs.flatMap(n => n.expertise);
+  const allTags = decomposed.needs.flatMap(n => n.expertise).map(normaliseTag);
   return helpers
     .map(h => ({
       ...h,
-      overlap: h.expertise.filter(tag => allTags.includes(tag)).length,
+      overlap: h.expertise.filter(tag => allTags.includes(normaliseTag(tag))).length,
     }))
     .sort((a, b) => b.overlap - a.overlap)
     .filter(h => h.overlap > 0);
