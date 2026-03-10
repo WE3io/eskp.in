@@ -44,8 +44,8 @@ async function createIntroCheckout({ goalId, matchId, userEmail, summary }) {
 /**
  * Verify and parse a Stripe webhook event.
  * rawBody must be the raw Buffer (not parsed JSON).
- * Tries STRIPE_WEBHOOK_SECRET first, then STRIPE_WEBHOOK_SECRET_LIVE,
- * so both test and live endpoints can be active simultaneously.
+ * Tries STRIPE_WEBHOOK_SECRET first, then STRIPE_WEBHOOK_SECRET_TEST,
+ * so both live and test endpoints can be active simultaneously.
  */
 function constructEvent(rawBody, signature) {
   const secrets = [
