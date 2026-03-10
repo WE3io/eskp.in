@@ -159,6 +159,9 @@ const migrations = [
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_matches_feedback_token ON matches(feedback_token)`,
   `ALTER TABLE matches ADD COLUMN IF NOT EXISTS user_rating SMALLINT CHECK (user_rating BETWEEN 1 AND 5)`,
   `ALTER TABLE matches ADD COLUMN IF NOT EXISTS user_rated_at TIMESTAMPTZ`,
+
+  // 24h no-match acknowledgement tracking (separate from follow_up_sent_at so 7-day timeout still fires)
+  `ALTER TABLE goals ADD COLUMN IF NOT EXISTS ack_24h_sent_at TIMESTAMPTZ`,
 ];
 
 async function migrate() {

@@ -2,12 +2,17 @@
 /**
  * scripts/followup.js
  *
- * Sends two types of automated follow-up emails:
+ * Sends three types of automated follow-up emails:
  *
  *  1. TSK-068: Post-introduction check-in (24h after goal reaches 'introduced' status)
  *     Asks the user how their introduction went. Research finding 23 in
  *     docs/research/2026-03-10-helper-retention.md: frequency of communication
  *     is the top retention predictor.
+ *
+ *  1b. 24-hour no-match acknowledgement (20–48h after goal reaches 'matched' status)
+ *      Keeps the promise on the landing page: "We'll tell you within 24 hours if
+ *      we can't find anyone." Tracked via ack_24h_sent_at (separate from
+ *      follow_up_sent_at so the 7-day timeout can still fire later).
  *
  *  2. TSK-063: No-match / stale-match timeout (7 days after goal reaches 'matched' status)
  *     Two variants:
@@ -15,6 +20,7 @@
  *       b. Goal has unpaid match record → gentle payment reminder
  *
  * Each goal receives at most one follow-up email (follow_up_sent_at column).
+ * The 24h acknowledgement uses a separate ack_24h_sent_at column.
  * Run via cron: 0 9 * * * (daily at 09:00 UTC).
  */
 
@@ -31,6 +37,7 @@ if (DRY_RUN) console.log('[followup] DRY RUN — no emails will be sent');
 
 async function run() {
   let introCount = 0;
+  let ack24hCount = 0;
   let noMatchCount = 0;
   let unpaidCount = 0;
 
@@ -133,6 +140,73 @@ If the introduction didn't work out for any reason, let us know and we'll see wh
     }
     console.log(`[followup] ${DRY_RUN ? 'DRY' : 'sent'} intro check-in → ${row.user_email} (goal ${row.goal_id})`);
     introCount++;
+  }
+
+  // ── 1b. 24-hour no-match acknowledgement ───────────────────────────────────
+  // Goals in 'matched' status with NO match records, created 20–48h ago,
+  // no ack_24h_sent_at yet. Does NOT set follow_up_sent_at so the 7-day
+  // timeout can still fire later.
+  const { rows: ack24hGoals } = await pool.query(`
+    SELECT
+      g.id AS goal_id,
+      g.decomposed,
+      u.email AS user_email,
+      u.name AS user_name
+    FROM goals g
+    JOIN users u ON u.id = g.user_id
+    LEFT JOIN matches m ON m.goal_id = g.id
+    WHERE g.status = 'matched'
+      AND g.ack_24h_sent_at IS NULL
+      AND g.follow_up_sent_at IS NULL
+      AND g.updated_at > NOW() - INTERVAL '48 hours'
+      AND g.updated_at < NOW() - INTERVAL '20 hours'
+      AND m.id IS NULL
+      AND u.email_suppressed_at IS NULL
+      AND u.deleted_at IS NULL
+  `);
+
+  for (const row of ack24hGoals) {
+    const greeting = `Hi${row.user_name ? ` ${row.user_name}` : ''},`;
+    const summary = row.decomposed?.summary || 'your goal';
+
+    const plainText = `${greeting}
+
+We're still looking for the right person for "${summary}". We haven't found someone yet, but your goal is active and we'll let you know as soon as we do.
+
+If you'd like to update or close your request, just reply.
+
+— The eskp.in team`;
+
+    const htmlBody = `
+      <p>${escHtml(greeting)}</p>
+      <p>We're still looking for the right person for <em>"${escHtml(summary)}"</em>. We haven't found someone yet, but your goal is active and we'll let you know as soon as we do.</p>
+      <p style="color:#7A6E68;font-size:14px;">If you'd like to update or close your request, just reply.</p>`;
+
+    const subject = `Update: we're still looking for a match`;
+
+    if (!DRY_RUN) {
+      await send({
+        to: row.user_email,
+        subject,
+        text: plainText,
+        html: renderEmail({
+          preheader: `We're still looking for the right match for your goal.`,
+          body: htmlBody,
+        }),
+        replyTo: generateReplyTo(row.goal_id),
+      });
+      await pool.query(
+        `UPDATE goals SET ack_24h_sent_at = NOW(), updated_at = NOW() WHERE id = $1`,
+        [row.goal_id]
+      );
+      await pool.query(
+        `INSERT INTO emails (direction, from_address, to_address, subject, goal_id)
+         VALUES ('outbound', $1, $2, $3, $4)`,
+        [FROM, row.user_email, subject, row.goal_id]
+      );
+    }
+    console.log(`[followup] ${DRY_RUN ? 'DRY' : 'sent'} 24h ack → ${row.user_email} (goal ${row.goal_id})`);
+    ack24hCount++;
   }
 
   // ── 2. No-match timeout (TSK-063) — genuine no match after 7 days ─────────
@@ -277,7 +351,7 @@ If your situation has changed or you'd like to close this request, just reply an
     unpaidCount++;
   }
 
-  console.log(`[followup] done — intro: ${introCount}, no-match: ${noMatchCount}, unpaid: ${unpaidCount}`);
+  console.log(`[followup] done — intro: ${introCount}, 24h-ack: ${ack24hCount}, no-match: ${noMatchCount}, unpaid: ${unpaidCount}`);
   await pool.end();
 }
 

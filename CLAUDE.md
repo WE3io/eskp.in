@@ -115,6 +115,7 @@ Match statuses: proposed → introduced → accepted/declined/completed.
 | `docs/state/task-queue.md` | All tasks (P0–P3) + recurring tasks table |
 | `docs/state/budget-tracker.md` | Monthly token spend tracking |
 | `docs/state/recent-decisions.md` | Last 10 decisions with reasoning |
+| `docs/state/public-claims-register.md` | User-facing promises mapped to implementation; coherence check |
 | `docs/state/feedback-queue.md` | Unprocessed user feedback |
 | `docs/state/self-directed.md` | Session count, rotation tracking |
 | `docs/research/` | Technical research notes (19 files) |
