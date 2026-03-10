@@ -18,6 +18,45 @@ const { renderEmail } = require('../src/services/email-template');
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const [,, command, ...args] = process.argv;
 
+// TSK-038: Canonical tag list for normalisation at helper onboarding.
+// When adding tags, non-canonical tags are flagged with suggestions.
+// Maintained here — add new canonical tags as the helper network grows.
+const CANONICAL_TAGS = [
+  // Software & Engineering
+  'software engineering', 'web development', 'backend', 'frontend', 'fullstack',
+  'javascript / node.js', 'python', 'typescript', 'react', 'devops', 'cloud',
+  'databases', 'system design', 'security', 'mobile development',
+  // AI & Data
+  'ai / llms', 'machine learning', 'data science', 'data engineering', 'analytics',
+  // Product & Design
+  'product management', 'product', 'ux design', 'ui design', 'design',
+  'user research', 'product strategy',
+  // Business & Startups
+  'startups', 'entrepreneurship', 'fundraising', 'venture capital', 'angel investing',
+  'growth', 'marketing', 'content marketing', 'seo', 'sales', 'b2b sales', 'b2c sales',
+  // Finance & Legal
+  'finance', 'financial modelling', 'accounting', 'tax', 'employment law', 'contracts',
+  // Operations & Leadership
+  'operations', 'hr', 'hiring', 'management', 'leadership', 'team building',
+  // Other
+  'writing', 'public speaking', 'coaching', 'mentoring', 'career development',
+];
+
+/**
+ * Return canonical tag suggestions for a non-canonical tag.
+ * Normalises to alphanumeric tokens for matching (no external dependency).
+ */
+function suggestCanonical(tag) {
+  const tokens = tag.toLowerCase().split(/[\s\-\/\.]+/).filter(t => t.length > 2);
+  return CANONICAL_TAGS.filter(ct => {
+    const ctTokens = ct.split(/[\s\-\/\.]+/).filter(t => t.length > 2);
+    // Match if any token from either side is a substring of the other
+    return tokens.some(tw =>
+      ctTokens.some(cw => cw.includes(tw) || tw.includes(cw))
+    );
+  }).slice(0, 3);
+}
+
 async function list(all = false) {
   const where = all ? '' : `WHERE status = 'pending'`;
   const { rows } = await pool.query(
@@ -118,13 +157,33 @@ async function reject(appId) {
 
 async function addTags(helperId, tags) {
   if (!tags.length) return console.error('Provide at least one tag.');
-  const cleanTags = tags.map(t => t.toLowerCase().replace(/\s+/g, '-'));
+
+  // Normalise: lowercase, collapse whitespace
+  const normalised = tags.map(t => t.toLowerCase().replace(/\s+/g, ' ').trim());
+
+  // Check against canonical list and report
+  console.log('\nTag normalisation check:');
+  for (const tag of normalised) {
+    if (CANONICAL_TAGS.includes(tag)) {
+      console.log(`  ✓ "${tag}" — canonical`);
+    } else {
+      const suggestions = suggestCanonical(tag);
+      if (suggestions.length > 0) {
+        console.log(`  ⚠ "${tag}" — not in canonical list. Closest matches: ${suggestions.map(s => `"${s}"`).join(', ')}`);
+      } else {
+        console.log(`  ⚠ "${tag}" — not in canonical list (no close match found; will be added as-is)`);
+      }
+    }
+  }
+  console.log('');
+
   const { rows } = await pool.query(
     `UPDATE helpers SET expertise = $1 WHERE id = $2 RETURNING id, expertise`,
-    [cleanTags, helperId]
+    [normalised, helperId]
   );
   if (!rows.length) return console.error('Helper not found:', helperId);
   console.log(`Tags set on ${helperId}:`, rows[0].expertise.join(', '));
+  console.log(`\nTip: run 'pnpm manage-helpers suggest-tags' to see the full canonical list.`);
 }
 
 async function listHelpers() {
@@ -148,8 +207,12 @@ async function main() {
       case 'list-all':   await list(true); break;
       case 'approve':    await approve(args[0]); break;
       case 'reject':     await reject(args[0]); break;
-      case 'add-tags':   await addTags(args[0], args.slice(1)); break;
-      case 'helpers':    await listHelpers(); break;
+      case 'add-tags':      await addTags(args[0], args.slice(1)); break;
+      case 'helpers':       await listHelpers(); break;
+      case 'suggest-tags':
+        console.log('\nCanonical tag list (' + CANONICAL_TAGS.length + ' tags):');
+        CANONICAL_TAGS.forEach(t => console.log(' ', t));
+        break;
       default:
         console.log(`Usage:
   pnpm manage-helpers list
