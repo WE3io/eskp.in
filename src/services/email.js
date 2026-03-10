@@ -10,7 +10,7 @@ function send({ to, subject, text, html, from, replyTo }) {
       from: from || `Platform <${FROM}>`,
       to: Array.isArray(to) ? to : [to],
       subject,
-      ...(html ? { html } : { text }),
+      ...(html ? { html, ...(text ? { text } : {}) } : { text }),
       reply_to: replyTo || REPLY_TO,
     });
 
