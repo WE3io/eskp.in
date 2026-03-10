@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 004: implementing GDPR user rights (account deletion and data export), landing page improvements, and the helper network bottleneck.">
+  <title>Update 004: user rights, landing page, and the helper network bottleneck — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    nav { padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+    .nav-link:hover { color: var(--text); opacity: 1; }
+
+    /* ---- POST ---- */
+    article { padding: 3.5rem 0 4rem; }
+
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: normal;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin: 2.5rem 0 0.75rem;
+    }
+
+    .post-body p { margin-bottom: 1rem; }
+    .post-body p:last-child { margin-bottom: 0; }
+
+    .post-body ul, .post-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+    .post-body li { margin-bottom: 0.3rem; }
+
+    .post-body a { color: var(--accent); }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      article { padding: 2rem 0 3rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a class="wordmark" href="/">eskp<span>.</span>in</a>
+      <div class="nav-links">
+        <a class="nav-link" href="/blog/">Blog</a>
+        <a class="nav-link" href="/join.html">Become a helper</a>
+        <a class="nav-link" href="mailto:hello@mail.eskp.in">Get help</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <article>
+
+        <a class="back-link" href="/blog/">← All updates</a>
+
+        <p class="post-meta">10 March 2026 · Update 004</p>
+        <h1>User rights, landing page, and the helper network bottleneck</h1>
+
+        <div class="post-body">
+
+          <p>
+            Most of this session's work was invisible to visitors — GDPR user rights implementation
+            and data architecture — but there were two visible changes to the landing page as well.
+            Here's what happened.
+          </p>
+
+          <h2>Account deletion and data export</h2>
+
+          <p>
+            The UK GDPR gives people the right to have their data deleted (Article 17) and the right
+            to receive a copy of it in a portable format (Article 20). These aren't optional features
+            to add later. They're legal obligations that had to exist before the platform opens to
+            external users.
+          </p>
+
+          <p>
+            Both are now implemented. The flows work as follows:
+          </p>
+
+          <ul>
+            <li>
+              <strong>Deletion:</strong> a user emails a deletion request. The platform generates a
+              confirmation token, emails it back, and waits for confirmation. On confirmation, all
+              personal data is deleted in cascade — user record, goals, matches, emails, feedback —
+              and an anonymised audit log entry is written (required to demonstrate compliance).
+              The confirmation link expires after 48 hours.
+            </li>
+            <li>
+              <strong>Export:</strong> same token mechanism. On confirmation, the platform returns
+              a complete JSON export of everything it holds about the user: profile, goals with their
+              decomposed structure, matches, email history, and feedback submissions. The export link
+              is single-use and expires after 48 hours.
+            </li>
+          </ul>
+
+          <p>
+            These are API endpoints, not user-facing pages — the platform is still email-first.
+            The deletion and export requests come via email, and the confirmation links point directly
+            to the API. Simple and hard to misuse.
+          </p>
+
+          <h2>Email multipart: plain text alongside HTML</h2>
+
+          <p>
+            A small but meaningful fix: all outbound emails now send both HTML and plain text
+            versions simultaneously. Previously, only HTML was sent. Some email clients (corporate
+            and privacy-focused ones particularly) prefer or require plain text. This also
+            improves deliverability scores — multipart/alternative is what well-behaved email
+            senders do.
+          </p>
+
+          <h2>Landing page: example goals and a timeline</h2>
+
+          <p>
+            The landing page described <em>how</em> the platform works in abstract terms. What it
+            lacked was an answer to the practical question: "but what do I actually write?"
+          </p>
+
+          <p>
+            There are now three example goals on the page — a career one, a business one, and a
+            technical one. They're written in the same tone someone might actually use in an email,
+            not as sales copy. The aim is to lower the threshold for submitting a goal by making it
+            concrete.
+          </p>
+
+          <p>
+            There's also a new "What to expect" section with a four-step timeline: 24-hour
+            acknowledgement, introduction within a few days (if a match is found), an honest
+            no-match message if there isn't one, and a note on what happens after the introduction.
+            The platform previously said nothing about what happens if no match is found, which
+            is a bad experience — people would just wait indefinitely.
+          </p>
+
+          <h2>The helper network bottleneck</h2>
+
+          <p>
+            The current state of the platform: technically functional, legally compliant (for
+            the most part — ICO registration is in progress), and waiting on one thing.
+          </p>
+
+          <p>
+            The helper network has one person in it: Sunil, the project founder. That means
+            the platform can only make an introduction for goals that match his expertise
+            (software development, product, early-stage startups). Everything else gets a
+            no-match response.
+          </p>
+
+          <p>
+            This is the primary bottleneck. It's not a technical problem. It's a network problem.
+          </p>
+
+          <p>
+            If you have genuine experience in something — career transitions, pricing SaaS products,
+            navigating employment contracts, building distributed systems, growing a newsletter,
+            surviving a startup acquisition — and you'd like to be part of the network, the
+            application is at <a href="/join.html">eskp.in/join.html</a>. It's a short email. No
+            obligation beyond the conversations you choose to take.
+          </p>
+
+          <h2>What's next</h2>
+
+          <ul>
+            <li>ICO data protection registration (legal requirement; being handled offline)</li>
+            <li>Clarification loop: when a goal is too vague to match well, email the user back with questions rather than guessing</li>
+            <li>Tag normalisation at helper onboarding — better tags mean better matches</li>
+            <li>No-match timeout: email users after 7 days if their goal is still unmatched, so there are no silent dead ends</li>
+          </ul>
+
+          <hr class="divider">
+
+          <p>
+            Full source, compliance documents, and decision log:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:2rem;">
+            <p style="font-weight:600;margin-bottom:0.75rem;color:var(--text);">Try the platform</p>
+            <p style="margin-bottom:1rem;font-size:0.9rem;">If you're stuck on something — career, legal, technical, creative — email us and describe it. No form, no signup.</p>
+            <a href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with..." style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.1rem;border-radius:5px;text-decoration:none;font-size:0.875rem;margin-right:0.75rem;">Submit a goal →</a>
+            <a href="/join.html" style="display:inline-block;color:var(--accent);font-size:0.875rem;text-decoration:underline;text-underline-offset:3px;">Become a helper →</a>
+          </div>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in — a small platform for real help</span>
+      <span>
+        <a href="/support.html">Support</a>
+        &nbsp;·&nbsp;
+        <a href="/privacy.html">Privacy</a>
+        &nbsp;·&nbsp;
+        <a href="/terms.html">Terms</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
