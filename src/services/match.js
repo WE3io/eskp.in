@@ -85,9 +85,9 @@ async function findMatches(decomposed, { localOnly = false } = {}) {
 }
 
 async function semanticRank(decomposed, helpers) {
+  // Data minimisation: helper names omitted to prevent bias in automated ranking (Art 3.2/3.3)
   const helperList = helpers.map((h, i) =>
     `Helper ${i + 1} (id: ${h.helper_id})\n` +
-    `Name: ${h.name || 'anonymous'}\n` +
     `Expertise: ${h.expertise.join(', ') || 'not specified'}\n` +
     `Bio: ${h.bio || 'not provided'}`
   ).join('\n\n');
