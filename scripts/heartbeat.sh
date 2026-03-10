@@ -37,7 +37,22 @@ if [ "${NGINX_STATUS}" != "200" ] && [ "${NGINX_STATUS}" != "301" ] && [ "${NGIN
   FAILURES+=("nginx HTTPS: got HTTP ${NGINX_STATUS} (expected 200/301/302)")
 fi
 
-# ── 4. Disk usage ─────────────────────────────────────────────────────────────
+# ── 4. TLS certificate expiry ─────────────────────────────────────────────────
+CERT_WARN_DAYS=30
+if command -v openssl &>/dev/null; then
+  CERT_EXPIRY=$(echo | openssl s_client -connect eskp.in:443 -servername eskp.in 2>/dev/null \
+    | openssl x509 -noout -enddate 2>/dev/null | sed 's/notAfter=//' || echo "")
+  if [ -n "${CERT_EXPIRY}" ]; then
+    CERT_EPOCH=$(date -d "${CERT_EXPIRY}" +%s 2>/dev/null || echo 0)
+    NOW_EPOCH=$(date +%s)
+    DAYS_LEFT=$(( (CERT_EPOCH - NOW_EPOCH) / 86400 ))
+    if [ "${DAYS_LEFT}" -lt "${CERT_WARN_DAYS}" ]; then
+      FAILURES+=("TLS cert for eskp.in expires in ${DAYS_LEFT} days (threshold: ${CERT_WARN_DAYS})")
+    fi
+  fi
+fi
+
+# ── 5. Disk usage ─────────────────────────────────────────────────────────────
 DISK_PCT=$(df / 2>/dev/null | awk 'NR==2 {gsub(/%/,""); print $5}' || echo 0)
 if [ "${DISK_PCT}" -ge "${DISK_ALERT_PCT}" ]; then
   FAILURES+=("Disk usage: ${DISK_PCT}% used (threshold: ${DISK_ALERT_PCT}%)")
