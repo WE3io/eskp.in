@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Pre-commit hook: scan staged files for potential secrets.
+# Replaces the manual "mentally scan staged files" instruction.
+
+set -euo pipefail
+
+DIFF=$(git diff --cached --diff-filter=ACM -U0)
+
+if [ -z "$DIFF" ]; then
+  exit 0
+fi
+
+# Patterns that suggest a secret
+SECRET_PATTERNS=(
+  'sk-[A-Za-z0-9]{20,}'           # Anthropic / Stripe secret keys
+  'sk_live_[A-Za-z0-9]{20,}'      # Stripe live keys
+  'sk_test_[A-Za-z0-9]{20,}'      # Stripe test keys
+  'pk_live_[A-Za-z0-9]{20,}'      # Stripe publishable live
+  'whsec_[A-Za-z0-9]{20,}'        # Stripe webhook secrets
+  're_[A-Za-z0-9]{20,}'           # Resend API keys
+  'PRIVATE[_\s]*KEY'              # Private key markers
+  'Bearer [A-Za-z0-9\-._~+/]{20,}' # Bearer tokens
+  'password\s*[:=]\s*["\x27][^"\x27]{8,}' # Hardcoded passwords
+  '[A-Za-z0-9+/]{40,}={0,2}'      # Base64-encoded blocks (40+ chars)
+)
+
+# Known false positives to ignore (column names, common identifiers)
+EXCLUDE_PATTERNS=(
+  'token_usage'
+  'created_at'
+  'updated_at'
+  'email_suppressed_at'
+  'account_tokens'
+  'deletion_log'
+  'feedback_token'
+  'reply_token'
+  'clarification_attempts'
+  'sensitive_domain'
+  'user_rating'
+  'node_modules'
+  'pnpm-lock'
+  'README\.md'
+  'package\.json'
+  '\.(svg|png|jpg|ico)$'
+  'sha256-'
+  'sha384-'
+  'sha512-'
+  'integrity='
+  'CANONICAL_TAGS'
+  'escHtml'
+  'timingSafeEqual'
+  'randomUUID'
+  'createHmac'
+)
+
+FOUND=0
+
+for pattern in "${SECRET_PATTERNS[@]}"; do
+  MATCHES=$(echo "$DIFF" | grep -nP "^\+" | grep -vP "^\+\+\+" | grep -oP "$pattern" 2>/dev/null || true)
+  if [ -n "$MATCHES" ]; then
+    # Check each match against exclusion patterns
+    while IFS= read -r match; do
+      EXCLUDED=false
+      for exclude in "${EXCLUDE_PATTERNS[@]}"; do
+        if echo "$match" | grep -qP "$exclude" 2>/dev/null; then
+          EXCLUDED=true
+          break
+        fi
+      done
+      if [ "$EXCLUDED" = false ]; then
+        if [ "$FOUND" -eq 0 ]; then
+          echo "=== SECRET SCANNER: potential secrets detected in staged changes ==="
+          echo ""
+        fi
+        echo "  Pattern: $pattern"
+        echo "  Match:   $match"
+        echo ""
+        FOUND=1
+      fi
+    done <<< "$MATCHES"
+  fi
+done
+
+if [ "$FOUND" -ne 0 ]; then
+  echo "Review the matches above. If they are false positives, commit with:"
+  echo "  git commit --no-verify"
+  echo ""
+  echo "If they are real secrets, remove them and use .env instead."
+  exit 1
+fi
+
+exit 0

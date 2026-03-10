@@ -30,7 +30,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Server performance baseline | Monthly | never | 2026-04-09 | Record CPU, memory, disk, response times |
 | Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
-| Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 11) | Session 20 | See Operational Improvement in CLAUDE.md |
+| Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 11) | Session 20 | Track count in docs/state/self-directed.md |
 
 ---
 

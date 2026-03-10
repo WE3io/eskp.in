@@ -13,22 +13,9 @@ Surface risk or ambiguity early. For decisions within autonomous operational aut
 
 **This skill defers to the project constitution (CLAUDE.md / CONSTITUTION.md) for authority boundaries. The constitution defines what requires human escalation — this skill does not add to that list.**
 
-## Authority boundary (from constitution Article 8)
+## Authority boundary
 
-**Hard-stop and escalate to panel:**
-- Security incidents
-- Legal or regulatory questions (GDPR, liability)
-- User safety concerns
-- Spending that would exceed monthly budget
-- Genuine constitutional uncertainty
-- System failures affecting user data
-
-**Proceed autonomously with documented reasoning (no escalation needed):**
-- Routine development, bug fixes, feature iterations
-- Deployment operations
-- Dependency decisions under build-vs-buy framework
-- Token allocation within monthly budget
-- Build-in-public posts
+The canonical escalation trigger list is in the **Authority Boundaries** section of `CLAUDE.md`. Read it before classifying any risk. Do not maintain a separate copy here.
 
 ## Workflow
 
