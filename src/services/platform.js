@@ -124,9 +124,11 @@ ${decomposed.summary}
 What we think you need:
 ${needsList}
 
-Good news — we found someone who can help: ${helper.name || 'a helper in our network'}.${helper.bio ? `\n\n${helper.bio}` : ''}
+Our AI matched your goal to ${helper.name || 'a helper in our network'} based on their expertise and your needs.${helper.bio ? `\n\n${helper.bio}` : ''}
 
-To get the introduction, complete a one-time £10 payment:
+Not the right fit? Reply to this email and we'll take another look.
+
+To confirm and get the introduction, complete a one-time £10 payment:
 ${paymentUrl}
 
 — The eskp.in team${privacyFooter}`
@@ -157,9 +159,10 @@ We're looking for the right person and will get back to you within 24 hours. If 
        <ul style="margin:8px 0 16px 20px;padding:0;">
          ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${n.need}</li>`).join('')}
        </ul>
-       <p>Good news — we found someone who can help: <strong>${helper.name || 'a helper in our network'}</strong>.</p>
+       <p>Our AI matched your goal to <strong>${helper.name || 'a helper in our network'}</strong> based on their expertise and your needs.</p>
        ${helper.bio ? `<p style="color:#5A5450;font-size:0.9em;background:#F7EDE6;border-radius:5px;padding:10px 14px;margin:12px 0;">${helper.bio}</p>` : ''}
-       <p>To get the introduction, complete a one-time payment of <strong>£10</strong>:</p>
+       <p style="color:#7A6E68;font-size:14px;">Not the right fit? Reply to this email and we'll take another look.</p>
+       <p>To confirm and get the introduction, complete a one-time payment of <strong>£10</strong>:</p>
        <p style="text-align:center;margin:24px 0;">
          <a href="${paymentUrl}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
            Pay £10 and get introduced
