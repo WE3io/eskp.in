@@ -129,6 +129,14 @@
 - [x] TSK-055: AI disclosure in acknowledgement emails — "Our AI analysed your goal" added (Art.3.3)
 - [x] Self-directed: Mission alignment — docs/research/2026-03-10-mission-alignment.md; 4 new tasks generated; TSK-021/022 promoted to P2
 
+### Session 2026-03-10 (sixth auto-session) — done ✅
+- [x] No new inbound emails (only historic test from 2026-03-08)
+- [x] TSK-021: account-deletion-flow — email-triggered, token confirmation, cascade delete, anonymised audit log (src/services/account.js, src/api/account.js)
+- [x] TSK-022: data-export-endpoint — GET /account/export?token=xxx, one-time 48h token, returns full user JSON (account_tokens + deletion_log DB tables added)
+- [x] TSK-050: email.js fix — now sends both html+text as multipart/alternative (Resend supports both fields)
+- [x] Growth rotation: reviewed all public pages, fixed "Become a helper" missing from nav on 4 pages, generated TSK-058–063
+- [x] DB migrated and app redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-10 — fifth auto-session complete*
-*Next session should start with: TSK-021 (account-deletion-flow, P2 — constitutional right before external users), then TSK-022 (data-export-endpoint), then TSK-050 (plain text + HTML email templates), then TSK-034 (clarification loop design)*
+*Last updated: 2026-03-10 — sixth auto-session complete*
+*Next session should start with: TSK-058 (example goals on landing page), then TSK-059 (timeline section), then TSK-034 (clarification loop design), then TSK-062 (helper network growth)*

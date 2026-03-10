@@ -103,7 +103,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-050 | Ensure all email templates send both HTML + plain text versions | open | From TSK-029; deliverability best practice |
+| TSK-050 | Ensure all email templates send both HTML + plain text versions | **done** 2026-03-10 | email.js now sends both html+text when both provided (Resend multipart/alternative) |
 | TSK-051 | Implement Resend webhook handler for bounce/complaint events | open | From TSK-029; list hygiene |
 | TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | **done** 2026-03-10 | All three confirmed: DKIM (resend._domainkey.mail.eskp.in), SPF, DMARC p=quarantine |
 | TSK-048 | Prompt instruction in decompose.js to generalise special category data | **done** 2026-03-10 | From DPIA; data minimisation for sensitive fields |
@@ -125,13 +125,19 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | open | From infrastructure check 2026-03-10; low urgency |
 | TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | open | From infrastructure check; prevent unbounded growth |
 | TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
-| TSK-021 | `account-deletion-flow` | open | Art.10 Phase 1 — **promoted to P2** (constitutional right, required before external users) |
-| TSK-022 | `data-export-endpoint` | open | Art.10 Phase 1 — **promoted to P2** (constitutional right, required before external users) |
+| TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
+| TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
 | TSK-056 | Design basic data retention/deletion automation | open | From mission alignment; goals with no activity after N months auto-closed |
 | TSK-057 | Create public roadmap page (/roadmap.html) | open | Art.3.4 User-Driven Development; transparency commitment |
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
 | TSK-024 | `revenue-model-constraint-terms` | open | Art.10 Phase 1 |
 | TSK-025 | `exclusion-register-operational` | open | Art.11 Phase 1 (register exists; this covers update process) |
+| TSK-058 | Add 3 concrete example goals to landing page | open | Growth — reduces submission anxiety for first-time users |
+| TSK-059 | Add "What to expect" timeline section to landing page | open | Growth — clarifies 24h ack + match timeline or no-match outcome |
+| TSK-060 | Draft Twitter/X thread for @awebot1529222 — helper recruitment | open | Growth — build-in-public; helper network is primary bottleneck |
+| TSK-061 | Add CTA to end of each blog post (join + submit) | open | Growth — blog visitors are warm leads |
+| TSK-062 | Grow helper network — reach 3 new helper candidates | open | Growth — TSK-012 (first external user) is blocked without more helpers |
+| TSK-063 | No-match timeout: email user after 7 days if goal still in 'matched' | open | UX — prevents silent dead ends for unmatched goals |
 
 ---
 
@@ -152,4 +158,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (fifth auto-session — TSK-053/049/033/009/055 done; TSK-054/056/057 generated; TSK-021/022 promoted to P2; mission alignment research complete)*
+*Last updated: 2026-03-10 (sixth auto-session — TSK-021/022/050 done; growth research + nav fix; TSK-058–063 generated)*
