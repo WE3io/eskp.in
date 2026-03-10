@@ -188,7 +188,7 @@ async function addTags(helperId, tags) {
 
 async function listHelpers() {
   const { rows } = await pool.query(`
-    SELECT h.id, u.email, u.name, h.expertise, h.is_active, h.created_at
+    SELECT h.id, u.email, u.name, h.expertise, h.is_active, h.notes, h.created_at
     FROM helpers h JOIN users u ON u.id = h.user_id
     ORDER BY h.created_at ASC
   `);
@@ -197,7 +197,19 @@ async function listHelpers() {
     console.log(`\n[${h.is_active ? 'ACTIVE' : 'INACTIVE'}] ${h.id}`);
     console.log(`  Email:     ${h.email}${h.name ? ` (${h.name})` : ''}`);
     console.log(`  Expertise: ${h.expertise.join(', ') || '(none set)'}`);
+    if (h.notes) console.log(`  Notes:     ${h.notes}`);
   }
+}
+
+async function setNotes(helperId, notes) {
+  if (!helperId) return console.error('Provide a helper ID.');
+  const notesText = notes.join(' ').trim() || null;
+  const { rows } = await pool.query(
+    `UPDATE helpers SET notes = $1 WHERE id = $2 RETURNING id`,
+    [notesText, helperId]
+  );
+  if (!rows.length) return console.error('Helper not found:', helperId);
+  console.log(`Notes updated for ${helperId}.${notesText ? '' : ' (cleared)'}`);
 }
 
 async function main() {
@@ -209,6 +221,7 @@ async function main() {
       case 'reject':     await reject(args[0]); break;
       case 'add-tags':      await addTags(args[0], args.slice(1)); break;
       case 'helpers':       await listHelpers(); break;
+      case 'set-notes':     await setNotes(args[0], args.slice(1)); break;
       case 'suggest-tags':
         console.log('\nCanonical tag list (' + CANONICAL_TAGS.length + ' tags):');
         CANONICAL_TAGS.forEach(t => console.log(' ', t));
@@ -220,6 +233,7 @@ async function main() {
   pnpm manage-helpers approve <application-id>
   pnpm manage-helpers reject <application-id>
   pnpm manage-helpers add-tags <helper-id> <tag1> <tag2> ...
+  pnpm manage-helpers set-notes <helper-id> <notes text>
   pnpm manage-helpers helpers`);
     }
   } finally {
