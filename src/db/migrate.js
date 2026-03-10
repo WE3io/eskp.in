@@ -101,6 +101,30 @@ const migrations = [
 
   // TSK-049: sensitive-domain review flag
   `ALTER TABLE goals ADD COLUMN IF NOT EXISTS sensitive_domain TEXT`,
+
+  // TSK-021/022: account tokens for export and deletion confirmation
+  `
+  CREATE TABLE IF NOT EXISTS account_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    token TEXT UNIQUE NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('export', 'delete_confirm')),
+    expires_at TIMESTAMPTZ NOT NULL,
+    used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+
+  `CREATE INDEX IF NOT EXISTS idx_account_tokens_token ON account_tokens(token)`,
+  `CREATE INDEX IF NOT EXISTS idx_account_tokens_user_type ON account_tokens(user_id, type)`,
+
+  // TSK-021: anonymised deletion audit log (no PII)
+  `
+  CREATE TABLE IF NOT EXISTS deletion_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    tables_affected TEXT[] NOT NULL,
+    rows_deleted INT NOT NULL
+  )`,
 ];
 
 async function migrate() {

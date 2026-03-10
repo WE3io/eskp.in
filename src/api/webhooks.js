@@ -5,6 +5,7 @@ const { processGoal, processGoalSensitive, recordInbound } = require('../service
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
 const { detectSensitiveDomain } = require('../services/sensitive-flag');
+const { processExportRequest, requestDeletion } = require('../services/account');
 const { pool } = require('../db/connection');
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -48,6 +49,20 @@ router.post('/email', verifySecret, async (req, res) => {
     await recordInbound(from, to, subject, text, raw || {});
 
     // Route by subject
+    const subjectLower = (subject || '').toLowerCase();
+
+    // TSK-022: data export request
+    if (/export|download|portability/.test(subjectLower) && /data|account|my info/.test(subjectLower)) {
+      await processExportRequest(userEmail, userName);
+      return res.json({ ok: true, type: 'export-request' });
+    }
+
+    // TSK-021: account deletion request
+    if (/delete|erase|erasure|remove/.test(subjectLower) && /account|data|me|profile/.test(subjectLower)) {
+      await requestDeletion(userEmail, userName);
+      return res.json({ ok: true, type: 'deletion-request' });
+    }
+
     if (isHelperApplication(subject)) {
       const result = await processHelperApplication(userEmail, userName, text);
       return res.json({ ok: true, type: 'helper-application', duplicate: result.duplicate || false });
