@@ -1,10 +1,16 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { pool } = require('../db/connection');
+const { detectSensitiveDomain } = require('./sensitive-flag');
 
 /**
  * Find the best helper for a decomposed goal.
  * Uses Claude Haiku for semantic relevance scoring.
  * Falls back to tag-overlap if the AI call fails.
+ *
+ * Defence in depth (TSK-036): if the decomposed summary contains sensitive-domain
+ * signals, use local tag-overlap only. The sensitive-domain detector in webhooks.js
+ * catches most cases before decomposition, but this layer catches any that slip
+ * through (e.g. sensitivity surfaced only after AI decomposition).
  */
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -12,7 +18,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const HAIKU_INPUT_PRICE  = 0.80 / 1_000_000;
 const HAIKU_OUTPUT_PRICE = 4.00 / 1_000_000;
 
-async function findMatches(decomposed) {
+async function findMatches(decomposed, { localOnly = false } = {}) {
   const { rows: helpers } = await pool.query(`
     SELECT
       h.id AS helper_id,
@@ -29,6 +35,20 @@ async function findMatches(decomposed) {
 
   if (helpers.length === 0) return [];
   if (helpers.length === 1) return helpers;
+
+  // TSK-036: defence-in-depth — skip LLM matching if the summary contains sensitive signals.
+  // Avoids sending potentially sensitive content to an external API a second time.
+  if (!localOnly) {
+    const summaryCheck = detectSensitiveDomain(decomposed.summary || '');
+    if (summaryCheck.flagged) {
+      console.log(`match: sensitive domain '${summaryCheck.domain}' detected in summary — using local tag-overlap only`);
+      localOnly = true;
+    }
+  }
+
+  if (localOnly) {
+    return tagOverlapRank(decomposed, helpers);
+  }
 
   try {
     return await semanticRank(decomposed, helpers);
