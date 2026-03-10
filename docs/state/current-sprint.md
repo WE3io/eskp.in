@@ -227,6 +227,12 @@
 - [x] Blog post 005 published: "Registered, two bugs found, and measuring match quality"
 - [x] Blog index updated
 
+### Session 2026-03-10 (sixteenth auto-session) — done ✅
+- [x] TSK-075: Dogfooding confirmed — Sunil submitted ICO registration goal at 07:10 UTC; auto-matched; flow worked end-to-end
+- [x] Code quality rotation: pnpm audit clean; reviewed platform.js, match.js, webhooks.js, followup.js, decompose.js, email.js, email-template.js
+- [x] Bug fix (TSK-098): Clarification loop not actually limited — comment said "max 1 follow-up" but no counter existed; added `clarification_attempts` column to goals; processGoal sets it to 1; processClarification checks attempts < 2 before sending another round, then proceeds with best decomposition
+- [x] Bug fix (TSK-099): HTML-unsafe user names in email bodies — userName from email headers was embedded in HTML without escaping; exported escHtml() from email-template.js; applied to all HTML email bodies in platform.js (sendAcknowledgement, sendClarificationRequest, sendHelperIntro, processGoalSensitive, closeGoal, sendPreMatchNotification); also escaped rawText in panel alert \`<pre>\`
+
 ---
-*Last updated: 2026-03-10 — fifteenth auto-session complete*
-*Next session should start with: check for Sunil's dogfooding goal submission (TSK-075 awaiting), then TSK-097 (free-first-message payment model research spike — defer to 5+ users), then Code quality self-directed rotation*
+*Last updated: 2026-03-10 — sixteenth auto-session complete*
+*Next session should start with: TSK-097 (free-first-message payment model research spike — defer to 5+ users); self-directed infrastructure rotation; check for Sunil dogfooding responses*

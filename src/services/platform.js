@@ -6,7 +6,7 @@ const { pool } = require('../db/connection');
 const { decompose } = require('./decompose');
 const { findMatches } = require('./match');
 const { send } = require('./email');
-const { renderEmail, textToHtml } = require('./email-template');
+const { renderEmail, textToHtml, escHtml } = require('./email-template');
 const { createIntroCheckout } = require('./payments');
 const { generateReplyTo } = require('./email-reply-token');
 
@@ -45,12 +45,12 @@ async function processGoal(userEmail, userName, rawText) {
   // Clarification loop: goal is too vague to match
   if (decomposed.needs_clarification && decomposed.clarification_questions.length > 0) {
     await pool.query(
-      `UPDATE goals SET decomposed = $1, status = 'pending_clarification', updated_at = NOW() WHERE id = $2`,
+      `UPDATE goals SET decomposed = $1, status = 'pending_clarification', clarification_attempts = 1, updated_at = NOW() WHERE id = $2`,
       [JSON.stringify(decomposed), goal.id]
     );
     // raw_text is retained while pending_clarification (needed to build combined text on reply)
     await sendClarificationRequest(user, goal, decomposed);
-    console.log(`clarification: goal ${goal.id} set to pending_clarification`);
+    console.log(`clarification: goal ${goal.id} set to pending_clarification (attempt 1)`);
     return { goal, decomposed, needsClarification: true };
   }
 
@@ -108,7 +108,9 @@ async function processGoal(userEmail, userName, rawText) {
 }
 
 async function sendAcknowledgement(user, goal, decomposed, helper, paymentUrl) {
+  const safeName = user.name ? escHtml(user.name) : null;
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
+  const greetingHtml = `Hi${safeName ? ` ${safeName}` : ''},`;
   const needsList = decomposed.needs.map(n => `• ${n.need}`).join('\n');
 
   const hasMatch = !!(helper && paymentUrl);
@@ -153,7 +155,7 @@ We're looking for the right person and will get back to you within 24 hours. If 
      </p>`;
 
   const htmlBody = hasMatch
-    ? `<p>${greeting}</p>
+    ? `<p>${greetingHtml}</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
        <p><strong>What we think you need:</strong></p>
@@ -170,7 +172,7 @@ We're looking for the right person and will get back to you within 24 hours. If 
          </a>
        </p>
        ${privacyNote}`
-    : `<p>${greeting}</p>
+    : `<p>${greetingHtml}</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
        <p><strong>What we think you need:</strong></p>
@@ -193,6 +195,7 @@ We're looking for the right person and will get back to you within 24 hours. If 
 
 async function sendClarificationRequest(user, goal, decomposed) {
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
+  const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
   const questionsList = decomposed.clarification_questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
   const questionsHtml = decomposed.clarification_questions.map(q => `<li style="margin-bottom:10px;">${q}</li>`).join('');
 
@@ -208,7 +211,7 @@ Just reply to this email with your answers — no need to be exhaustive, whateve
 
 — The eskp.in team`;
 
-  const htmlBody = `<p>${greeting}</p>
+  const htmlBody = `<p>${greetingHtml}</p>
     <p>We received your message. We'd like to help but need a bit more information to find the right person for you.</p>
     <p><strong>A few questions:</strong></p>
     <ol style="margin:8px 0 16px 20px;padding:0;">
@@ -248,15 +251,23 @@ async function processClarification(userEmail, userName, replyText, pendingGoal)
     throw err;
   }
 
-  // If still needs clarification, send another round (max 1 follow-up to avoid loops)
-  if (decomposed.needs_clarification && decomposed.clarification_questions.length > 0) {
+  // If still needs clarification, allow at most one follow-up round (attempts <= 1 means first reply).
+  // After 2 clarification requests with no improvement, proceed with the best decomposition we have.
+  const attempts = pendingGoal.clarification_attempts || 1;
+  if (decomposed.needs_clarification && decomposed.clarification_questions.length > 0 && attempts < 2) {
     await pool.query(
-      `UPDATE goals SET decomposed = $1, status = 'pending_clarification', updated_at = NOW() WHERE id = $2`,
-      [JSON.stringify(decomposed), pendingGoal.id]
+      `UPDATE goals SET decomposed = $1, status = 'pending_clarification', clarification_attempts = $2, updated_at = NOW() WHERE id = $3`,
+      [JSON.stringify(decomposed), attempts + 1, pendingGoal.id]
     );
     await sendClarificationRequest(user, pendingGoal, decomposed);
-    console.log(`clarification: goal ${pendingGoal.id} still vague after clarification reply, sent follow-up`);
+    console.log(`clarification: goal ${pendingGoal.id} still vague, sent follow-up (attempt ${attempts + 1})`);
     return { goal: pendingGoal, decomposed, needsClarification: true };
+  }
+
+  // Max clarification attempts reached or goal is now clear enough — proceed with matching.
+  if (decomposed.needs_clarification) {
+    console.log(`clarification: goal ${pendingGoal.id} reached max attempts (${attempts}), proceeding with best decomposition`);
+    decomposed.needs_clarification = false;
   }
 
   // Null raw_text once decomposition is stored — GDPR Art.5(1)(e).
@@ -321,6 +332,7 @@ async function sendPreMatchNotification(goal, decomposed, matches) {
 
   for (const helper of relevant) {
     const greeting = `Hi${helper.name ? ` ${helper.name}` : ''},`;
+    const greetingHtml = `Hi${helper.name ? ` ${escHtml(helper.name)}` : ''},`;
 
     const plainText = `${greeting}
 
@@ -335,7 +347,7 @@ This is just a heads-up so you're not caught off-guard. We'll follow up with ful
 
 — The eskp.in team`;
 
-    const htmlBody = `<p>${greeting}</p>
+    const htmlBody = `<p>${greetingHtml}</p>
       <p>A new goal has come in on eskp.in that looks relevant to your expertise.</p>
       <p><strong>What they need:</strong></p>
       <ul style="margin:8px 0 16px 20px;padding:0;">
@@ -361,6 +373,9 @@ This is just a heads-up so you're not caught off-guard. We'll follow up with ful
 }
 
 async function sendHelperIntro(user, goal, decomposed, helper) {
+  const safeHelperName = helper.name ? escHtml(helper.name) : '';
+  const safeUserEmail = escHtml(user.email || '');
+  const safeUserName = user.name ? escHtml(user.name) : null;
   const plainText = `Hi ${helper.name || ''},
 
 Someone on the platform is looking for help and we think you're a good match.
@@ -379,7 +394,7 @@ This introduction is made because your expertise overlaps with what they need. T
 — The eskp.in team`;
 
   const htmlBody = `
-    <p>Hi ${helper.name || ''},</p>
+    <p>Hi ${safeHelperName || ''},</p>
     <p>Someone on the platform is looking for help and we think you're a good match.</p>
     <p><strong>What they need:</strong></p>
     <ul style="margin:8px 0 16px 20px;padding:0;">
@@ -388,7 +403,7 @@ This introduction is made because your expertise overlaps with what they need. T
     <p><strong>Context:</strong> ${decomposed.context}</p>
     <p><strong>What success looks like for them:</strong> ${decomposed.outcome}</p>
     <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;">
-      <strong>Their contact:</strong> <a href="mailto:${user.email}" style="color:#C4622D;">${user.email}</a>${user.name ? ` (${user.name})` : ''}
+      <strong>Their contact:</strong> <a href="mailto:${safeUserEmail}" style="color:#C4622D;">${safeUserEmail}</a>${safeUserName ? ` (${safeUserName})` : ''}
     </p>
     <p style="color:#7A6E68;font-size:14px;">This introduction is made because your expertise overlaps with what they need. There's no obligation — reply to this email if you'd like to connect, or ignore it if it's not a good fit.</p>`;
 
@@ -481,6 +496,7 @@ async function processGoalSensitive(userEmail, userName, rawText, sensitiveDomai
 
   // Send user a basic acknowledgement (no match, no payment link)
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
+  const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
   const plainText = `${greeting}
 
 Thank you for getting in touch with eskp.in.
@@ -495,7 +511,7 @@ If this is an emergency or you need immediate support, please contact:
 — The eskp.in team`;
 
   const htmlBody = `
-    <p>${greeting}</p>
+    <p>${greetingHtml}</p>
     <p>Thank you for getting in touch with eskp.in.</p>
     <p>We've received your message and a member of our team will review it shortly. We'll be in touch soon.</p>
     <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;font-size:14px;">
@@ -542,12 +558,12 @@ This email was sent automatically. Do not forward it externally.`;
       preheader: `Sensitive goal flagged: ${sensitiveLabel}`,
       body: `<p>A goal has been flagged as touching a sensitive domain and requires human review before any introduction is sent.</p>
         <table style="border-collapse:collapse;width:100%;margin:16px 0;">
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${goal.id}</td></tr>
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${user.email}${user.name ? ` (${user.name})` : ''}</td></tr>
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">Domain</td><td style="padding:6px 12px;">${sensitiveLabel} (${sensitiveDomain})</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${escHtml(goal.id)}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${escHtml(user.email)}${user.name ? ` (${escHtml(user.name)})` : ''}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">Domain</td><td style="padding:6px 12px;">${escHtml(sensitiveLabel)} (${escHtml(sensitiveDomain)})</td></tr>
         </table>
         <p><strong>Raw text:</strong></p>
-        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${rawText.substring(0, 1000)}${rawText.length > 1000 ? '\n[truncated]' : ''}</pre>
+        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${escHtml(rawText.substring(0, 1000))}${rawText.length > 1000 ? '\n[truncated]' : ''}</pre>
         <p style="color:#5A5450;font-size:13px;">Review the goal and take appropriate action. The user has been acknowledged but no match has been sent.</p>`,
     }),
     replyTo: panelEmail,  // admin replies stay off the inbound worker
@@ -567,6 +583,7 @@ This email was sent automatically. Do not forward it externally.`;
  */
 async function closeGoal(goal, userEmail, userName) {
   const greeting = `Hi${userName ? ` ${userName}` : ''},`;
+  const greetingHtml = `Hi${userName ? ` ${escHtml(userName)}` : ''},`;
 
   await pool.query(
     `UPDATE goals SET status = 'closed', updated_at = NOW() WHERE id = $1`,
@@ -587,7 +604,7 @@ If you want to try again in the future, just send us a new message.
     text: plainText,
     html: renderEmail({
       preheader: 'Your goal request has been closed.',
-      body: `<p>${greeting}</p>
+      body: `<p>${greetingHtml}</p>
         <p>We've closed your request. No further emails will be sent about this goal.</p>
         <p style="color:#7A6E68;font-size:14px;">If you want to try again in the future, just send us a new message.</p>`,
     }),

@@ -151,7 +151,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | **done** 2026-03-10 | scripts/helper-digest.js; cron Monday 08:00 UTC; personalised by expertise overlap |
 | TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | **done** 2026-03-10 | sendPreMatchNotification() in platform.js; score >= 40 threshold; no user contact details |
 | TSK-074 | Create private helper channel (Slack/email) as community space | **done** 2026-03-10 | docs/operations/helper-community.md — email-first now; Slack deferred to 5+ helpers with full setup instructions |
-| TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | **done** 2026-03-10 | Invitation email sent via Resend (id: 1a65c72f). Awaiting Sunil to submit a real goal. |
+| TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | **done** 2026-03-10 | Sunil submitted ICO registration goal at 07:10 UTC 2026-03-10; auto-matched; full flow confirmed working |
 | TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | **done** 2026-03-10 | Added to weekly helper digest: 'Pipeline in your domain: N goals awaiting match' section |
 | TSK-079 | Add `restricted` flag to users table for Art.18 restriction requests | open | From data-subject-rights-procedure.md; implement when volume warrants |
 | TSK-082 | Add cert expiry check to heartbeat.sh or create standalone cert-check script | **done** 2026-03-10 | Added openssl s_client check to heartbeat.sh; alerts if <30 days to expiry; tested: 87 days remaining (Jun 2026) |
@@ -191,5 +191,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-095 | Average match rating in weekly helper digest | **done** 2026-03-10 | AVG(user_rating) per helper; star display in HTML + plain text |
 | TSK-096 | `pnpm stats` command — match quality + payment rate summary | **done** 2026-03-10 | scripts/stats.js: goal funnel, payment rate, rating breakdown, revenue |
 | TSK-097 | Free-first-message payment model (research spike) | open | Defer to when 5+ users exist; see docs/research/2026-03-10-payment-ux-and-match-quality.md |
+| TSK-098 | Bug fix: clarification loop not actually limited | **done** 2026-03-10 | Added clarification_attempts INT column; processGoal sets to 1; processClarification checks < 2 before re-asking; proceeds with best decomp after max |
+| TSK-099 | Bug fix: HTML-unsafe user names in email bodies | **done** 2026-03-10 | Exported escHtml() from email-template.js; applied to userName/rawText in all HTML email bodies in platform.js |
 
-*Last updated: 2026-03-10 (fifteenth auto-session — TSK-094/095/096 done; blog post 005 published; research: payment UX + match quality)*
+*Last updated: 2026-03-10 (sixteenth auto-session — TSK-075 done (dogfooding confirmed); code quality rotation; TSK-098/099 bugs fixed)*
