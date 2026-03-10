@@ -60,6 +60,13 @@ async function processGoal(userEmail, userName, rawText) {
   // Find helpers
   const matches = await findMatches(decomposed);
 
+  // TSK-073: pre-match notification — heads-up to relevant helpers before formal intro
+  if (matches.length > 0) {
+    await sendPreMatchNotification(goal, decomposed, matches).catch(err =>
+      console.warn('pre-match notification failed (non-fatal):', err.message)
+    );
+  }
+
   if (matches.length === 0) {
     await sendAcknowledgement(user, goal, decomposed, null);
     return { goal, decomposed, matches: [] };
@@ -240,6 +247,13 @@ async function processClarification(userEmail, userName, replyText, pendingGoal)
 
   const matches = await findMatches(decomposed);
 
+  // TSK-073: pre-match notification
+  if (matches.length > 0) {
+    await sendPreMatchNotification(pendingGoal, decomposed, matches).catch(err =>
+      console.warn('pre-match notification failed (non-fatal):', err.message)
+    );
+  }
+
   if (matches.length === 0) {
     await sendAcknowledgement(user, pendingGoal, decomposed, null);
     return { goal: pendingGoal, decomposed, matches: [] };
@@ -266,6 +280,64 @@ async function processClarification(userEmail, userName, replyText, pendingGoal)
   await logEmail('outbound', FROM, user.email, `Re: your goal — we found someone who can help`, pendingGoal.id, match.id);
 
   return { goal: pendingGoal, decomposed, match, matches };
+}
+
+/**
+ * TSK-073: Pre-match heads-up email to relevant helpers.
+ *
+ * Sent before the formal introduction fires (which requires payment).
+ * Gives helpers early visibility of demand in their area, increasing
+ * engagement and reducing the chance they've gone cold when the intro arrives.
+ *
+ * Only sent to helpers who scored above the relevance threshold.
+ * Does NOT share any user contact details — goal summary only.
+ */
+async function sendPreMatchNotification(goal, decomposed, matches) {
+  const SCORE_THRESHOLD = 40; // only notify helpers with meaningful relevance
+  const relevant = matches.filter(m => !m.score || m.score >= SCORE_THRESHOLD);
+  if (relevant.length === 0) return;
+
+  const needsList = decomposed.needs.map(n => `• ${n.need}`).join('\n');
+
+  for (const helper of relevant) {
+    const greeting = `Hi${helper.name ? ` ${helper.name}` : ''},`;
+
+    const plainText = `${greeting}
+
+A new goal has come in on eskp.in that looks relevant to your expertise.
+
+What they need:
+${needsList}
+
+We're working on finding them the best match now. If this looks like something you could help with, no action is needed — we'll be in touch if you're selected.
+
+This is just a heads-up so you're not caught off-guard. We'll follow up with full details if you're matched.
+
+— The eskp.in team`;
+
+    const htmlBody = `<p>${greeting}</p>
+      <p>A new goal has come in on eskp.in that looks relevant to your expertise.</p>
+      <p><strong>What they need:</strong></p>
+      <ul style="margin:8px 0 16px 20px;padding:0;">
+        ${decomposed.needs.map(n => `<li style="margin-bottom:7px;">${n.need}</li>`).join('')}
+      </ul>
+      <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
+        We're working on finding them the best match. <strong>No action needed right now</strong> — if you're selected, we'll send you full contact details.
+      </p>
+      <p style="color:#7A6E68;font-size:14px;">This is just a heads-up so you're not caught off-guard. We'll follow up with everything you need if you're matched.</p>`;
+
+    await send({
+      to: helper.email,
+      subject: `New goal in your area — ${decomposed.summary.slice(0, 60)}`,
+      text: plainText,
+      html: renderEmail({
+        preheader: 'A new goal has come in that looks relevant to your expertise.',
+        body: htmlBody,
+      }),
+    });
+    await logEmail('outbound', FROM, helper.email, `New goal in your area — ${decomposed.summary.slice(0, 60)}`, goal.id, null);
+    console.log(`pre-match notification sent to ${helper.email} for goal ${goal.id}`);
+  }
 }
 
 async function sendHelperIntro(user, goal, decomposed, helper) {
