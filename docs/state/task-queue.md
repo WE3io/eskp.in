@@ -31,7 +31,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
 | Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 11) | Session 20 | Track count in docs/state/self-directed.md |
-| Public claims coherence check | Monthly | 2026-03-10 | 2026-04-10 | Verify all rows in docs/state/public-claims-register.md are still "Aligned" |
+| Public claims coherence check | Weekly | 2026-03-10 | 2026-03-17 | Verify all rows in docs/state/public-claims-register.md are still "Aligned" |
 
 ---
 

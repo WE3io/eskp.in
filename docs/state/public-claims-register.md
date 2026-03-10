@@ -69,4 +69,4 @@ Last verified: 2026-03-10
 
 - **After changing code that affects user-facing behavior**: check if a claim above needs updating. If the code diverges from a claim, either update the code or update the website.
 - **After changing website copy**: add or update the corresponding row here.
-- **Monthly review**: recurring task in task-queue.md — verify all rows still say "Aligned".
+- **Weekly review**: recurring task in task-queue.md — verify all rows still say "Aligned".
