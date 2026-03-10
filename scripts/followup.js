@@ -21,7 +21,7 @@
 require('dotenv').config();
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
-const { renderEmail } = require('../src/services/email-template');
+const { renderEmail, escHtml } = require('../src/services/email-template');
 const { generateReplyTo } = require('../src/services/email-reply-token');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
@@ -102,8 +102,8 @@ If the introduction didn't work out for any reason, let us know and we'll see wh
 — The eskp.in team`;
 
     const htmlBody = `
-      <p>${greeting}</p>
-      <p>We introduced you to <strong>${helperName}</strong> yesterday. We hope the conversation is going well.</p>
+      <p>${escHtml(greeting)}</p>
+      <p>We introduced you to <strong>${escHtml(helperName)}</strong> yesterday. We hope the conversation is going well.</p>
       ${ratingHtml}
       <p>You can also just <strong>reply to this email</strong> with a line or two — whatever's easier.</p>
       <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
@@ -175,8 +175,8 @@ Sorry it's taking longer than expected. We'd rather be honest than keep you wait
 — The eskp.in team`;
 
     const htmlBody = `
-      <p>${greeting}</p>
-      <p>We wanted to be honest with you: we haven't found the right match for <em>"${summary}"</em> yet.</p>
+      <p>${escHtml(greeting)}</p>
+      <p>We wanted to be honest with you: we haven't found the right match for <em>"${escHtml(summary)}"</em> yet.</p>
       <p>We're still a small platform and our helper network is growing. A few options:</p>
       <ol style="margin:8px 0 16px 20px;padding:0;">
         <li style="margin-bottom:8px;"><strong>Wait</strong> — we're actively recruiting helpers and may find someone soon.</li>
@@ -247,8 +247,8 @@ If your situation has changed or you'd like to close this request, just reply an
 — The eskp.in team`;
 
     const htmlBody = `
-      <p>${greeting}</p>
-      <p>A week ago we found a potential match for your goal: <strong>${helperName}</strong>.</p>
+      <p>${escHtml(greeting)}</p>
+      <p>A week ago we found a potential match for your goal: <strong>${escHtml(helperName)}</strong>.</p>
       <p>The introduction is waiting for you. If you're ready to proceed, just reply and we'll send you a fresh payment link.</p>
       <p style="color:#7A6E68;font-size:14px;">If your situation has changed or you'd like to close this request, just reply and let us know.</p>`;
 

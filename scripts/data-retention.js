@@ -8,7 +8,7 @@
  * Actions taken:
  *
  *  1. Auto-close stale active goals (no update in 90 days) with user notification.
- *     Statuses: submitted, matched, pending_clarification, clarifying, proposed.
+ *     Statuses: submitted, matched, pending_clarification, decomposing, proposed.
  *
  *  2. Auto-close completed introductions with no activity (180 days post-introduction).
  *     Status: introduced.
@@ -27,7 +27,7 @@
 require('dotenv').config();
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
-const { renderEmail } = require('../src/services/email-template');
+const { renderEmail, escHtml } = require('../src/services/email-template');
 
 const DRY_RUN = process.env.DRY_RUN === '1';
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
@@ -55,10 +55,10 @@ async function run() {
       u.email_suppressed_at
     FROM goals g
     JOIN users u ON u.id = g.user_id
-    WHERE g.status IN ('submitted', 'matched', 'pending_clarification', 'clarifying', 'proposed')
-      AND g.updated_at < NOW() - INTERVAL '${STALE_ACTIVE_DAYS} days'
+    WHERE g.status IN ('submitted', 'matched', 'pending_clarification', 'decomposing', 'proposed')
+      AND g.updated_at < NOW() - make_interval(days => $1)
       AND u.deleted_at IS NULL
-  `);
+  `, [STALE_ACTIVE_DAYS]);
 
   for (const row of staleGoals) {
     const greeting = `Hi${row.user_name ? ` ${row.user_name}` : ''},`;
@@ -77,8 +77,8 @@ Your personal data has been handled in line with our privacy policy: https://esk
 — The eskp.in team`;
 
     const htmlBody = `
-      <p>${greeting}</p>
-      <p>Your goal submission — <em>"${summary}"</em> — has been inactive for ${STALE_ACTIVE_DAYS} days and has been automatically closed.</p>
+      <p>${escHtml(greeting)}</p>
+      <p>Your goal submission — <em>"${escHtml(summary)}"</em> — has been inactive for ${STALE_ACTIVE_DAYS} days and has been automatically closed.</p>
       <p style="color:#7A6E68;font-size:14px;">This is a routine data hygiene action. We close inactive goals after ${STALE_ACTIVE_DAYS} days to respect your privacy (UK GDPR, storage limitation principle).</p>
       <p>If your need is still live, you're welcome to <a href="https://eskp.in" style="color:#C4753A;">submit it again</a> — it will be matched fresh.</p>
       <p style="font-size:13px;color:#9E9490;">Your personal data has been handled in line with our <a href="https://eskp.in/privacy.html" style="color:#9E9490;">privacy policy</a>.</p>`;
@@ -130,9 +130,9 @@ Your personal data has been handled in line with our privacy policy: https://esk
     FROM goals g
     JOIN users u ON u.id = g.user_id
     WHERE g.status = 'introduced'
-      AND g.updated_at < NOW() - INTERVAL '${STALE_INTRO_DAYS} days'
+      AND g.updated_at < NOW() - make_interval(days => $1)
       AND u.deleted_at IS NULL
-  `);
+  `, [STALE_INTRO_DAYS]);
 
   for (const row of introGoals) {
     if (DRY_RUN) {
@@ -158,8 +158,8 @@ Your personal data has been handled in line with our privacy policy: https://esk
     FROM goals g
     WHERE g.status = 'closed'
       AND g.decomposed IS NOT NULL
-      AND g.updated_at < NOW() - INTERVAL '${PURGE_CLOSED_DAYS} days'
-  `);
+      AND g.updated_at < NOW() - make_interval(days => $1)
+  `, [PURGE_CLOSED_DAYS]);
 
   if (!DRY_RUN && purgeGoals.length > 0) {
     const ids = purgeGoals.map(r => r.goal_id);

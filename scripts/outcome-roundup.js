@@ -22,7 +22,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const { send } = require('../src/services/email');
-const { renderEmail } = require('../src/services/email-template');
+const { renderEmail, escHtml } = require('../src/services/email-template');
 const { isSuppressed } = require('../src/services/email-suppression');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -35,7 +35,7 @@ async function run() {
     SELECT
       COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '30 days') AS goals_last_30d,
       COUNT(*) FILTER (WHERE status = 'introduced' AND created_at >= NOW() - INTERVAL '30 days') AS intros_last_30d,
-      COUNT(*) FILTER (WHERE status IN ('submitted', 'clarifying', 'matched')) AS open_goals
+      COUNT(*) FILTER (WHERE status IN ('submitted', 'decomposing', 'pending_clarification', 'matched')) AS open_goals
     FROM goals
   `);
 
@@ -96,7 +96,7 @@ If you have a new goal you'd like help with, send an email to hello@mail.eskp.in
 ---
 You received this because you submitted a goal via eskp.in. Reply with "unsubscribe" to stop receiving these updates.`;
 
-    const htmlBody = `<p>${greeting}</p>
+    const htmlBody = `<p>${escHtml(greeting)}</p>
 <p>This is a short monthly note from eskp.in.</p>
 <p>${statsLine}</p>
 <p>If you've had an introduction and it was useful — we'd love to hear what happened. <strong>Just reply to this email.</strong> If it wasn't useful, we'd like to know that too.</p>

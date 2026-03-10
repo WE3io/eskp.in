@@ -4,7 +4,7 @@
  */
 const { pool } = require('../db/connection');
 const { send } = require('./email');
-const { renderEmail } = require('./email-template');
+const { renderEmail, escHtml } = require('./email-template');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const ADMIN_EMAIL = process.env.PANEL_EMAIL || FROM;
@@ -43,9 +43,9 @@ async function processHelperApplication(email, name, body) {
 async function sendHelperAck(email, name, isDuplicate) {
   const greeting = `Hi${name ? ` ${name}` : ''},`;
   const body = isDuplicate
-    ? `<p>${greeting}</p>
+    ? `<p>${escHtml(greeting)}</p>
        <p>We already have an application from you and are reviewing it. We'll be in touch soon.</p>`
-    : `<p>${greeting}</p>
+    : `<p>${escHtml(greeting)}</p>
        <p>Thanks for applying to join the eskp.in helper network.</p>
        <p>We review applications manually and will add you once we've had a chance to look at your background. This usually takes a few days.</p>
        <p style="color:#7A6E68;font-size:14px;">If you have questions, just reply to this email.</p>`;
@@ -63,10 +63,10 @@ async function sendHelperAck(email, name, isDuplicate) {
 async function notifyAdmin(app) {
   const body = `
     <p>New helper application received.</p>
-    <p><strong>Email:</strong> ${app.email}</p>
-    <p><strong>Name:</strong> ${app.name || '(not provided)'}</p>
+    <p><strong>Email:</strong> ${escHtml(app.email)}</p>
+    <p><strong>Name:</strong> ${escHtml(app.name || '(not provided)')}</p>
     <p><strong>What they said:</strong></p>
-    <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:12px 0;white-space:pre-wrap;">${app.expertise_description}</p>
+    <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:12px 0;white-space:pre-wrap;">${escHtml(app.expertise_description)}</p>
     <p>To approve: <code>pnpm manage-helpers approve ${app.id}</code></p>
     <p>To reject: <code>pnpm manage-helpers reject ${app.id}</code></p>`;
 
