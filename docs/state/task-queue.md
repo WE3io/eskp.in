@@ -197,5 +197,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-101 | Canonical tags in decompose.js prompt | **done** 2026-03-10 | 56 canonical tags added to system prompt; Haiku prefers them for consistent vocabulary |
 | TSK-102 | Missing migrations in migrate.js | **done** 2026-03-10 | Added ALTER TABLE for helpers.notes and goals.clarification_attempts |
 | TSK-103 | Skip helpers with empty expertise in findMatches | open | P3 — defer to 2+ helpers; prevents matchless helpers from appearing |
+| TSK-104 | Bug fix: XSS in email scripts (data-retention, followup, helper-application, outcome-roundup) | **done** 2026-03-10 | escHtml() applied to all user-controlled strings in HTML email bodies |
+| TSK-105 | Bug fix: SQL string interpolation in data-retention.js | **done** 2026-03-10 | Replaced INTERVAL interpolation with parameterized make_interval() |
+| TSK-106 | Bug fix: invalid 'clarifying' status in helper-digest.js, data-retention.js, outcome-roundup.js | **done** 2026-03-10 | Replaced with correct schema statuses (decomposing, pending_clarification) |
 
-*Last updated: 2026-03-10 (eighteenth auto-session — research rotation: helper onboarding quality; tag normalization fixes; canonical tags in decompose)*
+*Last updated: 2026-03-10 (nineteenth auto-session — code quality rotation: XSS fixes, SQL param, invalid status)*
