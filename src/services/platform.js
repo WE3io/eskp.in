@@ -94,7 +94,7 @@ async function sendAcknowledgement(user, goal, decomposed, helper, paymentUrl) {
   const plainText = hasMatch
     ? `${greeting}
 
-We received your message and here's how we understood your goal:
+We received your message. Our AI analysed your goal and here's what it understood:
 
 ${decomposed.summary}
 
@@ -111,7 +111,7 @@ If we've misunderstood anything, just reply to this email.
 — The eskp.in team`
     : `${greeting}
 
-We received your message and here's how we understood your goal:
+We received your message. Our AI analysed your goal and here's what it understood:
 
 ${decomposed.summary}
 
@@ -126,7 +126,7 @@ If we've misunderstood anything, just reply to this email.
 
   const htmlBody = hasMatch
     ? `<p>${greeting}</p>
-       <p>We received your message and here's how we understood your goal:</p>
+       <p>We received your message. Our AI analysed your goal and here's what it understood:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
        <p><strong>What you need:</strong></p>
        <ul style="margin:8px 0 16px 20px;padding:0;">
@@ -141,7 +141,7 @@ If we've misunderstood anything, just reply to this email.
        </p>
        <p style="color:#7A6E68;font-size:14px;margin-top:24px;">If we've misunderstood anything, just reply to this email.</p>`
     : `<p>${greeting}</p>
-       <p>We received your message and here's how we understood your goal:</p>
+       <p>We received your message. Our AI analysed your goal and here's what it understood:</p>
        <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
        <p><strong>What you need:</strong></p>
        <ul style="margin:8px 0 16px 20px;padding:0;">

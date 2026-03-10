@@ -1,5 +1,22 @@
 # Recent Decisions
 
+## 2026-03-10 — tool_use replaces JSON-in-text for decompose.js (TSK-033)
+- **Decision:** Switched decompose.js from system-prompt-described JSON schema to Anthropic tool_use with explicit `input_schema` and `tool_choice: { type: 'tool', name: 'decompose_goal' }`.
+- **Reason:** API enforces schema compliance; eliminates JSON parse failures; schema is self-documenting in code.
+- **Live test:** candle business goal decomposed correctly first call.
+- **Confidence:** 95%
+
+## 2026-03-10 — Sensitive-domain goals held for human review (TSK-049)
+- **Decision:** Goals touching mental health crisis, domestic abuse, child safeguarding, grief, addiction, eating disorders, relationship breakdown are flagged by `detectSensitiveDomain()` and routed to `processGoalSensitive()` — held for panel review, no automated matching or payment link.
+- **Reason:** DPIA risk 3; Art.11.2 witnessed reflection principle; Art.3.1.1 never exploit vulnerability.
+- **Design choice:** High-recall patterns (false positive = human review delay; false negative = unsafe auto-match).
+- **Confidence:** 90%
+
+## 2026-03-10 — TSK-021/022 promoted to P2 (constitutional rights, pre-external-user requirement)
+- **Decision:** Account deletion flow (TSK-021) and data export endpoint (TSK-022) promoted from P3 to P2. These are constitutional rights under Art.10 and UK GDPR Art.17/20, not optional features.
+- **Reason:** Mission alignment review identified these as required before external users, not post-launch add-ons.
+- **Confidence:** 100%
+
 ## 2026-03-09 — Autonomous agent operational model established
 - **Decision:** Claude operates as a self-directing agent, not just a task executor. Self-directed work (research, code quality, infrastructure, mission alignment, growth, communication) added as 5th priority in every auto-session. Task generation formalised as a first-class responsibility. Server stewardship recurring tasks added. Research priorities queued (TSK-026–030). Operational review every 10 sessions.
 - **Constitutional basis:** Art.1 (purpose-driven evolution), Art.2.3 (Claude proposes and critiques), Art.2 (builder and operator role)

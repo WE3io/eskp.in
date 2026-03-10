@@ -87,14 +87,14 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-027 | Research: goal decomposition approaches (academic + industry) | **done** 2026-03-09 | docs/research/2026-03-09-goal-decomposition.md; tasks TSK-031–034 generated |
 | TSK-031 | Add Zod schema validation to decompose.js output before DB write | **done** 2026-03-09 | Inline validateDecomposition() added |
 | TSK-032 | Add 1-retry logic to decompose.js on JSON parse failure | **done** 2026-03-09 | callHaiku() + try/retry wrapper |
-| TSK-033 | Investigate Anthropic tool_use for decompose.js structured output enforcement | open | From research TSK-027; P3 until TSK-031 shipped |
+| TSK-033 | Investigate Anthropic tool_use for decompose.js structured output enforcement | **done** 2026-03-10 | Implemented: DECOMPOSE_TOOL with JSON Schema, tool_choice: force. Eliminates JSON parse errors. |
 | TSK-034 | Design clarification loop: route vague goal back to user via email | open | From research TSK-027; requires email reply parsing |
 | TSK-035 | Data minimisation: strip context/outcome from match.js LLM prompt | **done** 2026-03-09 | Now sends summary + tags only; UK GDPR Art.5(1)(c) |
 | TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | open | From research TSK-026; defence in depth |
 | TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | **done** 2026-03-09 | Section 3 expanded: decomposition + matching, LB, international transfer, Stripe added to s5 |
 | TSK-038 | Tag normalisation at helper onboarding: suggest canonical tags | open | From research TSK-026; improves tag-overlap quality |
 | TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | **done** 2026-03-09 | docs/research/2026-03-09-uk-gdpr-compliance-checklist.md; tasks TSK-039–045 generated |
-| TSK-029 | Research: email-first platform best practices (deliverability, reputation) | open | Infrastructure reliability |
+| TSK-029 | Research: email-first platform best practices (deliverability, reputation) | **done** 2026-03-10 | docs/research/2026-03-10-email-deliverability.md; TSK-050–053 generated |
 | TSK-030 | Research: what makes a good first-user experience for this type of platform | open | Growth — feeds into TSK-012 prep |
 
 ---
@@ -105,9 +105,11 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 |---|---|---|---|
 | TSK-050 | Ensure all email templates send both HTML + plain text versions | open | From TSK-029; deliverability best practice |
 | TSK-051 | Implement Resend webhook handler for bounce/complaint events | open | From TSK-029; list hygiene |
-| TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | open | From TSK-029; foundation of deliverability |
-| TSK-048 | **done** 2026-03-10 — Prompt instruction in decompose.js to generalise special category data | **done** | From DPIA; data minimisation for sensitive fields |
-| TSK-049 | Flag sensitive-domain goals for human review before sending introduction email | open | From DPIA TSK-042; reduces automated matching risk |
+| TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | **done** 2026-03-10 | All three confirmed: DKIM (resend._domainkey.mail.eskp.in), SPF, DMARC p=quarantine |
+| TSK-048 | Prompt instruction in decompose.js to generalise special category data | **done** 2026-03-10 | From DPIA; data minimisation for sensitive fields |
+| TSK-049 | Flag sensitive-domain goals for human review before sending introduction email | **done** 2026-03-10 | sensitive-flag.js + processGoalSensitive(); 7 domains; panel alert email |
+| TSK-054 | Define and implement raw_text retention policy | open | From mission alignment 2026-03-10; Art.5(1)(e) GDPR storage limitation |
+| TSK-055 | Add AI disclosure line to acknowledgement emails | **done** 2026-03-10 | "Our AI analysed your goal" — Art.3.3 Constitution |
 
 ---
 
@@ -123,8 +125,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | open | From infrastructure check 2026-03-10; low urgency |
 | TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | open | From infrastructure check; prevent unbounded growth |
 | TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
-| TSK-021 | `account-deletion-flow` | open | Art.10 Phase 1 |
-| TSK-022 | `data-export-endpoint` | open | Art.10 Phase 1 |
+| TSK-021 | `account-deletion-flow` | open | Art.10 Phase 1 — **promoted to P2** (constitutional right, required before external users) |
+| TSK-022 | `data-export-endpoint` | open | Art.10 Phase 1 — **promoted to P2** (constitutional right, required before external users) |
+| TSK-056 | Design basic data retention/deletion automation | open | From mission alignment; goals with no activity after N months auto-closed |
+| TSK-057 | Create public roadmap page (/roadmap.html) | open | Art.3.4 User-Driven Development; transparency commitment |
 | TSK-023 | `algorithmic-transparency-disclosure` | open | Art.10 Phase 1 |
 | TSK-024 | `revenue-model-constraint-terms` | open | Art.10 Phase 1 |
 | TSK-025 | `exclusion-register-operational` | open | Art.11 Phase 1 (register exists; this covers update process) |
@@ -148,4 +152,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (TSK-041/042 done; TSK-048 done; TSK-039 escalated to Sunil; TSK-029 email deliverability research done; TSK-046–053 generated; infrastructure check clean)*
+*Last updated: 2026-03-10 (fifth auto-session — TSK-053/049/033/009/055 done; TSK-054/056/057 generated; TSK-021/022 promoted to P2; mission alignment research complete)*

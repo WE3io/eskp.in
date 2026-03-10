@@ -231,7 +231,7 @@ All monitoring scripts, schedules, and alert destinations:
 | `scripts/heartbeat.sh` | App health, PostgreSQL, nginx, disk usage | `*/15 * * * *` | sunil@eskp.in |
 | `scripts/check-cron-health.sh` | Auto-session log freshness (< 7 hours) | `0 4,12,20 * * *` | sunil@eskp.in |
 | `scripts/backup-db.sh` | Runs daily backup (not a check) | `0 2 * * *` | ~/logs/backup.log |
-| `scripts/auto-session.sh` | Runs Claude session + self-reports outcome | `0 */6 * * *` | sunil@eskp.in on failure |
+| `scripts/auto-session.sh` | Runs Claude session + self-reports outcome | `0 * * * *` | sunil@eskp.in on failure |
 
 All alert emails come from `hello@mail.eskp.in` via Resend. Subject prefix: `[eskp.in]`.
 

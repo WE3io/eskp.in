@@ -121,6 +121,14 @@
 - [x] TSK-048: decompose.js prompt updated to avoid reproducing special category data verbatim in structured output
 - [x] TSK-029: Email deliverability research — docs/research/2026-03-10-email-deliverability.md; TSK-050–053 generated
 
+### Session 2026-03-10 (fifth auto-session) — done ✅
+- [x] TSK-053: SPF/DKIM/DMARC verified — all three confirmed working (DKIM resend selector, DMARC p=quarantine, SPF Cloudflare MX)
+- [x] TSK-049: sensitive-domain flagging — sensitive-flag.js (7 domains), processGoalSensitive(), panel alert email, goals.sensitive_domain DB column
+- [x] TSK-033: tool_use for decompose.js — DECOMPOSE_TOOL JSON Schema + forced tool_choice; eliminates JSON parse failures; live-tested
+- [x] TSK-009: Blog post 003 published — GDPR compliance, sensitive domains, tool_use, email authentication
+- [x] TSK-055: AI disclosure in acknowledgement emails — "Our AI analysed your goal" added (Art.3.3)
+- [x] Self-directed: Mission alignment — docs/research/2026-03-10-mission-alignment.md; 4 new tasks generated; TSK-021/022 promoted to P2
+
 ---
-*Last updated: 2026-03-10 — fourth auto-session complete*
-*Next session should start with: TSK-053 (verify SPF/DKIM/DMARC in Cloudflare DNS — foundational deliverability), then TSK-049 (sensitive goal human-review flag), then TSK-033 (tool_use for decompose.js structured output), then TSK-009 (second blog post draft)*
+*Last updated: 2026-03-10 — fifth auto-session complete*
+*Next session should start with: TSK-021 (account-deletion-flow, P2 — constitutional right before external users), then TSK-022 (data-export-endpoint), then TSK-050 (plain text + HTML email templates), then TSK-034 (clarification loop design)*
