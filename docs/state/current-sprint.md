@@ -242,6 +242,16 @@
   - All recurring tasks current; no new tasks generated
 - All remaining open tasks require Sunil action or are deferred to higher user volume
 
+### Session 2026-03-10 — Agent context architecture restructure
+- [x] Formal audit of agent context architecture (CLAUDE.md, rules, skills, commands, hooks)
+- [x] CLAUDE.md rewritten: 401 → 176 lines; added codebase map, DB schema, commands list, documentation index
+- [x] Created `.githooks/pre-commit` secret scanner (replaces prose instruction)
+- [x] Created `/session-end` and `/session-start` custom commands
+- [x] Resolved duplication: escalation triggers single-sourced in CLAUDE.md, credential rules in security.md
+- [x] Updated safety-lens skill to reference CLAUDE.md instead of restating escalation triggers
+- [x] Fixed stale reference in task-queue.md
+- [x] Always-on context reduced from ~7,300 to ~3,800 tokens (~48%)
+
 ---
-*Last updated: 2026-03-10 — seventeenth auto-session complete*
+*Last updated: 2026-03-10 — agent context architecture restructure*
 *Next session should start with: Check for Sunil responses (dogfooding follow-up, DPA acceptances); TSK-097 deferred to 5+ users; growth category is next in self-directed rotation*

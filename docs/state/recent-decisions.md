@@ -1,5 +1,12 @@
 # Recent Decisions
 
+## 2026-03-10 — Agent context architecture restructure
+- **Decision:** Restructured CLAUDE.md and supporting agent context files based on a formal audit.
+- **Key changes:** CLAUDE.md rewritten from 401→176 lines; added codebase map, DB schema, commands, documentation index; created /session-start and /session-end custom commands; added .githooks/pre-commit secret scanner; resolved duplication (escalation triggers now single-source in CLAUDE.md, credential rules single-source in security.md); safety-lens now references CLAUDE.md instead of restating triggers.
+- **Rationale:** Audit found ~30% of always-on context was governance narrative with no coding-task value, critical technical context (codebase map, commands, schema) was missing, and duplication between CLAUDE.md/security.md/safety-lens created drift risk.
+- **Result:** Always-on context reduced from ~7,300 to ~3,800 tokens (~48%) while adding missing technical reference content.
+- **Confidence:** 85%
+
 ## 2026-03-10 — reply-to default changed to hello@mail.eskp.in
 - **Decision:** `email.js` default `REPLY_TO` changed from `panel@eskp.in` to `hello@mail.eskp.in`.
 - **Reason:** Sunil reported that when he replied to an escalation email, replies went to `panel@eskp.in` (the escalation address) instead of the platform's inbound processing pipeline (`hello@mail.eskp.in`). This means user replies would have been misrouted.
