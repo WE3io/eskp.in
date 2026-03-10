@@ -158,6 +158,13 @@
 - [x] TSK-046: 1GB swap file added to server (fallocate + fstab entry)
 - [x] Self-directed rotation (Research): helper retention at bootstrap stage — docs/research/2026-03-10-helper-retention.md; tasks TSK-072–076 generated
 
+### Session 2026-03-10 (ninth auto-session) — done ✅
+- [x] TSK-072: Weekly helper digest email script (scripts/helper-digest.js) — cron Monday 08:00 UTC; dry-run tested; personalises by helper expertise overlap
+- [x] TSK-073: Pre-match helper notification (sendPreMatchNotification in platform.js) — heads-up email to helpers with score >= 40 before formal intro fires; no user contact details shared
+- [x] TSK-047: Log rotation configured — /etc/logrotate.d/eskp-logs (daily, 14-day retention, compress); cron 03:00 daily removes session-*.log >30 days old
+- [x] TSK-051: Resend bounce/complaint webhook — POST /webhooks/resend with Svix HMAC-SHA256 signature verification; email-suppression.js service; isSuppressed() check in email.js before every send; DB migration for email_suppressed_at/email_suppression_reason columns
+- [x] Self-directed (Code quality): pnpm audit clean; reviewed all new session code; fixed double blank line; timingSafeEqual edge case confirmed safe via try-catch
+
 ---
-*Last updated: 2026-03-10 — eighth auto-session complete*
-*Next session should start with: TSK-072 (helper digest email — weekly comms to helpers), then TSK-073 (pre-match helper notification), then TSK-047 (log rotation), then TSK-051 (Resend bounce/complaint webhook handler)*
+*Last updated: 2026-03-10 — ninth auto-session complete*
+*Next session should start with: TSK-044 (data subject rights procedure + erasure cascade audit), then TSK-054 (raw_text retention policy), then TSK-057 (public roadmap page), then TSK-045 (processor DPA documentation)*

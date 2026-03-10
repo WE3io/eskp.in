@@ -104,7 +104,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-050 | Ensure all email templates send both HTML + plain text versions | **done** 2026-03-10 | email.js now sends both html+text when both provided (Resend multipart/alternative) |
-| TSK-051 | Implement Resend webhook handler for bounce/complaint events | open | From TSK-029; list hygiene |
+| TSK-051 | Implement Resend webhook handler for bounce/complaint events | **done** 2026-03-10 | POST /webhooks/resend; Svix HMAC-SHA256; email-suppression.js; isSuppressed() in email.js. **Action needed**: add RESEND_WEBHOOK_SECRET to .env from Resend dashboard (Webhooks → signing secret) |
 | TSK-053 | Verify SPF, DKIM, DMARC records correctly configured in Cloudflare DNS | **done** 2026-03-10 | All three confirmed: DKIM (resend._domainkey.mail.eskp.in), SPF, DMARC p=quarantine |
 | TSK-048 | Prompt instruction in decompose.js to generalise special category data | **done** 2026-03-10 | From DPIA; data minimisation for sensitive fields |
 | TSK-049 | Flag sensitive-domain goals for human review before sending introduction email | **done** 2026-03-10 | sensitive-flag.js + processGoalSensitive(); 7 domains; panel alert email |
@@ -123,7 +123,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-044 | Write data subject rights procedure + verify erasure cascade covers all DB tables | open | From TSK-028; Art.15–22 obligations |
 | TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | open | From TSK-028; Art.28 |
 | TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | **done** 2026-03-10 | fallocate -l 1G /swapfile + fstab entry; 1GB swap now active |
-| TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | open | From infrastructure check; prevent unbounded growth |
+| TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | **done** 2026-03-10 | /etc/logrotate.d/eskp-logs; daily rotate, 14-day retention; session log cleanup cron |
 | TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
 | TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
 | TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
@@ -146,8 +146,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-069 | Add plain-language data-handling statement to first AI response email | open | Research finding 18: privacy transparency enables richer user context |
 | TSK-070 | Design lightweight commitment signal for goal submissions | open | P3 — filters low-intent submissions once platform has volume |
 | TSK-071 | Research and draft plan for community layer (5+ active users) | open | P3 — community is retention layer independent of match quality |
-| TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | open | Core retention; zero-cost at 1 helper; design for automation now |
-| TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | open | Keeps helpers active; creates anticipation before formal match fires |
+| TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | **done** 2026-03-10 | scripts/helper-digest.js; cron Monday 08:00 UTC; personalised by expertise overlap |
+| TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | **done** 2026-03-10 | sendPreMatchNotification() in platform.js; score >= 40 threshold; no user contact details |
 | TSK-074 | Create private helper channel (Slack/email) as community space | open | P3 — GrowthMentor built helper community before product matured |
 | TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | open | Side-switching reduces supply-side churn; generates product feedback |
 | TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | open | P3 — signals demand is building without requiring completed connections |
@@ -171,4 +171,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (eighth auto-session — TSK-036/030/046/062–067 done; first-user experience improvements; helper retention research; tasks TSK-064–076 added)*
+*Last updated: 2026-03-10 (ninth auto-session — TSK-072/073/047/051 done; weekly digest, pre-match notification, log rotation, bounce/complaint suppression)*
