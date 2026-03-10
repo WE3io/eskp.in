@@ -2,6 +2,7 @@
 
 **Phase:** 2 — Panel infrastructure
 **Article:** 11.2.3 (Panel members trained before accessing platform), 11.2.5 (Safeguarding)
+**Status:** draft
 
 ## Outcome
 

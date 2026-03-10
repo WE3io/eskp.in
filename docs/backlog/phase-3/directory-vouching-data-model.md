@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Trust Directory
 **Article:** 11.3 (Trust Directory — relational, not transactional)
+**Status:** draft
 
 ## Outcome
 

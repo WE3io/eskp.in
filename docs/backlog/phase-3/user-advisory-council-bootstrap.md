@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Governance and measurement
 **Article:** 10.2.4 (User governance participation)
+**Status:** draft
 
 ## Outcome
 

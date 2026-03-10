@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Trust Directory
 **Article:** 11.3.2 (Trust signal is relational — network vouching only)
+**Status:** draft
 
 ## Outcome
 

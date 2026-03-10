@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 11.2.3 (Safety infrastructure designed, not monitored)
+**Status:** done
 
 ## Outcome
 

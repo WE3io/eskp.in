@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Governance and measurement
 **Article:** 10.4 (Empirical honesty)
+**Status:** draft
 
 ## Outcome
 

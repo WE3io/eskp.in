@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 11.2.1, 11.2.2 (Duty of care acknowledged; irresolvable tension disclosed)
+**Status:** done
 
 ## Outcome
 

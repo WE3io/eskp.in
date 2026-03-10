@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 11.1 (Maintained exclusion register)
+**Status:** done
 
 ## Outcome
 

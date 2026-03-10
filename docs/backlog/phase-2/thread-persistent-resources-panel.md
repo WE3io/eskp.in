@@ -2,6 +2,7 @@
 
 **Phase:** 2 — Panel infrastructure
 **Article:** 11.2.3 (Safety infrastructure designed, not monitored)
+**Status:** draft
 
 ## Outcome
 

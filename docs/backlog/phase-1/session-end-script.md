@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 2.2 (Operational decisions — autonomous authority)
+**Status:** done
 
 ## Outcome
 

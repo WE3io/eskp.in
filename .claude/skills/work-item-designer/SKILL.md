@@ -19,10 +19,9 @@ Design concise, independently executable work items with clear outcomes, constra
 ## Workflow
 
 1. **Discovery first**
-   - Inspect the repository for existing conventions related to backlog/tasks, planning files, or work item structure.
-   - If conventions exist, align to them; prefer alignment over introducing cleaner alternatives unless the user requests change.
-   - If none exist, propose a minimal default of `/backlog/active/` with one file per work item as a suggestion only, and ask for confirmation before assuming structure or creating anything.
-   - Keep discovery lightweight and non-destructive.
+   - This repo uses `docs/backlog/` with phase subdirectories (`phase-1/`, `phase-2/`, `phase-3/`). One `.md` file per work item.
+   - Work items are promoted into `docs/state/task-queue.md` (with a TSK-NNN ID and priority) when ready for execution.
+   - The work-item-designer creates the backlog file. Prioritization and TSK assignment happen separately.
 
 2. **Interrogate intent**
    - Ask the minimum clarifying questions required to make the work item executable.
@@ -40,8 +39,8 @@ Design concise, independently executable work items with clear outcomes, constra
    - Ephemeral mode (default): draft the work item in the conversation only.
    - Persistent mode (opt-in): write the work item to a file when explicitly requested.
    - Never persist without explicit user consent.
-   - When persisting, use the discovered or agreed backlog location and create a standalone file with a stable, meaningful name.
-   - Filename guidance: concise, stable, descriptive, and human-readable (e.g., `short-action-object.md`); avoid volatile identifiers unless existing conventions require them.
+   - When persisting, write to `docs/backlog/<phase>/` with a concise, descriptive filename (e.g., `short-action-object.md`). Ask which phase if unclear.
+   - Add a `**Status:** draft` line at the top of the file (below the title and phase/article metadata).
 
 6. **Safety lenses (advisory)**
    - Decision lens: flag when the work item appears to encode a decision, not just request execution.
@@ -49,10 +48,10 @@ Design concise, independently executable work items with clear outcomes, constra
 
 7. **Stop cleanly**
    - Present the draft work item and any advisory signals.
-   - Pause and await explicit instruction to persist, revise, or discard.
+   - In interactive mode: pause and await explicit instruction to persist, revise, or discard. Hand control back to the user.
+   - In non-interactive mode (auto-session): persist the work item directly to `docs/backlog/<phase>/` and continue.
    - Do not implement.
    - Do not prioritize, estimate, or sequence.
-   - Hand control back to the user.
    - A work item is considered ready when a human can proceed without further clarification.
 
 ## Required output format

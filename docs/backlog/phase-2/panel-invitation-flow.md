@@ -2,6 +2,7 @@
 
 **Phase:** 2 — Panel infrastructure
 **Article:** 10.3.2, 10.3.4, 10.1.1
+**Status:** draft
 
 ## Outcome
 

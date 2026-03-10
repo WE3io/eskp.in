@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 10.2.3 (Algorithmic transparency and user control)
+**Status:** done
 
 ## Outcome
 

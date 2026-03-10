@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 11.2.5 (Safeguarding is a shared responsibility)
+**Status:** done
 
 ## Outcome
 

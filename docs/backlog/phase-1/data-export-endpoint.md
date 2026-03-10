@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 10.2.2 (Data portability as a constitutional right)
+**Status:** done
 
 ## Outcome
 

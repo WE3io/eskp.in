@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 10.2.5 (Exit costs kept deliberately low)
+**Status:** done
 
 ## Outcome
 

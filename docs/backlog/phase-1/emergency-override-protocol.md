@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 11.2.4 (Emergency override — vital interests basis)
+**Status:** done
 
 ## Outcome
 

@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 2.2 (Operational decisions — autonomous authority); 3.4 (User-driven development)
+**Status:** done
 
 ## Outcome
 

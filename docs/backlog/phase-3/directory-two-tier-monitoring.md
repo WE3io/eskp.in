@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Trust Directory
 **Article:** 11.3.4 (Two-tier access monitored and structurally addressed if detected)
+**Status:** draft
 
 ## Outcome
 

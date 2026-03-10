@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Trust Directory
 **Article:** 11.3.3 (Regulated professionals verified against public registers before listing)
+**Status:** draft
 
 ## Outcome
 

@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 5.1 (Budget management — weekly reporting obligation); 7.4 (Security boundaries — backup integrity)
+**Status:** done
 
 ## Outcome
 

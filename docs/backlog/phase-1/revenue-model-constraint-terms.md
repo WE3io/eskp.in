@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 10.2.1 (No advertiser class)
+**Status:** done
 
 ## Outcome
 

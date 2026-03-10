@@ -87,6 +87,10 @@ timeout 2700 claude \
   --print \
   "Read CLAUDE.md (focus on: Identity, Current Phase, Risk Assessment Protocol, Session Continuity, Task Management). Read docs/state/current-sprint.md — the 'Next session starts with' line is your first task. Read docs/state/task-queue.md for the prioritised task list. Read docs/state/budget-tracker.md.
 
+--- BACKLOG SCAN ---
+List files in docs/backlog/phase-1/, phase-2/, phase-3/. For any backlog item in the current phase (Phase 1) that has no TSK entry in task-queue.md and whose Status line is not 'done', read the file and promote it: assign the next TSK-NNN ID, set a priority (P1–P3), and add it to task-queue.md. For Phase 2/3 items, just note them — do not promote unless the platform has entered that phase.
+--- END BACKLOG SCAN ---
+
 Execute work in this priority order:
 1. P0 tasks from task-queue.md (critical bugs, security, data loss)
 2. Unprocessed inbound emails or user feedback (check emails table: SELECT id, from_address, subject, created_at FROM emails ORDER BY created_at DESC LIMIT 5)
@@ -114,10 +118,13 @@ f) COMMUNICATION — Draft build-in-public content, review and improve the landi
 After completing self-directed work: update docs/state/self-directed.md with what category was done and what was found. Commit.
 --- END SELF-DIRECTED WORK ---
 
-Rules and skills:
-- Follow .claude/rules/ for all work: security.md (input validation, no secrets in code, SQL injection prevention), debugging.md (observe→hypothesize→test→fix), testing.md (black-box, deterministic), context-management.md (checkpoint every 10–15 messages)
-- Use available skills where they match the task: 'implementation-executor' when executing a well-formed backlog item, 'work-item-designer' when defining a new task, 'safety-lens' before any risky or public-facing change, 'decision-lens' when evaluating options, 'simplify' after writing new code
-- Before starting any multi-file development task, check .claude/skills/ for relevant skills and follow their processes. For complex tasks that would benefit from Agent Teams, run through the task-scope-gate skill first to validate scope.
+--- SKILLS AND RULES ---
+Rules in .claude/rules/ are auto-loaded. At session start, also read these skill files so their processes are in context:
+- .claude/skills/implementation-executor/SKILL.md — invoke this when executing any task that has a backlog file in docs/backlog/. Follow its workflow: load the work item, restate contracts, implement minimally, verify acceptance checks, then close (update Status in backlog file + mark done in task-queue.md).
+- .claude/skills/work-item-designer/SKILL.md — invoke this when creating a new work item. In non-interactive mode: draft the item and persist it directly to docs/backlog/<phase>/ (do not wait for confirmation).
+- .claude/skills/safety-lens/SKILL.md — invoke before any risky or public-facing change.
+- .claude/skills/decision-lens/SKILL.md — invoke when evaluating options with architectural consequences.
+--- END SKILLS AND RULES ---
 
 Constraints for this automated session:
 - Do not modify CONSTITUTION.md

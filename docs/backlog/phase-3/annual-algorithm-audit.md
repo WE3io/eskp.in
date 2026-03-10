@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Governance and measurement
 **Article:** 10.2.3 (Algorithmic transparency — annual audit)
+**Status:** draft
 
 ## Outcome
 

@@ -2,6 +2,7 @@
 
 **Phase:** 3 — Empirical outcomes
 **Article:** 11.4 (Platform must measure whether interactions cultivate self-efficacy or dependency), 10.4 (Empirical Honesty)
+**Status:** draft
 
 ## Outcome
 

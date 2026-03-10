@@ -18,15 +18,15 @@ Implement exactly one ready work item, verify acceptance checks, surface risks, 
 
 ## Workflow
 
-1. **Discovery first**
-   - Inspect the repository for existing conventions related to backlog items, completion markers, or history/change records.
-   - If conventions exist, align to them.
-   - If none exist, propose a minimal completion convention (e.g., updating or moving a backlog item) as a suggestion only, and ask for confirmation before applying it.
+1. **Locate the work item**
+   - Work items live in `docs/backlog/<phase>/` as standalone `.md` files.
+   - The tracking entry (TSK-NNN with priority) lives in `docs/state/task-queue.md`.
+   - If the work item has no TSK entry yet, note this — closure will add one.
 
 2. **Load and restate contracts**
    - Load the referenced work item and canonical contracts.
    - Restate Outcome, Explicit Non-Goals, and Constraints & References.
-   - If anything is ambiguous, stop and ask for clarification.
+   - If anything is ambiguous: in interactive mode, stop and ask for clarification. In non-interactive mode (auto-session / `--print`), log the ambiguity and skip the item — do not guess.
 
 3. **Plan minimally (internal)**
    - Form the smallest plan needed to satisfy acceptance checks.
@@ -47,16 +47,15 @@ Implement exactly one ready work item, verify acceptance checks, surface risks, 
    - If checks fail, fix only what is necessary or report blockers.
 
 7. **Closure (minimal)**
-   - After acceptance passes, perform exactly one completion action aligned with repo conventions (e.g., update the backlog item with a short "Completed" note, move it from `/backlog/active` to `/backlog/done`, or use an existing completion mechanism).
-   - This completion action is required, not optional.
-   - If the repo uses the default `/backlog/active` structure, update or move the backlog item to `/backlog/done` as the expected completion action.
-   - Do not invent new structures or create logs if none exist.
-   - Never do more than one closure action.
+   - After acceptance passes, perform these completion actions:
+     1. Update the backlog `.md` file: change `**Status:**` to `done` and add a completion date.
+     2. Update `docs/state/task-queue.md`: mark the TSK entry as `**done**` with the date. If no TSK entry exists, add one in the appropriate priority section marked as done.
+   - Do not invent new structures, move files, or create logs.
 
 8. **Stop cleanly**
    - Present a brief implementation summary, verification results, any advisory signals, and the completion action taken.
-   - Pause and return control to the human.
-   - Do not continue after acceptance is met.
+   - In interactive mode: pause and return control to the human.
+   - In non-interactive mode (auto-session): proceed to the next task in the queue.
 
 ## Input requirements
 

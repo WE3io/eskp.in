@@ -11,12 +11,14 @@ End-of-session handoff. Complete all steps before ending the session.
    - Update recurring task dates if any were completed.
    - Re-prioritise if needed.
 
-3. **Run `pnpm budget` and update `docs/state/budget-tracker.md`** with the output.
+3. **Update backlog files** — for any backlog item completed this session, set `**Status:** done (YYYY-MM-DD)` in the corresponding `docs/backlog/<phase>/` file.
 
-4. **Check `docs/state/recent-decisions.md`:**
+4. **Run `pnpm budget` and update `docs/state/budget-tracker.md`** with the output.
+
+5. **Check `docs/state/recent-decisions.md`:**
    - If any architectural or operational decisions were made this session, add them with date, decision, reasoning, and confidence level.
 
-5. **Stage, commit, and push:**
+6. **Stage, commit, and push:**
    ```
    git add docs/state/ && git commit -m "state: end of session $(date -u +%Y-%m-%d)" && git push
    ```

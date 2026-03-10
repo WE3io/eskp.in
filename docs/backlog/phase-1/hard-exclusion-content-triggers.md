@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** 11.1.2 (Hard exclusions are architectural, not optional)
+**Status:** done
 
 ## Outcome
 

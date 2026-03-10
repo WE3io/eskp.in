@@ -2,6 +2,7 @@
 
 **Phase:** 1 — Foundational
 **Article:** None (bug fix)
+**Status:** done
 
 ## Outcome
 

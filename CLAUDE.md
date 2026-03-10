@@ -119,18 +119,22 @@ Match statuses: proposed → introduced → accepted/declined/completed.
 | `docs/state/self-directed.md` | Session count, rotation tracking |
 | `docs/research/` | Technical research notes (19 files) |
 | `docs/updates/` | Build-in-public posts and recruitment drafts |
-| `docs/backlog/` | Future work items by phase |
+| `docs/backlog/` | Work item definitions by phase (phase-1/2/3); each has a Status line (draft/done) |
 
 ---
 
 ## Task Management
 
-Priority order: P0 → unprocessed inbound emails/feedback → overdue recurring tasks → highest P1.
-Tasks use stable IDs (TSK-NNN). Never reuse an ID.
+**Work item lifecycle:** backlog file → task queue → done.
 
-Task queue: `docs/state/task-queue.md`. Recurring tasks tracked in the `## Recurring Tasks` table — update `Last completed` and `Next due` after completing any recurring task.
+1. **Design**: Use `work-item-designer` skill to create a structured `.md` file in `docs/backlog/<phase>/` (Outcome, Constraints, Acceptance Checks, Non-goals). Add `**Status:** draft` at top.
+2. **Promote**: When ready for execution, assign a TSK-NNN ID and priority (P0–P3), add a row to `docs/state/task-queue.md`. Each session scans the backlog for untracked current-phase items.
+3. **Execute**: Use `implementation-executor` skill for well-formed backlog items. Work through task queue in priority order: P0 → inbound emails/feedback → overdue recurring → highest P1.
+4. **Close**: Mark `**Status:** done (YYYY-MM-DD)` in the backlog file. Mark `**done**` in task-queue.md.
 
-Session start: run `/session-start` (reads state files, outputs orientation).
+Tasks use stable IDs (TSK-NNN). Never reuse an ID. Recurring tasks tracked in the `## Recurring Tasks` table — update `Last completed` and `Next due` after completing any recurring task.
+
+Session start: run `/session-start` (reads state files + scans backlog, outputs orientation).
 Session end: run `/session-end` (updates all state files, commits, pushes). **This is mandatory.**
 
 ---

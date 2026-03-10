@@ -2,6 +2,7 @@
 
 **Phase:** 2 — Panel infrastructure
 **Article:** 11.4 (Witnessed Reflection Principle operationalised in onboarding)
+**Status:** draft
 
 ## Outcome
 
