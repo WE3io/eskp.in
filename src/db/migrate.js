@@ -125,6 +125,11 @@ const migrations = [
     tables_affected TEXT[] NOT NULL,
     rows_deleted INT NOT NULL
   )`,
+
+  // TSK-034: add pending_clarification to goals status enum
+  `ALTER TABLE goals DROP CONSTRAINT IF EXISTS goals_status_check`,
+  `ALTER TABLE goals ADD CONSTRAINT goals_status_check
+     CHECK (status IN ('submitted','decomposing','matched','introduced','resolved','closed','pending_clarification'))`,
 ];
 
 async function migrate() {

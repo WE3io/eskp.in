@@ -41,6 +41,17 @@ async function processGoal(userEmail, userName, rawText) {
     throw err;
   }
 
+  // Clarification loop: goal is too vague to match
+  if (decomposed.needs_clarification && decomposed.clarification_questions.length > 0) {
+    await pool.query(
+      `UPDATE goals SET decomposed = $1, status = 'pending_clarification', updated_at = NOW() WHERE id = $2`,
+      [JSON.stringify(decomposed), goal.id]
+    );
+    await sendClarificationRequest(user, goal, decomposed);
+    console.log(`clarification: goal ${goal.id} set to pending_clarification`);
+    return { goal, decomposed, needsClarification: true };
+  }
+
   await pool.query(
     `UPDATE goals SET decomposed = $1, status = 'matched', updated_at = NOW() WHERE id = $2`,
     [JSON.stringify(decomposed), goal.id]
@@ -158,6 +169,108 @@ If we've misunderstood anything, just reply to this email.
     text: plainText,
     html: renderEmail({ preheader: decomposed.summary, body: htmlBody }),
   });
+}
+
+async function sendClarificationRequest(user, goal, decomposed) {
+  const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
+  const questionsList = decomposed.clarification_questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
+  const questionsHtml = decomposed.clarification_questions.map(q => `<li style="margin-bottom:10px;">${q}</li>`).join('');
+
+  const plainText = `${greeting}
+
+We received your message. We'd like to help but need a bit more information to find the right person for you.
+
+A few questions:
+
+${questionsList}
+
+Just reply to this email with your answers — no need to be exhaustive, whatever you can share will help.
+
+— The eskp.in team`;
+
+  const htmlBody = `<p>${greeting}</p>
+    <p>We received your message. We'd like to help but need a bit more information to find the right person for you.</p>
+    <p><strong>A few questions:</strong></p>
+    <ol style="margin:8px 0 16px 20px;padding:0;">
+      ${questionsHtml}
+    </ol>
+    <p style="color:#7A6E68;font-size:14px;">Just reply to this email with your answers — no need to be exhaustive, whatever you can share will help.</p>`;
+
+  await send({
+    to: user.email,
+    subject: `We need a bit more information about your goal`,
+    text: plainText,
+    html: renderEmail({ preheader: 'A few quick questions to help us find the right person for you.', body: htmlBody }),
+  });
+  await logEmail('outbound', FROM, user.email, `We need a bit more information about your goal`, goal.id, null);
+}
+
+async function processClarification(userEmail, userName, replyText, pendingGoal) {
+  const user = await getOrCreateUser(userEmail, userName);
+
+  // Append the clarification to the original submission for re-decomposition
+  const originalText = pendingGoal.raw_text || '';
+  const combinedText = `${originalText}\n\n---\nClarification from user:\n${replyText}`;
+
+  // Update the goal with combined text and reset to decomposing
+  await pool.query(
+    `UPDATE goals SET raw_text = $1, status = 'decomposing', updated_at = NOW() WHERE id = $2`,
+    [combinedText, pendingGoal.id]
+  );
+
+  // Re-run decomposition with combined text
+  let decomposed;
+  try {
+    decomposed = await decompose(combinedText, pendingGoal.id);
+  } catch (err) {
+    await pool.query(`UPDATE goals SET status = 'pending_clarification' WHERE id = $1`, [pendingGoal.id]);
+    throw err;
+  }
+
+  // If still needs clarification, send another round (max 1 follow-up to avoid loops)
+  if (decomposed.needs_clarification && decomposed.clarification_questions.length > 0) {
+    await pool.query(
+      `UPDATE goals SET decomposed = $1, status = 'pending_clarification', updated_at = NOW() WHERE id = $2`,
+      [JSON.stringify(decomposed), pendingGoal.id]
+    );
+    await sendClarificationRequest(user, pendingGoal, decomposed);
+    console.log(`clarification: goal ${pendingGoal.id} still vague after clarification reply, sent follow-up`);
+    return { goal: pendingGoal, decomposed, needsClarification: true };
+  }
+
+  await pool.query(
+    `UPDATE goals SET decomposed = $1, status = 'matched', updated_at = NOW() WHERE id = $2`,
+    [JSON.stringify(decomposed), pendingGoal.id]
+  );
+
+  const matches = await findMatches(decomposed);
+
+  if (matches.length === 0) {
+    await sendAcknowledgement(user, pendingGoal, decomposed, null);
+    return { goal: pendingGoal, decomposed, matches: [] };
+  }
+
+  const topMatch = matches[0];
+  const { rows: [match] } = await pool.query(
+    `INSERT INTO matches (goal_id, helper_id, reasoning, status)
+     VALUES ($1, $2, $3, 'proposed') RETURNING *`,
+    [pendingGoal.id, topMatch.helper_id, topMatch.reasoning || `Expertise overlap on: ${topMatch.expertise.join(', ')}`]
+  );
+
+  const { sessionId, url: paymentUrl } = await createIntroCheckout({
+    goalId: pendingGoal.id,
+    matchId: match.id,
+    userEmail: user.email,
+    summary: decomposed.summary,
+  });
+
+  await pool.query(`UPDATE matches SET stripe_session_id = $1 WHERE id = $2`, [sessionId, match.id]);
+  await pool.query(`UPDATE goals SET status = 'matched', updated_at = NOW() WHERE id = $1`, [pendingGoal.id]);
+
+  await sendAcknowledgement(user, pendingGoal, decomposed, topMatch, paymentUrl);
+  await logEmail('outbound', FROM, user.email, `Re: your goal — we found someone who can help`, pendingGoal.id, match.id);
+
+  return { goal: pendingGoal, decomposed, match, matches };
 }
 
 async function sendHelperIntro(user, goal, decomposed, helper) {
@@ -359,4 +472,4 @@ This email was sent automatically. Do not forward it externally.`;
   return { goal, user };
 }
 
-module.exports = { processGoal, processGoalSensitive, recordInbound, getOrCreateUser, sendHelperIntroById };
+module.exports = { processGoal, processGoalSensitive, processClarification, recordInbound, getOrCreateUser, sendHelperIntroById };

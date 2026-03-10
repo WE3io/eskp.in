@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
-const { processGoal, processGoalSensitive, recordInbound } = require('../services/platform');
+const { processGoal, processGoalSensitive, processClarification, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
 const { detectSensitiveDomain } = require('../services/sensitive-flag');
@@ -82,6 +82,20 @@ router.post('/email', verifySecret, async (req, res) => {
       const result = await processGoalSensitive(userEmail, userName, text, sensitive.domain, sensitive.label);
       console.log(`sensitive-domain: ${sensitive.domain} email=${userEmail}`);
       return res.json({ ok: true, type: 'sensitive-review', domain: sensitive.domain, goalId: result.goal.id });
+    }
+
+    // Check if user has a goal awaiting clarification — treat this email as the reply
+    const { rows: pendingGoals } = await pool.query(
+      `SELECT g.* FROM goals g
+       JOIN users u ON u.id = g.user_id
+       WHERE u.email = $1 AND g.status = 'pending_clarification'
+       ORDER BY g.created_at DESC LIMIT 1`,
+      [userEmail.toLowerCase()]
+    );
+    if (pendingGoals.length > 0) {
+      const result = await processClarification(userEmail, userName, text, pendingGoals[0]);
+      console.log(`clarification-reply: goal ${pendingGoals[0].id} updated`);
+      return res.json({ ok: true, type: 'clarification-reply', goalId: pendingGoals[0].id });
     }
 
     // Default: process as a new goal
