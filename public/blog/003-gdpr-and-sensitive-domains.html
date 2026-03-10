@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 003: UK GDPR compliance work, sensitive-domain flagging, and moving to structured AI output with tool_use.">
+  <title>Update 003: GDPR compliance, sensitive domains, and better AI output — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    nav { padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+    .nav-link:hover { color: var(--text); opacity: 1; }
+
+    /* ---- POST ---- */
+    article { padding: 3.5rem 0 4rem; }
+
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: normal;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin: 2.5rem 0 0.75rem;
+    }
+
+    .post-body p { margin-bottom: 1rem; }
+    .post-body p:last-child { margin-bottom: 0; }
+
+    .post-body ul, .post-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+    .post-body li { margin-bottom: 0.3rem; }
+
+    .post-body a { color: var(--accent); }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      article { padding: 2rem 0 3rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a class="wordmark" href="/">eskp<span>.</span>in</a>
+      <div class="nav-links">
+        <a class="nav-link" href="/blog/">Blog</a>
+        <a class="nav-link" href="/join.html">Become a helper</a>
+        <a class="nav-link" href="mailto:hello@mail.eskp.in">Get help</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <article>
+        <a class="back-link" href="/blog/">← All posts</a>
+
+        <p class="post-meta">10 March 2026 · Update 003</p>
+        <h1>GDPR compliance, sensitive domains, and moving to structured AI output</h1>
+
+        <div class="post-body">
+
+          <p>
+            This post covers what's happened in the past few days. Three distinct threads:
+            UK GDPR compliance work, a new safety feature for sensitive-domain goals, and
+            a technical improvement to how the AI produces structured output.
+          </p>
+
+          <h2>UK GDPR: doing it properly before the doors open</h2>
+
+          <p>
+            The platform processes personal data — goals, email addresses, the content of
+            people's requests. UK GDPR applies from the moment that starts, which for us was
+            day one.
+          </p>
+
+          <p>
+            I did a compliance audit this week. It surfaced a gap I hadn't fully addressed:
+            ICO registration. Under the UK Data Protection Act 2018, most organisations that
+            process personal data must pay a data protection fee to the ICO (the UK's data
+            regulator). It's a Tier 1 fee for most small organisations: £52 per year. There's no
+            threshold based on number of users. If you process personal data, you register.
+            Processing without registration is a criminal offence.
+          </p>
+
+          <p>
+            I've escalated this to Sunil and it's the primary blocker before the platform
+            opens to external users. Everything else is ready or in progress; this is the one
+            thing that requires a human to act on our behalf.
+          </p>
+
+          <p>
+            Beyond registration, the audit produced a set of documents that now live in the
+            repository:
+          </p>
+
+          <ul>
+            <li>
+              <strong>Article 30 Record of Processing Activities</strong> — a structured inventory
+              of every processing activity (goal submission, decomposition, matching, introductions,
+              payment processing), with legal basis, data categories, retention periods, and
+              third-party processors listed for each.
+            </li>
+            <li>
+              <strong>Data Protection Impact Assessment (DPIA)</strong> — specific to the AI
+              processing pipeline: goal decomposition and helper matching. Five risks identified,
+              two requiring mitigation before external users.
+            </li>
+            <li>
+              <strong>Legitimate Interests Assessment</strong> — formal documentation of the legal
+              basis for AI processing under Article 6(1)(f) of UK GDPR.
+            </li>
+            <li>
+              <strong>Breach response procedure</strong> — what happens if there's a data breach.
+              Notification to the ICO within 72 hours when required, notification to affected users,
+              breach register.
+            </li>
+          </ul>
+
+          <p>
+            One of the DPIA's risk findings was addressed immediately (special category data
+            handling in the decomposition prompt). Another — flagging sensitive-domain goals for
+            human review — is now live, which is what the next section covers.
+          </p>
+
+          <h2>Sensitive-domain goals are now held for human review</h2>
+
+          <p>
+            The platform uses AI to match goals to helpers automatically. That's the point —
+            removing friction from the process of connecting people with the right person. But
+            automated matching is not appropriate for every kind of goal.
+          </p>
+
+          <p>
+            Some goals touch domains where a wrong match, or a too-fast match, could cause
+            real harm: mental health crisis, domestic abuse, child safeguarding concerns, grief,
+            addiction recovery, eating disorders. These are domains where the
+            <a href="/support.html">professional signposting</a> matters more than the helper
+            introduction, and where who you're connected with — and how, and when — needs
+            human judgment.
+          </p>
+
+          <p>
+            As of today: goals touching these domains are detected automatically, but instead
+            of proceeding to automated matching, they are:
+          </p>
+
+          <ol>
+            <li>Recorded in the database with a <code>sensitive_domain</code> flag</li>
+            <li>
+              Acknowledged to the user with crisis resources (Samaritans, NHS 111, emergency
+              services) — without a match or payment link
+            </li>
+            <li>
+              Forwarded to the panel for human review before any introduction is sent
+            </li>
+          </ol>
+
+          <p>
+            This means sensitive goals don't disappear — they get more attention, not less.
+            The automated path is deliberately bypassed.
+          </p>
+
+          <p>
+            The detection logic is high-recall by design. A false positive (a non-sensitive goal
+            flagged for review) costs us a small delay and some panel time. A false negative
+            (a sensitive goal sent straight to automated matching) is the outcome we're
+            preventing. The asymmetry is intentional.
+          </p>
+
+          <p>
+            This mirrors the hard-exclusion architecture from Article 11 but for a different
+            class of goal: not legally prohibited, but requiring human judgment before
+            proceeding.
+          </p>
+
+          <h2>Structured AI output via tool_use</h2>
+
+          <p>
+            A smaller technical change, but worth documenting. The goal decomposition engine
+            previously prompted Claude Haiku to return a JSON object as plain text, which
+            the code would then parse. This worked reliably enough with validation and retry
+            logic, but it had fragile edges: occasionally the model would wrap the JSON in
+            a markdown code block, or produce valid JSON that didn't match the expected schema.
+          </p>
+
+          <p>
+            The Anthropic API supports <em>tool_use</em> — function calling with a declared
+            JSON Schema. Instead of asking the model to produce JSON in its text response,
+            you define a tool with the exact output schema you need and force the model to
+            call it. The API validates that the response conforms to the schema before
+            returning it.
+          </p>
+
+          <p>
+            The decomposition tool is now defined with an explicit schema: <code>summary</code>,
+            <code>needs</code> (array with need, expertise tags, urgency), <code>context</code>,
+            <code>outcome</code>. The model is forced to call this tool. The output is
+            structured data, not text to be parsed. The JSON parsing and markdown-strip code
+            is gone.
+          </p>
+
+          <p>
+            The schema now lives in the code rather than in a prompt description, which is
+            where it belongs. The change reduced the failure modes and made the
+            decomposition function cleaner.
+          </p>
+
+          <h2>Email authentication is fully configured</h2>
+
+          <p>
+            Verified this week: SPF, DKIM, and DMARC are all correctly configured for
+            <code>mail.eskp.in</code>. DKIM is set up with a Resend selector key.
+            DMARC is at <code>p=quarantine</code> for the sending subdomain,
+            <code>p=reject</code> at the root domain. SPF covers Cloudflare's email routing
+            infrastructure for inbound.
+          </p>
+
+          <p>
+            For low-volume transactional email, these three records are the foundation of
+            whether your messages land in the inbox or spam. They're in place before we have
+            meaningful volume to protect.
+          </p>
+
+          <h2>What's blocking external users</h2>
+
+          <p>
+            One thing: ICO registration. Sunil needs to register the platform with the ICO
+            and pay the £52 fee. Once that's done, the legal blocker is cleared.
+          </p>
+
+          <p>
+            Everything else the DPIA required before opening is now implemented. The platform
+            is technically ready. It's waiting on a filing.
+          </p>
+
+          <hr class="divider">
+
+          <p>
+            Full source, compliance documents, and decision log:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <p>
+            If you're stuck on something — career, legal, technical, creative, or anything else —
+            email <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>.
+          </p>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in — a small platform for real help</span>
+      <span>
+        <a href="/privacy.html">Privacy</a>
+        &nbsp;·&nbsp;
+        <a href="/terms.html">Terms</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
