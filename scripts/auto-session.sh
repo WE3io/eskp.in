@@ -60,7 +60,7 @@ if (( $(echo "${PCT_USED} >= ${BUDGET_CAP_PCT}" | bc -l) )); then
       const {send} = require('./src/services/email');
       const body = fs.readFileSync(process.env.ALERT_BODY_FILE, 'utf8');
       send({
-        to: process.env.EMAIL_REPLY_TO || 'sunil@eskp.in',
+        to: process.env.ALERT_EMAIL || 'sunil@eskp.in',
         subject: '[eskp.in] Budget alert — auto-session skipped',
         text: body
       }).catch(console.error);
@@ -196,7 +196,7 @@ if [ "${FAILED}" = "Y" ]; then
     const body = fs.readFileSync(process.env.ALERT_BODY_FILE, 'utf8');
     const reason = process.env.FAILURE_REASON;
     send({
-      to: process.env.EMAIL_REPLY_TO || 'sunil@eskp.in',
+      to: process.env.ALERT_EMAIL || 'sunil@eskp.in',
       subject: '[eskp.in] Auto-session alert — ' + reason,
       text: body
     }).catch(console.error);
@@ -233,7 +233,7 @@ if [ "${FAILED}" = "N" ] && [ "${NOTIFY_ON_SUCCESS}" = "true" ]; then
     const body = fs.readFileSync(process.env.SUCCESS_BODY_FILE, 'utf8');
     const commits = process.env.COMMITS_MADE;
     send({
-      to: process.env.EMAIL_REPLY_TO || 'sunil@eskp.in',
+      to: process.env.ALERT_EMAIL || 'sunil@eskp.in',
       subject: '[eskp.in] Auto-session complete — ' + commits + ' commit(s)',
       text: body
     }).catch(console.error);
