@@ -55,5 +55,4 @@ async function send({ to, subject, text, html, from, replyTo }) {
   });
 }
 
-
 module.exports = { send };
