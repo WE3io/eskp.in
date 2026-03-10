@@ -560,4 +560,41 @@ This email was sent automatically. Do not forward it externally.`;
   return { goal, user };
 }
 
-module.exports = { processGoal, processGoalSensitive, processClarification, recordInbound, getOrCreateUser, sendHelperIntroById };
+/**
+ * closeGoal — closes a goal at the user's request.
+ * Called when a user replies "close" to any platform email.
+ * Sends a brief confirmation and marks the goal as 'closed'.
+ */
+async function closeGoal(goal, userEmail, userName) {
+  const greeting = `Hi${userName ? ` ${userName}` : ''},`;
+
+  await pool.query(
+    `UPDATE goals SET status = 'closed', updated_at = NOW() WHERE id = $1`,
+    [goal.id]
+  );
+
+  const plainText = `${greeting}
+
+We've closed your request. No further emails will be sent about this goal.
+
+If you want to try again in the future, just send us a new message.
+
+— The eskp.in team`;
+
+  await send({
+    to: userEmail,
+    subject: 'Your request has been closed',
+    text: plainText,
+    html: renderEmail({
+      preheader: 'Your goal request has been closed.',
+      body: `<p>${greeting}</p>
+        <p>We've closed your request. No further emails will be sent about this goal.</p>
+        <p style="color:#7A6E68;font-size:14px;">If you want to try again in the future, just send us a new message.</p>`,
+    }),
+  });
+
+  await logEmail('outbound', FROM, userEmail, 'Your request has been closed', goal.id, null);
+  console.log(`closeGoal: goal ${goal.id} closed at user request`);
+}
+
+module.exports = { processGoal, processGoalSensitive, processClarification, closeGoal, recordInbound, getOrCreateUser, sendHelperIntroById };

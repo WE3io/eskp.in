@@ -126,7 +126,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | **done** 2026-03-10 | docs/operations/processor-dpas.md; TSK-080/081 generated for Hetzner/Cloudflare DPA acceptance |
 | TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | **done** 2026-03-10 | fallocate -l 1G /swapfile + fstab entry; 1GB swap now active |
 | TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | **done** 2026-03-10 | /etc/logrotate.d/eskp-logs; daily rotate, 14-day retention; session log cleanup cron |
-| TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
+| TSK-052 | Register mail.eskp.in with Google Postmaster Tools | **needs Sunil** | Instructions at docs/operations/google-postmaster-tools-setup.md — requires Google account login |
 | TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
 | TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
 | TSK-056 | Design basic data retention/deletion automation | **done** 2026-03-10 | scripts/data-retention.js: auto-close stale goals (90d active, 180d introduced), purge decomposed JSONB (365d closed). Monthly cron 1st 06:00 UTC. |
@@ -146,8 +146,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-067 | Add helper bio to match notification email | **done** 2026-03-10 | HTML (styled card) + plain text; humanises the helper match |
 | TSK-068 | Build post-session follow-up email (24h after goal 'introduced') | **done** 2026-03-10 | scripts/followup.js — 24h check-in email; cron daily 09:00; follow_up_sent_at prevents duplicates |
 | TSK-069 | Add plain-language data-handling statement to first AI response email | **done** 2026-03-10 | HTML footer + plain-text equivalent in sendAcknowledgement(); links to privacy.html |
-| TSK-070 | Design lightweight commitment signal for goal submissions | open | P3 — filters low-intent submissions once platform has volume |
-| TSK-071 | Research and draft plan for community layer (5+ active users) | open | P3 — community is retention layer independent of match quality |
+| TSK-070 | Design lightweight commitment signal for goal submissions | **done** 2026-03-10 | docs/research/2026-03-10-commitment-signals.md — clarification loop covers current need; TSK-090 generated |
+| TSK-071 | Research and draft plan for community layer (5+ active users) | **done** 2026-03-10 | docs/research/2026-03-10-community-layer.md — phased plan; TSK-091/092 generated |
 | TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | **done** 2026-03-10 | scripts/helper-digest.js; cron Monday 08:00 UTC; personalised by expertise overlap |
 | TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | **done** 2026-03-10 | sendPreMatchNotification() in platform.js; score >= 40 threshold; no user contact details |
 | TSK-074 | Create private helper channel (Slack/email) as community space | open | P3 — GrowthMentor built helper community before product matured |
@@ -158,6 +158,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-083 | Log session duration in auto-session.sh summary line | **done** 2026-03-10 | SESSION_START_EPOCH + elapsed calculation; format: Xm Ys in Summary line |
 | TSK-084 | session-end.sh: feedback-queue.md false-positive warning | **done** 2026-03-10 | Changed from 30min WARNING to 24h NOTE; eliminates persistent false-positive per session |
 | TSK-085 | Document ALERT_EMAIL env var in .env.example or README | **done** 2026-03-10 | Added to .env.example with description |
+| TSK-090 | Add pre-submission checklist copy to landing page CTA section | open | P3 — soft friction filter for low-intent submissions (from TSK-070 research) |
+| TSK-091 | Monthly outcome roundup email to past goal-submitters | open | P3 — zero-infrastructure community retention (from TSK-071 research) |
+| TSK-092 | "Notes" field for helper profiles (manage-helpers + DB) | open | P3 — allows helpers to surface context/capacity (from TSK-071 research) |
+| TSK-093 | Bug fix: "close" command in no-match email now handled | **done** 2026-03-10 | closeGoal() in platform.js; reply-token webhook now processes "close" replies; app redeployed |
 
 ---
 
@@ -183,4 +187,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (twelfth auto-session — TSK-075/082/085/076/056/086/087/089 done; trust signals research; data retention automation; pipeline visibility in helper digest)*
+*Last updated: 2026-03-10 (thirteenth auto-session — TSK-070/071/052 done; TSK-093 bug fix (close command); code quality rotation; TSK-090/091/092 generated)*

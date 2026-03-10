@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
-const { processGoal, processGoalSensitive, processClarification, recordInbound } = require('../services/platform');
+const { processGoal, processGoalSensitive, processClarification, closeGoal, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
 const { detectSensitiveDomain } = require('../services/sensitive-flag');
@@ -65,6 +65,11 @@ router.post('/email', verifySecret, async (req, res) => {
           await processClarification(userEmail, userName, text, goal);
           console.log(`reply-token: clarification reply for goal ${goal.id}`);
           return res.json({ ok: true, type: 'clarification-reply', goalId: goal.id });
+        }
+        // Close request: user replied "close" to any goal email
+        if (/^\s*close\b/i.test(text.trim()) && !['closed', 'introduced'].includes(goal.status)) {
+          await closeGoal(goal, userEmail, userName);
+          return res.json({ ok: true, type: 'goal-closed', goalId: goal.id });
         }
         // For any other status (matched, introduced, etc.) log the reply
         // but do not create a new goal. Operator can review via email logs.
