@@ -147,6 +147,17 @@
 - [x] Communication rotation: Blog post 004 published, blog index updated
 - [x] DB migrated, app redeployed (health: passing)
 
+### Session 2026-03-10 (eighth auto-session) — done ✅
+- [x] TSK-036: Defence-in-depth sensitive routing in match.js — detectSensitiveDomain() on decomposed summary, falls back to tag-overlap if flagged
+- [x] TSK-030: First-user experience research — docs/research/2026-03-10-first-user-experience.md; 24 findings, tasks TSK-064–071 generated
+- [x] TSK-064: AI goal-decomposition emails reframed as hypothesis ("here's how we've understood your goal — reply if anything looks off")
+- [x] TSK-065: 24-hour SLA added to no-match acknowledgement email
+- [x] TSK-066: "Meet the helpers" section added to landing page with Sunil's name, bio, and expertise tags
+- [x] TSK-067: Helper bio added to match notification email (HTML + plain text)
+- [x] TSK-062: LinkedIn post draft + personal outreach email template — docs/updates/003-linkedin-helper-recruitment.md
+- [x] TSK-046: 1GB swap file added to server (fallocate + fstab entry)
+- [x] Self-directed rotation (Research): helper retention at bootstrap stage — docs/research/2026-03-10-helper-retention.md; tasks TSK-072–076 generated
+
 ---
-*Last updated: 2026-03-10 — seventh auto-session complete*
-*Next session should start with: TSK-062 (grow helper network — reach 3 new candidates), then TSK-030 (research: first-user experience), then TSK-036 (sensitive goal routing for LLM matching), then TSK-046 (swap file)*
+*Last updated: 2026-03-10 — eighth auto-session complete*
+*Next session should start with: TSK-072 (helper digest email — weekly comms to helpers), then TSK-073 (pre-match helper notification), then TSK-047 (log rotation), then TSK-051 (Resend bounce/complaint webhook handler)*

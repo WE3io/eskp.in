@@ -90,12 +90,12 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-033 | Investigate Anthropic tool_use for decompose.js structured output enforcement | **done** 2026-03-10 | Implemented: DECOMPOSE_TOOL with JSON Schema, tool_choice: force. Eliminates JSON parse errors. |
 | TSK-034 | Design clarification loop: route vague goal back to user via email | **done** 2026-03-10 | Implemented: needs_clarification flag in decompose, sendClarificationRequest, processClarification, pending_clarification status |
 | TSK-035 | Data minimisation: strip context/outcome from match.js LLM prompt | **done** 2026-03-09 | Now sends summary + tags only; UK GDPR Art.5(1)(c) |
-| TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | open | From research TSK-026; defence in depth |
+| TSK-036 | Sensitive goal routing: skip LLM matching for hard-exclusion-adjacent goals | **done** 2026-03-10 | detectSensitiveDomain() on decomposed summary in match.js; falls back to tag-overlap |
 | TSK-037 | Privacy policy update: disclose AI processing of goal summaries and helper profiles | **done** 2026-03-09 | Section 3 expanded: decomposition + matching, LB, international transfer, Stripe added to s5 |
 | TSK-038 | Tag normalisation at helper onboarding: suggest canonical tags | open | From research TSK-026; improves tag-overlap quality |
 | TSK-028 | Research: UK GDPR compliance checklist for personal-goal platforms | **done** 2026-03-09 | docs/research/2026-03-09-uk-gdpr-compliance-checklist.md; tasks TSK-039–045 generated |
 | TSK-029 | Research: email-first platform best practices (deliverability, reputation) | **done** 2026-03-10 | docs/research/2026-03-10-email-deliverability.md; TSK-050–053 generated |
-| TSK-030 | Research: what makes a good first-user experience for this type of platform | open | Growth — feeds into TSK-012 prep |
+| TSK-030 | Research: what makes a good first-user experience for this type of platform | **done** 2026-03-10 | docs/research/2026-03-10-first-user-experience.md; 24 findings, tasks TSK-064–071 generated |
 
 ---
 
@@ -122,7 +122,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-042 | Conduct and document DPIA for AI goal decomposition + matching | **done** 2026-03-10 | docs/operations/dpia.md — 5 risks, TSK-048/049 generated |
 | TSK-044 | Write data subject rights procedure + verify erasure cascade covers all DB tables | open | From TSK-028; Art.15–22 obligations |
 | TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | open | From TSK-028; Art.28 |
-| TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | open | From infrastructure check 2026-03-10; low urgency |
+| TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | **done** 2026-03-10 | fallocate -l 1G /swapfile + fstab entry; 1GB swap now active |
 | TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | open | From infrastructure check; prevent unbounded growth |
 | TSK-052 | Register mail.eskp.in with Google Postmaster Tools | open | From TSK-029; monitor Gmail deliverability |
 | TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
@@ -136,8 +136,21 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-059 | Add "What to expect" timeline section to landing page | **done** 2026-03-10 | index.html — 4-step timeline: 24h ack, match, no-match, after intro |
 | TSK-060 | Draft Twitter/X thread for @awebot1529222 — helper recruitment | **done** 2026-03-10 | docs/updates/002-helper-recruitment-thread.md — 6 tweets ready to post |
 | TSK-061 | Add CTA to end of each blog post (join + submit) | **done** 2026-03-10 | All 3 blog posts updated with styled 'Try the platform' CTA box |
-| TSK-062 | Grow helper network — reach 3 new helper candidates | open | Growth — TSK-012 (first external user) is blocked without more helpers |
+| TSK-062 | Grow helper network — reach 3 new helper candidates | open | LinkedIn post + personal outreach template drafted (docs/updates/003-linkedin-helper-recruitment.md); awaiting Sunil to post/send |
 | TSK-063 | No-match timeout: email user after 7 days if goal still in 'matched' | open | UX — prevents silent dead ends for unmatched goals |
+| TSK-064 | AI goal-decomposition email reframed as hypothesis | **done** 2026-03-10 | "Here's how we've understood your goal — reply if anything looks off" |
+| TSK-065 | Add 24-hour SLA to no-match acknowledgement email | **done** 2026-03-10 | "We'll get back to you within 24 hours" added to no-match variant |
+| TSK-066 | Add "Meet the helpers" section to landing page | **done** 2026-03-10 | Sunil's name, bio, expertise tags; social proof for first visitors |
+| TSK-067 | Add helper bio to match notification email | **done** 2026-03-10 | HTML (styled card) + plain text; humanises the helper match |
+| TSK-068 | Build post-session follow-up email (24h after goal 'introduced') | open | Research finding 23: frequency of communication is top retention predictor |
+| TSK-069 | Add plain-language data-handling statement to first AI response email | open | Research finding 18: privacy transparency enables richer user context |
+| TSK-070 | Design lightweight commitment signal for goal submissions | open | P3 — filters low-intent submissions once platform has volume |
+| TSK-071 | Research and draft plan for community layer (5+ active users) | open | P3 — community is retention layer independent of match quality |
+| TSK-072 | Build weekly helper digest — email to helpers summarising incoming goal types | open | Core retention; zero-cost at 1 helper; design for automation now |
+| TSK-073 | Pre-match helper notification: heads-up email when goal in helper's domain submitted | open | Keeps helpers active; creates anticipation before formal match fires |
+| TSK-074 | Create private helper channel (Slack/email) as community space | open | P3 — GrowthMentor built helper community before product matured |
+| TSK-075 | Dogfooding: invite Sunil to submit a real goal via the platform | open | Side-switching reduces supply-side churn; generates product feedback |
+| TSK-076 | Add goal pipeline visibility to helper view — count in helper's domain, unmatched | open | P3 — signals demand is building without requiring completed connections |
 
 ---
 
@@ -158,4 +171,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 ---
 
-*Last updated: 2026-03-10 (seventh auto-session — TSK-034/058/059/060/061 done; blog post 004 published; communication rotation complete)*
+*Last updated: 2026-03-10 (eighth auto-session — TSK-036/030/046/062–067 done; first-user experience improvements; helper retention research; tasks TSK-064–076 added)*
