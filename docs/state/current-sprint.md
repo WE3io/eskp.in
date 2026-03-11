@@ -359,6 +359,18 @@
 - [x] Infrastructure rotation: disk 16%, memory 1.2G/3.7G, 0 swap, 0 CVEs, all 3 containers healthy (42ms), backup running daily (latest 15KB). Docker dangling images pruned. 1 non-critical OS update (linux-base). Platform baseline unchanged: 12 goals, 4 users, 1 helper, 10 matches.
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Session 2026-03-11 (twenty-ninth auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Self-directed (Mission alignment): reviewed Arts 10 + 11 against codebase — docs/research/2026-03-11-mission-alignment-art10-11.md
+- [x] TSK-118: AI opt-out detection + manual processing path (Art 10.2.3(c) gap). Inbound email regex detection, processGoalManual() in platform.js, ai_opted_out column, panel alert email, data export updated. Privacy policy promise now backed by code.
+- [x] TSK-119 generated (P3): outcome tracking design for Art 10.4.1 empirical honesty
+- [x] Added annual algorithm audit (Art 10.2.3(d)) to recurring tasks (due 2027-03-08)
+- [x] Public claims register updated: AI opt-out now "Aligned"
+- [x] App redeployed (health: passing)
+- All remaining open tasks still blocked on Sunil or deferred to volume
+
 ---
-*Last updated: 2026-03-11 — twenty-eighth auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; mission alignment rotation is next in self-directed cycle*
+*Last updated: 2026-03-11 — twenty-ninth auto-session*
+*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; growth rotation is next in self-directed cycle*

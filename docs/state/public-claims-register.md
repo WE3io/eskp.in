@@ -35,7 +35,7 @@ Last verified: 2026-03-10
 | "Closed goals: decomposition purged after 365 days" | privacy.html s4 | `scripts/data-retention.js` — PURGE_CLOSED_DAYS=365 | Aligned |
 | "Backups: overwritten on a 30-day rolling cycle" | privacy.html s4 | `scripts/backup-db.sh` — find -mtime +30 -delete | Aligned |
 | "We will respond within 30 days" (data requests) | privacy.html s6 | Manual process; no SLA enforcement in code | Monitor |
-| "AI opt-out: handle it manually" | privacy.html s3 | No automation for manual path; relies on panel processing | Monitor |
+| "AI opt-out: handle it manually" | privacy.html s3 | `src/api/webhooks.js` AI_OPT_OUT_RE detection → `src/services/platform.js` processGoalManual() → panel alert | Aligned |
 
 ## AI Processing
 

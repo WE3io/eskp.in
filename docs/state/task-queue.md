@@ -32,6 +32,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
 | Operational review (session logs) | Every 10 sessions | 2026-03-10 (session 21) | Session 30 | Track count in docs/state/self-directed.md |
 | Public claims coherence check | Weekly | 2026-03-10 | 2026-03-17 | Verify all rows in docs/state/public-claims-register.md are still "Aligned" |
+| Annual algorithm audit (Art 10.2.3(d)) | Annual | never | 2027-03-08 | Audit + publish results for all algorithmic features |
 
 ---
 
@@ -213,5 +214,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-115 | Add `embedding` column to helpers table; compute on create/update | open | P3 — prerequisite for TSK-114 |
 | TSK-116 | Bug fix: 3 unescaped user.name in account.js HTML email bodies (XSS) | **done** 2026-03-11 | escHtml() applied to export, deletion request, post-deletion emails |
 | TSK-117 | Bug fix: unhandled JSON.parse in email.js response handler | **done** 2026-03-11 | try/catch added; non-JSON Resend responses no longer crash process |
+| TSK-118 | AI opt-out detection + manual processing path (Art 10.2.3(c)) | **done** 2026-03-11 | Inbound email detection, processGoalManual(), ai_opted_out column, panel alert |
+| TSK-119 | Outcome tracking design — measure whether goals are achieved | open | P3 — defer to first external users; Art 10.4.1 empirical honesty |
 
-*Last updated: 2026-03-11 (twenty-eighth auto-session — infrastructure rotation)*
+*Last updated: 2026-03-11 (twenty-ninth auto-session — mission alignment rotation)*
