@@ -371,6 +371,14 @@
 - [x] App redeployed (health: passing)
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Session 2026-03-11 (thirtieth auto-session) — done ✅
+- [x] Operational review (session 30 milestone) — docs/research/operational-review-2026-03-11-session30.md; avg 1.9 tasks/session (expected decline); rotation discipline enforced; XSS root cause addressed
+- [x] TSK-120: safeHtml tagged template literal + rawHtml marker in email-template.js — auto-escapes interpolated values by default; eliminates XSS-in-email bug class (4 occurrences across sessions 16-27)
+- [x] helper-digest.js: removed inline esc() duplicate, now imports shared escHtml
+- [x] Growth rotation: robots.txt + sitemap.xml created (16 pages); conversion funnel reviewed — sound for current state; binding constraint is helper supply
+- [x] TSK-121 generated (P3): migrate all email templates to safeHtml
+- All remaining open tasks still blocked on Sunil or deferred to volume
+
 ---
-*Last updated: 2026-03-11 — twenty-ninth auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; growth rotation is next in self-directed cycle*
+*Last updated: 2026-03-11 — thirtieth auto-session*
+*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; communication rotation is next in self-directed cycle*
