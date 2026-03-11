@@ -18,7 +18,7 @@
 const crypto = require('crypto');
 const { pool } = require('../db/connection');
 const { send } = require('./email');
-const { renderEmail, escHtml } = require('./email-template');
+const { renderEmail, safeHtml, rawHtml } = require('./email-template');
 const { getOrCreateUser } = require('./platform');
 
 const BASE_URL = process.env.BASE_URL || 'https://eskp.in';
@@ -73,14 +73,14 @@ If you didn't request this, you can ignore this email.
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>Hi${user.name ? ` ${escHtml(user.name)}` : ''},</p>
+  const htmlBody = safeHtml`
+    <p>Hi${user.name ? ` ${user.name}` : ''},</p>
     <p>We received your data export request.</p>
     <p>Your download link is valid for 48 hours:</p>
     <p style="text-align:center;margin:24px 0;">
-      <a href="${link}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
+      ${rawHtml(`<a href="${link}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
         Download my data
-      </a>
+      </a>`)}
     </p>
     <p style="color:#7A6E68;font-size:14px;">This file contains all data eskp.in holds for your account in JSON format. If you didn't request this, you can ignore this email.</p>`;
 
@@ -163,11 +163,11 @@ If you didn't request this, you can ignore this email — no action will be take
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>Hi${user.name ? ` ${escHtml(user.name)}` : ''},</p>
+  const htmlBody = safeHtml`
+    <p>Hi${user.name ? ` ${user.name}` : ''},</p>
     <p>We received your request to delete your eskp.in account.</p>
     <p>To confirm the deletion, click the button below (valid for 48 hours):</p>
-    <p style="text-align:center;margin:24px 0;">
+    ${rawHtml(`<p style="text-align:center;margin:24px 0;">
       <a href="${confirmLink}" style="background:#8B1A1A;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
         Confirm account deletion
       </a>
@@ -181,7 +181,7 @@ If you didn't request this, you can ignore this email — no action will be take
       <li>Any feedback you submitted</li>
     </ul>
     <p style="color:#8B1A1A;font-size:14px;">This action cannot be undone.</p>
-    <p style="color:#7A6E68;font-size:14px;">If you didn't request this, you can ignore this email — no action will be taken.</p>`;
+    <p style="color:#7A6E68;font-size:14px;">If you didn't request this, you can ignore this email — no action will be taken.</p>`)}`;
 
   await send({
     to: user.email,
@@ -301,11 +301,11 @@ If you have any questions, you can contact us at ${PANEL_EMAIL}.
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>Hi${userName ? ` ${escHtml(userName)}` : ''},</p>
+  const htmlBody = safeHtml`
+    <p>Hi${userName ? ` ${userName}` : ''},</p>
     <p>Your eskp.in account has been deleted.</p>
     <p>All data associated with your account has been permanently removed from our systems.</p>
-    <p style="color:#7A6E68;font-size:14px;">If you have any questions, contact us at <a href="mailto:${PANEL_EMAIL}" style="color:#C4622D;">${PANEL_EMAIL}</a>.</p>`;
+    ${rawHtml(`<p style="color:#7A6E68;font-size:14px;">If you have any questions, contact us at <a href="mailto:${PANEL_EMAIL}" style="color:#C4622D;">${PANEL_EMAIL}</a>.</p>`)}`;
 
   await send({
     to: userEmail,

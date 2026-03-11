@@ -27,7 +27,7 @@
 require('dotenv').config();
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
-const { renderEmail, escHtml } = require('../src/services/email-template');
+const { renderEmail, safeHtml, rawHtml } = require('../src/services/email-template');
 const { generateReplyTo } = require('../src/services/email-reply-token');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
@@ -108,10 +108,10 @@ If the introduction didn't work out for any reason, let us know and we'll see wh
 
 — The eskp.in team`;
 
-    const htmlBody = `
-      <p>${escHtml(greeting)}</p>
-      <p>We introduced you to <strong>${escHtml(helperName)}</strong> yesterday. We hope the conversation is going well.</p>
-      ${ratingHtml}
+    const htmlBody = safeHtml`
+      <p>${greeting}</p>
+      <p>We introduced you to <strong>${helperName}</strong> yesterday. We hope the conversation is going well.</p>
+      ${rawHtml(ratingHtml)}
       <p>You can also just <strong>reply to this email</strong> with a line or two — whatever's easier.</p>
       <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
         If the introduction didn't work out for any reason, let us know and we'll see what else we can do.
@@ -177,9 +177,9 @@ If you'd like to update or close your request, just reply.
 
 — The eskp.in team`;
 
-    const htmlBody = `
-      <p>${escHtml(greeting)}</p>
-      <p>We're still looking for the right person for <em>"${escHtml(summary)}"</em>. We haven't found someone yet, but your goal is active and we'll let you know as soon as we do.</p>
+    const htmlBody = safeHtml`
+      <p>${greeting}</p>
+      <p>We're still looking for the right person for <em>"${summary}"</em>. We haven't found someone yet, but your goal is active and we'll let you know as soon as we do.</p>
       <p style="color:#7A6E68;font-size:14px;">If you'd like to update or close your request, just reply.</p>`;
 
     const subject = `Update: we're still looking for a match`;
@@ -248,16 +248,16 @@ Sorry it's taking longer than expected. We'd rather be honest than keep you wait
 
 — The eskp.in team`;
 
-    const htmlBody = `
-      <p>${escHtml(greeting)}</p>
-      <p>We wanted to be honest with you: we haven't found the right match for <em>"${escHtml(summary)}"</em> yet.</p>
-      <p>We're still a small platform and our helper network is growing. A few options:</p>
+    const htmlBody = safeHtml`
+      <p>${greeting}</p>
+      <p>We wanted to be honest with you: we haven't found the right match for <em>"${summary}"</em> yet.</p>
+      ${rawHtml(`<p>We're still a small platform and our helper network is growing. A few options:</p>
       <ol style="margin:8px 0 16px 20px;padding:0;">
         <li style="margin-bottom:8px;"><strong>Wait</strong> — we're actively recruiting helpers and may find someone soon.</li>
         <li style="margin-bottom:8px;"><strong>Reframe your goal</strong> — sometimes a different description opens up new matches. Just reply with an updated version.</li>
         <li style="margin-bottom:8px;"><strong>Close this request</strong> — reply with "close" and we'll remove it from our queue.</li>
       </ol>
-      <p style="color:#7A6E68;font-size:14px;">Sorry it's taking longer than expected. We'd rather be honest than keep you waiting in silence.</p>`;
+      <p style="color:#7A6E68;font-size:14px;">Sorry it's taking longer than expected. We'd rather be honest than keep you waiting in silence.</p>`)}`;
 
     if (!DRY_RUN) {
       await send({
@@ -320,9 +320,9 @@ If your situation has changed or you'd like to close this request, just reply an
 
 — The eskp.in team`;
 
-    const htmlBody = `
-      <p>${escHtml(greeting)}</p>
-      <p>A week ago we found a potential match for your goal: <strong>${escHtml(helperName)}</strong>.</p>
+    const htmlBody = safeHtml`
+      <p>${greeting}</p>
+      <p>A week ago we found a potential match for your goal: <strong>${helperName}</strong>.</p>
       <p>The introduction is waiting for you. If you're ready to proceed, just reply and we'll send you a fresh payment link.</p>
       <p style="color:#7A6E68;font-size:14px;">If your situation has changed or you'd like to close this request, just reply and let us know.</p>`;
 

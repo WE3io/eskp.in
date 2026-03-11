@@ -14,7 +14,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const { send } = require('../src/services/email');
-const { renderEmail, escHtml } = require('../src/services/email-template');
+const { renderEmail, escHtml, safeHtml, rawHtml } = require('../src/services/email-template');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
@@ -214,8 +214,8 @@ function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, i
 
 function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain, avgRating, ratingCount }) {
   const esc = escHtml;
-  let html = `<p>${esc(greeting)}</p>
-    <p>Here's a quick summary of what came through eskp.in in the week ending <strong>${esc(weekOf)}</strong>.</p>`;
+  let html = safeHtml`<p>${greeting}</p>
+    <p>Here's a quick summary of what came through eskp.in in the week ending <strong>${weekOf}</strong>.</p>`;
 
   if (totalGoals === 0) {
     html += `<p style="color:#7A6E68;">No goals were submitted this week. We're still growing the platform — thank you for your patience.</p>`;

@@ -27,7 +27,7 @@
 require('dotenv').config();
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
-const { renderEmail, escHtml } = require('../src/services/email-template');
+const { renderEmail, safeHtml, rawHtml } = require('../src/services/email-template');
 
 const DRY_RUN = process.env.DRY_RUN === '1';
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
@@ -76,12 +76,12 @@ Your personal data has been handled in line with our privacy policy: https://esk
 
 — The eskp.in team`;
 
-    const htmlBody = `
-      <p>${escHtml(greeting)}</p>
-      <p>Your goal submission — <em>"${escHtml(summary)}"</em> — has been inactive for ${STALE_ACTIVE_DAYS} days and has been automatically closed.</p>
-      <p style="color:#7A6E68;font-size:14px;">This is a routine data hygiene action. We close inactive goals after ${STALE_ACTIVE_DAYS} days to respect your privacy (UK GDPR, storage limitation principle).</p>
+    const htmlBody = safeHtml`
+      <p>${greeting}</p>
+      <p>Your goal submission — <em>"${summary}"</em> — has been inactive for ${STALE_ACTIVE_DAYS} days and has been automatically closed.</p>
+      ${rawHtml(`<p style="color:#7A6E68;font-size:14px;">This is a routine data hygiene action. We close inactive goals after ${STALE_ACTIVE_DAYS} days to respect your privacy (UK GDPR, storage limitation principle).</p>
       <p>If your need is still live, you're welcome to <a href="https://eskp.in" style="color:#C4753A;">submit it again</a> — it will be matched fresh.</p>
-      <p style="font-size:13px;color:#9E9490;">Your personal data has been handled in line with our <a href="https://eskp.in/privacy.html" style="color:#9E9490;">privacy policy</a>.</p>`;
+      <p style="font-size:13px;color:#9E9490;">Your personal data has been handled in line with our <a href="https://eskp.in/privacy.html" style="color:#9E9490;">privacy policy</a>.</p>`)}`;
 
     if (DRY_RUN) {
       console.log(`[data-retention] DRY stale-close: goal ${row.goal_id} (${row.status}) → user ${row.user_email}`);

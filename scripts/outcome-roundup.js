@@ -22,7 +22,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const { send } = require('../src/services/email');
-const { renderEmail, escHtml } = require('../src/services/email-template');
+const { renderEmail, safeHtml, rawHtml } = require('../src/services/email-template');
 const { isSuppressed } = require('../src/services/email-suppression');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -96,13 +96,13 @@ If you have a new goal you'd like help with, send an email to hello@mail.eskp.in
 ---
 You received this because you submitted a goal via eskp.in. Reply with "unsubscribe" to stop receiving these updates.`;
 
-    const htmlBody = `<p>${escHtml(greeting)}</p>
+    const htmlBody = safeHtml`<p>${greeting}</p>
 <p>This is a short monthly note from eskp.in.</p>
-<p>${escHtml(statsLine)}</p>
-<p>If you've had an introduction and it was useful — we'd love to hear what happened. <strong>Just reply to this email.</strong> If it wasn't useful, we'd like to know that too.</p>
+<p>${statsLine}</p>
+${rawHtml(`<p>If you've had an introduction and it was useful — we'd love to hear what happened. <strong>Just reply to this email.</strong> If it wasn't useful, we'd like to know that too.</p>
 <p>You can see what we're building next at <a href="https://eskp.in/roadmap.html">eskp.in/roadmap.html</a></p>
 <p>If you have a new goal you'd like help with, send an email to <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a></p>
-<p style="color:#7A6E68;font-size:13px;">You received this because you submitted a goal via eskp.in. Reply with "unsubscribe" to stop receiving these updates.</p>`;
+<p style="color:#7A6E68;font-size:13px;">You received this because you submitted a goal via eskp.in. Reply with "unsubscribe" to stop receiving these updates.</p>`)}`;
 
     if (DRY_RUN) {
       console.log(`[DRY_RUN] Would send to: ${user.email}`);

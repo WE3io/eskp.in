@@ -6,7 +6,7 @@ const { pool } = require('../db/connection');
 const { decompose } = require('./decompose');
 const { findMatches } = require('./match');
 const { send } = require('./email');
-const { renderEmail, textToHtml, escHtml } = require('./email-template');
+const { renderEmail, textToHtml, escHtml, safeHtml, rawHtml } = require('./email-template');
 const { createIntroCheckout } = require('./payments');
 const { generateReplyTo } = require('./email-reply-token');
 
@@ -108,9 +108,7 @@ async function processGoal(userEmail, userName, rawText) {
 }
 
 async function sendAcknowledgement(user, goal, decomposed, helper, paymentUrl) {
-  const safeName = user.name ? escHtml(user.name) : null;
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
-  const greetingHtml = `Hi${safeName ? ` ${safeName}` : ''},`;
   const needsList = decomposed.needs.map(n => `• ${n.need}`).join('\n');
 
   const hasMatch = !!(helper && paymentUrl);
@@ -154,33 +152,35 @@ We're looking for the right person and will get back to you within 24 hours. If 
        <a href="https://eskp.in/privacy.html" style="color:#9A8E88;">Privacy policy</a>.
      </p>`;
 
+  const needsListHtml = rawHtml(decomposed.needs.map(n => safeHtml`<li style="margin-bottom:8px;">${n.need}</li>`).join(''));
+
   const htmlBody = hasMatch
-    ? `<p>${greetingHtml}</p>
+    ? safeHtml`<p>Hi${user.name ? ` ${user.name}` : ''},</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
-       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${escHtml(decomposed.summary)}</p>
+       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
        <p><strong>What we think you need:</strong></p>
-       <ul style="margin:8px 0 16px 20px;padding:0;">
-         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${escHtml(n.need)}</li>`).join('')}
-       </ul>
-       <p>Our AI matched your goal to <strong>${escHtml(helper.name || 'a helper in our network')}</strong> based on their expertise and your needs.</p>
-       ${helper.bio ? `<p style="color:#5A5450;font-size:0.9em;background:#F7EDE6;border-radius:5px;padding:10px 14px;margin:12px 0;">${escHtml(helper.bio)}</p>` : ''}
+       ${rawHtml('<ul style="margin:8px 0 16px 20px;padding:0;">')}
+         ${needsListHtml}
+       ${rawHtml('</ul>')}
+       <p>Our AI matched your goal to <strong>${helper.name || 'a helper in our network'}</strong> based on their expertise and your needs.</p>
+       ${helper.bio ? safeHtml`<p style="color:#5A5450;font-size:0.9em;background:#F7EDE6;border-radius:5px;padding:10px 14px;margin:12px 0;">${helper.bio}</p>` : ''}
        <p style="color:#7A6E68;font-size:14px;">Not the right fit? Reply to this email and we'll take another look.</p>
        <p>To confirm and get the introduction, complete a one-time payment of <strong>£10</strong>:</p>
-       <p style="text-align:center;margin:24px 0;">
+       ${rawHtml(`<p style="text-align:center;margin:24px 0;">
          <a href="${paymentUrl}" style="background:#C4622D;color:#fff;padding:12px 24px;border-radius:5px;text-decoration:none;font-size:16px;">
            Pay £10 and get introduced
          </a>
-       </p>
-       ${privacyNote}`
-    : `<p>${greetingHtml}</p>
+       </p>`)}
+       ${rawHtml(privacyNote)}`
+    : safeHtml`<p>Hi${user.name ? ` ${user.name}` : ''},</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>
-       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${escHtml(decomposed.summary)}</p>
+       <p style="font-style:italic;color:#5A5450;border-left:3px solid #C4622D;padding-left:14px;margin:16px 0;">${decomposed.summary}</p>
        <p><strong>What we think you need:</strong></p>
-       <ul style="margin:8px 0 16px 20px;padding:0;">
-         ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${escHtml(n.need)}</li>`).join('')}
-       </ul>
+       ${rawHtml('<ul style="margin:8px 0 16px 20px;padding:0;">')}
+         ${needsListHtml}
+       ${rawHtml('</ul>')}
        <p>We're looking for the right person and will get back to you <strong>within 24 hours</strong>. If we don't have a match yet, we'll tell you honestly rather than keep you waiting.</p>
-       ${privacyNote}`;
+       ${rawHtml(privacyNote)}`;
 
   await send({
     to: user.email,
@@ -195,9 +195,8 @@ We're looking for the right person and will get back to you within 24 hours. If 
 
 async function sendClarificationRequest(user, goal, decomposed) {
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
-  const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
   const questionsList = decomposed.clarification_questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
-  const questionsHtml = decomposed.clarification_questions.map(q => `<li style="margin-bottom:10px;">${escHtml(q)}</li>`).join('');
+  const questionsHtml = rawHtml(decomposed.clarification_questions.map(q => safeHtml`<li style="margin-bottom:10px;">${q}</li>`).join(''));
 
   const plainText = `${greeting}
 
@@ -211,12 +210,12 @@ Just reply to this email with your answers — no need to be exhaustive, whateve
 
 — The eskp.in team`;
 
-  const htmlBody = `<p>${greetingHtml}</p>
+  const htmlBody = safeHtml`<p>Hi${user.name ? ` ${user.name}` : ''},</p>
     <p>We received your message. We'd like to help but need a bit more information to find the right person for you.</p>
     <p><strong>A few questions:</strong></p>
-    <ol style="margin:8px 0 16px 20px;padding:0;">
+    ${rawHtml('<ol style="margin:8px 0 16px 20px;padding:0;">')}
       ${questionsHtml}
-    </ol>
+    ${rawHtml('</ol>')}
     <p style="color:#7A6E68;font-size:14px;">Just reply to this email with your answers — no need to be exhaustive, whatever you can share will help.</p>`;
 
   await send({
@@ -332,7 +331,6 @@ async function sendPreMatchNotification(goal, decomposed, matches) {
 
   for (const helper of relevant) {
     const greeting = `Hi${helper.name ? ` ${helper.name}` : ''},`;
-    const greetingHtml = `Hi${helper.name ? ` ${escHtml(helper.name)}` : ''},`;
 
     const plainText = `${greeting}
 
@@ -347,12 +345,13 @@ This is just a heads-up so you're not caught off-guard. We'll follow up with ful
 
 — The eskp.in team`;
 
-    const htmlBody = `<p>${greetingHtml}</p>
+    const preMatchNeedsHtml = rawHtml(decomposed.needs.map(n => safeHtml`<li style="margin-bottom:7px;">${n.need}</li>`).join(''));
+    const htmlBody = safeHtml`<p>Hi${helper.name ? ` ${helper.name}` : ''},</p>
       <p>A new goal has come in on eskp.in that looks relevant to your expertise.</p>
       <p><strong>What they need:</strong></p>
-      <ul style="margin:8px 0 16px 20px;padding:0;">
-        ${decomposed.needs.map(n => `<li style="margin-bottom:7px;">${escHtml(n.need)}</li>`).join('')}
-      </ul>
+      ${rawHtml('<ul style="margin:8px 0 16px 20px;padding:0;">')}
+        ${preMatchNeedsHtml}
+      ${rawHtml('</ul>')}
       <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
         We're working on finding them the best match. <strong>No action needed right now</strong> — if you're selected, we'll send you full contact details.
       </p>
@@ -373,9 +372,6 @@ This is just a heads-up so you're not caught off-guard. We'll follow up with ful
 }
 
 async function sendHelperIntro(user, goal, decomposed, helper) {
-  const safeHelperName = helper.name ? escHtml(helper.name) : '';
-  const safeUserEmail = escHtml(user.email || '');
-  const safeUserName = user.name ? escHtml(user.name) : null;
   const plainText = `Hi ${helper.name || ''},
 
 Someone on the platform is looking for help and we think you're a good match.
@@ -393,17 +389,18 @@ This introduction is made because your expertise overlaps with what they need. T
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>Hi ${safeHelperName || ''},</p>
+  const introNeedsHtml = rawHtml(decomposed.needs.map(n => safeHtml`<li style="margin-bottom:8px;">${n.need}</li>`).join(''));
+  const htmlBody = safeHtml`
+    <p>Hi ${helper.name || ''},</p>
     <p>Someone on the platform is looking for help and we think you're a good match.</p>
     <p><strong>What they need:</strong></p>
-    <ul style="margin:8px 0 16px 20px;padding:0;">
-      ${decomposed.needs.map(n => `<li style="margin-bottom:8px;">${escHtml(n.need)}</li>`).join('')}
-    </ul>
-    <p><strong>Context:</strong> ${escHtml(decomposed.context)}</p>
-    <p><strong>What success looks like for them:</strong> ${escHtml(decomposed.outcome)}</p>
+    ${rawHtml('<ul style="margin:8px 0 16px 20px;padding:0;">')}
+      ${introNeedsHtml}
+    ${rawHtml('</ul>')}
+    <p><strong>Context:</strong> ${decomposed.context}</p>
+    <p><strong>What success looks like for them:</strong> ${decomposed.outcome}</p>
     <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;">
-      <strong>Their contact:</strong> <a href="mailto:${safeUserEmail}" style="color:#C4622D;">${safeUserEmail}</a>${safeUserName ? ` (${safeUserName})` : ''}
+      <strong>Their contact:</strong> ${rawHtml(`<a href="mailto:${escHtml(user.email || '')}" style="color:#C4622D;">`)}${user.email || ''}${rawHtml('</a>')}${user.name ? safeHtml` (${user.name})` : ''}
     </p>
     <p style="color:#7A6E68;font-size:14px;">This introduction is made because your expertise overlaps with what they need. There's no obligation — reply to this email if you'd like to connect, or ignore it if it's not a good fit.</p>`;
 
@@ -496,7 +493,6 @@ async function processGoalSensitive(userEmail, userName, rawText, sensitiveDomai
 
   // Send user a basic acknowledgement (no match, no payment link)
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
-  const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
   const plainText = `${greeting}
 
 Thank you for getting in touch with eskp.in.
@@ -510,16 +506,16 @@ If this is an emergency or you need immediate support, please contact:
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>${greetingHtml}</p>
+  const htmlBody = safeHtml`
+    <p>Hi${user.name ? ` ${user.name}` : ''},</p>
     <p>Thank you for getting in touch with eskp.in.</p>
     <p>We've received your message and a member of our team will review it shortly. We'll be in touch soon.</p>
-    <p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;font-size:14px;">
+    ${rawHtml(`<p style="background:#F7EDE6;border-radius:6px;padding:12px 16px;margin:20px 0;font-size:14px;">
       <strong>If this is an emergency or you need immediate support:</strong><br>
       <strong>Samaritans:</strong> 116 123 (free, 24/7) &nbsp;|&nbsp;
       <strong>NHS 111:</strong> call 111 &nbsp;|&nbsp;
       <strong>Emergency:</strong> 999
-    </p>`;
+    </p>`)}`;
 
   await send({
     to: user.email,
@@ -556,14 +552,14 @@ This email was sent automatically. Do not forward it externally.`;
     text: panelText,
     html: renderEmail({
       preheader: `Sensitive goal flagged: ${sensitiveLabel}`,
-      body: `<p>A goal has been flagged as touching a sensitive domain and requires human review before any introduction is sent.</p>
-        <table style="border-collapse:collapse;width:100%;margin:16px 0;">
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${escHtml(goal.id)}</td></tr>
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${escHtml(user.email)}${user.name ? ` (${escHtml(user.name)})` : ''}</td></tr>
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">Domain</td><td style="padding:6px 12px;">${escHtml(sensitiveLabel)} (${escHtml(sensitiveDomain)})</td></tr>
-        </table>
+      body: safeHtml`<p>A goal has been flagged as touching a sensitive domain and requires human review before any introduction is sent.</p>
+        ${rawHtml('<table style="border-collapse:collapse;width:100%;margin:16px 0;">')}
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${goal.id}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${user.email}${user.name ? safeHtml` (${user.name})` : ''}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">Domain</td><td style="padding:6px 12px;">${sensitiveLabel} (${sensitiveDomain})</td></tr>
+        ${rawHtml('</table>')}
         <p><strong>Raw text:</strong></p>
-        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${escHtml(rawText.substring(0, 1000))}${rawText.length > 1000 ? '\n[truncated]' : ''}</pre>
+        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${rawText.substring(0, 1000)}${rawHtml(rawText.length > 1000 ? '\n[truncated]' : '')}</pre>
         <p style="color:#5A5450;font-size:13px;">Review the goal and take appropriate action. The user has been acknowledged but no match has been sent.</p>`,
     }),
     replyTo: panelEmail,  // admin replies stay off the inbound worker
@@ -583,7 +579,6 @@ This email was sent automatically. Do not forward it externally.`;
  */
 async function closeGoal(goal, userEmail, userName) {
   const greeting = `Hi${userName ? ` ${userName}` : ''},`;
-  const greetingHtml = `Hi${userName ? ` ${escHtml(userName)}` : ''},`;
 
   await pool.query(
     `UPDATE goals SET status = 'closed', updated_at = NOW() WHERE id = $1`,
@@ -604,7 +599,7 @@ If you want to try again in the future, just send us a new message.
     text: plainText,
     html: renderEmail({
       preheader: 'Your goal request has been closed.',
-      body: `<p>${greetingHtml}</p>
+      body: safeHtml`<p>Hi${userName ? ` ${userName}` : ''},</p>
         <p>We've closed your request. No further emails will be sent about this goal.</p>
         <p style="color:#7A6E68;font-size:14px;">If you want to try again in the future, just send us a new message.</p>`,
     }),
@@ -632,7 +627,6 @@ async function processGoalManual(userEmail, userName, rawText) {
 
   // Acknowledge to user
   const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
-  const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
 
   const plainText = `${greeting}
 
@@ -642,8 +636,8 @@ This may take a little longer than our usual process, but we'll be in touch with
 
 — The eskp.in team`;
 
-  const htmlBody = `
-    <p>${greetingHtml}</p>
+  const htmlBody = safeHtml`
+    <p>Hi${user.name ? ` ${user.name}` : ''},</p>
     <p>We received your message. As you've requested, we won't use AI to process your goal — a member of our team will review it personally and find you a match.</p>
     <p style="color:#7A6E68;font-size:14px;">This may take a little longer than our usual process, but we'll be in touch within a few days.</p>`;
 
@@ -680,13 +674,13 @@ ${rawText.substring(0, 2000)}${rawText.length > 2000 ? '\n[truncated]' : ''}
     text: panelText,
     html: renderEmail({
       preheader: 'A user has opted out of AI processing.',
-      body: `<p>A user has opted out of AI processing. Manual decomposition and matching required.</p>
-        <table style="border-collapse:collapse;width:100%;margin:16px 0;">
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${escHtml(goal.id)}</td></tr>
-          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${escHtml(user.email)}${user.name ? ` (${escHtml(user.name)})` : ''}</td></tr>
-        </table>
+      body: safeHtml`<p>A user has opted out of AI processing. Manual decomposition and matching required.</p>
+        ${rawHtml('<table style="border-collapse:collapse;width:100%;margin:16px 0;">')}
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${goal.id}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${user.email}${user.name ? safeHtml` (${user.name})` : ''}</td></tr>
+        ${rawHtml('</table>')}
         <p><strong>Raw text:</strong></p>
-        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${escHtml(rawText.substring(0, 2000))}${rawText.length > 2000 ? '\n[truncated]' : ''}</pre>`,
+        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${rawText.substring(0, 2000)}${rawHtml(rawText.length > 2000 ? '\n[truncated]' : '')}</pre>`,
     }),
     replyTo: panelEmail,
   });
