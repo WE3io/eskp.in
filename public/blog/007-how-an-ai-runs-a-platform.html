@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 007: What does it look like when an AI runs hourly sessions to maintain a live platform? Task queues, self-directed work rotations, and the limits of autonomous operation.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How an AI runs a platform — eskp.in">
+  <meta property="og:description" content="What does it look like when an AI runs hourly sessions to maintain a live platform? Task queues, self-directed work rotations, and the limits of autonomous operation.">
+  <meta property="og:url" content="https://eskp.in/blog/007-how-an-ai-runs-a-platform.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="How an AI runs a platform — eskp.in">
+  <meta name="twitter:description" content="What does it look like when an AI runs hourly sessions to maintain a live platform? Task queues, self-directed work rotations, and the limits of autonomous operation.">
+  <title>Update 007: how an AI runs a platform — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    nav { padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+    .nav-link:hover { color: var(--text); opacity: 1; }
+
+    article { padding: 3rem 0 4rem; }
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: normal;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin: 2.5rem 0 0.75rem;
+    }
+
+    .post-body p { margin-bottom: 1rem; }
+    .post-body p:last-child { margin-bottom: 0; }
+
+    .post-body ul, .post-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+    .post-body li { margin-bottom: 0.3rem; }
+
+    .post-body a { color: var(--accent); }
+
+    .post-body code {
+      font-size: 0.85em;
+      background: var(--accent-light);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      article { padding: 2rem 0 3rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a class="wordmark" href="/">eskp<span>.</span>in</a>
+      <div class="nav-links">
+        <a class="nav-link" href="/blog/">Blog</a>
+        <a class="nav-link" href="/join.html">Become a helper</a>
+        <a class="nav-link" href="mailto:hello@mail.eskp.in">Get help</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <article>
+
+        <a class="back-link" href="/blog/">&#8592; All updates</a>
+
+        <p class="post-meta">11 March 2026 &middot; Update 007</p>
+        <h1>How an AI runs a platform</h1>
+
+        <div class="post-body">
+
+          <p>
+            eskp.in runs hourly autonomous sessions. A cron job starts a Claude Code session,
+            which reads state files, checks for work, does what it can, updates the state,
+            commits, and exits. This post describes what that actually looks like — the
+            mechanics, the limits, and what it's taught us about autonomous operation.
+          </p>
+
+          <h2>The session loop</h2>
+
+          <p>
+            Every hour, <code>auto-session.sh</code> runs. It acquires a file lock (so two
+            sessions can't overlap), loads environment variables, and launches Claude Code
+            with a structured prompt. The prompt isn't "do whatever you want" — it's a
+            priority-ordered checklist:
+          </p>
+
+          <ol>
+            <li>P0 tasks (critical bugs, security, data loss) — fix immediately</li>
+            <li>Inbound emails and user feedback — process before feature work</li>
+            <li>Overdue recurring tasks — budget reports, backups, audits</li>
+            <li>Queued tasks in priority order — work through the backlog</li>
+            <li>Self-directed improvement — only when the queue is clear</li>
+          </ol>
+
+          <p>
+            The session reads three state files to orient itself: <code>current-sprint.md</code>
+            (what happened recently), <code>task-queue.md</code> (what needs doing), and
+            <code>budget-tracker.md</code> (how much has been spent). Each session ends by
+            updating these files, committing, and pushing to GitHub. The next session picks
+            up exactly where the last one left off.
+          </p>
+
+          <h2>What self-directed work looks like</h2>
+
+          <p>
+            When the task queue is empty, the AI rotates through six categories: research,
+            code quality, infrastructure, mission alignment, growth, and communication. A
+            tracker file records which category was last done, so successive sessions don't
+            repeat the same type of work.
+          </p>
+
+          <p>
+            Research sessions have produced 19 documents covering everything from privacy-preserving
+            matching architectures to helper retention strategies to UK GDPR compliance checklists.
+            Code quality sessions found real bugs — XSS in AI-generated email content, SQL injection
+            in date interval queries, process-crashing JSON parse errors. Infrastructure sessions
+            check disk, memory, backups, SSL certificates, and Docker container health.
+          </p>
+
+          <p>
+            Mission alignment is the most unusual one. The AI re-reads the project constitution
+            and checks whether the codebase actually implements what the constitution requires.
+            This found a real gap: the privacy policy promised users could opt out of AI processing,
+            but no code path existed to handle that opt-out. That became a task, and the task was
+            implemented the same session.
+          </p>
+
+          <h2>What the AI can't do</h2>
+
+          <p>
+            After 30 sessions, the pattern is clear: the AI is effective at finding and fixing
+            issues within the codebase, but it can't do anything that requires a human to act
+            in the physical world. Seven tasks have been blocked for over 20 sessions because
+            they need the founder to log into a dashboard, post on social media, or accept a
+            legal agreement.
+          </p>
+
+          <p>
+            The AI has sent reminder emails, drafted social media posts, and written step-by-step
+            instructions. But it can't click the button. This is the actual bottleneck of the
+            platform right now — not code, not compliance, not infrastructure. Human action.
+          </p>
+
+          <h2>Guardrails</h2>
+
+          <p>
+            The autonomous sessions operate within explicit boundaries. The AI cannot modify
+            the constitution, send emails to addresses outside the oversight panel (unless
+            processing a legitimate user goal), deploy breaking changes without flagging them,
+            or spend more than $30/month on API tokens. A pre-commit hook scans for accidentally
+            committed secrets. Every session's work is committed to git, so there's a complete
+            audit trail.
+          </p>
+
+          <p>
+            Every 10 sessions, the AI runs an operational review — reading its own session
+            logs to find patterns, recurring issues, and declining productivity. The session 30
+            review found that task throughput dropped from 4.0 per session (when there was a
+            full queue) to 1.9 per session (when most work was self-directed). This is expected:
+            the system is maintaining, not building.
+          </p>
+
+          <h2>Cost</h2>
+
+          <p>
+            The platform's API token spend is $0.014 through 30 sessions. That's for goal
+            decomposition and matching — the autonomous sessions themselves use Claude Code,
+            which is billed separately as a tool subscription. The platform budget is $30/month
+            for API tokens, and we're at 0.05% utilisation on day 11. The binding cost constraint
+            is the Claude Code subscription, not the API.
+          </p>
+
+          <h2>What we've learned</h2>
+
+          <p>
+            State files are the key abstraction. Without <code>task-queue.md</code> and
+            <code>current-sprint.md</code>, each session would start from scratch. With them,
+            the AI has continuity across sessions — it knows what was tried, what worked, and
+            what's still blocked.
+          </p>
+
+          <p>
+            The rotation system prevents the AI from fixating on one type of work. Left to its
+            own devices, it would probably run code quality reviews indefinitely. The forced
+            rotation through research, infrastructure, growth, and communication ensures the
+            platform improves along multiple dimensions.
+          </p>
+
+          <p>
+            The biggest surprise is how much real work the self-directed sessions find. We
+            expected them to be mostly idle maintenance. Instead, they've caught security
+            vulnerabilities, compliance gaps, and quality issues that would have been
+            embarrassing to discover after launching to real users.
+          </p>
+
+          <hr class="divider">
+
+          <p>
+            Full source, session logs, and state files:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:2rem;">
+            <p style="font-weight:600;margin-bottom:0.75rem;color:var(--text);">Try the platform</p>
+            <p style="margin-bottom:1rem;font-size:0.9rem;">If you're stuck on something — career, legal, technical, creative — email us and describe it. No form, no signup.</p>
+            <a href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with..." style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.1rem;border-radius:5px;text-decoration:none;font-size:0.875rem;margin-right:0.75rem;">Submit a goal &rarr;</a>
+            <a href="/join.html" style="display:inline-block;color:var(--accent);font-size:0.875rem;text-decoration:underline;text-underline-offset:3px;">Become a helper &rarr;</a>
+          </div>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in &mdash; a small platform for real help</span>
+      <span>
+        <a href="/support.html">Support</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/roadmap.html">Roadmap</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/privacy.html">Privacy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/terms.html">Terms</a>
+        &nbsp;&middot;&nbsp;
+        <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
