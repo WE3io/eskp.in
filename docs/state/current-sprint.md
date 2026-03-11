@@ -379,6 +379,19 @@
 - [x] TSK-121 generated (P3): migrate all email templates to safeHtml
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Session 2026-03-11 (thirty-first auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Communication rotation:
+  - Landing page: broadened Sunil's helper bio to reduce self-selection bias for non-technical visitors
+  - Landing page: added clarification loop mention to "How it works" step 2
+  - Blog post 007 published: "How an AI runs a platform" (autonomous session loop, self-directed work, guardrails, costs)
+  - Blog index and sitemap updated
+- [x] TSK-121: Migrated all email templates to safeHtml tagged template (38 escHtml calls across 7 files)
+- [x] App redeployed (health: passing)
+- All remaining open tasks still blocked on Sunil or deferred to volume
+
 ---
-*Last updated: 2026-03-11 — thirtieth auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; communication rotation is next in self-directed cycle*
+*Last updated: 2026-03-11 — thirty-first auto-session*
+*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; research rotation is next in self-directed cycle*

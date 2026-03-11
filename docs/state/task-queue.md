@@ -217,6 +217,6 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-118 | AI opt-out detection + manual processing path (Art 10.2.3(c)) | **done** 2026-03-11 | Inbound email detection, processGoalManual(), ai_opted_out column, panel alert |
 | TSK-119 | Outcome tracking design — measure whether goals are achieved | open | P3 — defer to first external users; Art 10.4.1 empirical honesty |
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
-| TSK-121 | Migrate all email templates to safeHtml tagged template | open | P3 — mechanical migration of existing escHtml() calls to safeHtml``; follow-up to TSK-120 |
+| TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-11 (thirtieth auto-session — operational review + growth rotation)*
+*Last updated: 2026-03-11 (thirty-first auto-session — communication rotation)*
