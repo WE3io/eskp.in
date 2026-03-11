@@ -214,4 +214,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-116 | Bug fix: 3 unescaped user.name in account.js HTML email bodies (XSS) | **done** 2026-03-11 | escHtml() applied to export, deletion request, post-deletion emails |
 | TSK-117 | Bug fix: unhandled JSON.parse in email.js response handler | **done** 2026-03-11 | try/catch added; non-JSON Resend responses no longer crash process |
 
-*Last updated: 2026-03-11 (twenty-seventh auto-session — code quality rotation)*
+*Last updated: 2026-03-11 (twenty-eighth auto-session — infrastructure rotation)*
