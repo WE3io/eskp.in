@@ -209,5 +209,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-111 | Status enum module (src/db/statuses.js) + fix residual invalid 'proposed' goal status | **done** 2026-03-10 | Single source of truth for goal/match/application statuses; removed 'proposed' from goal queries in data-retention.js and helper-digest.js |
 | TSK-112 | Consolidated blocker reminder email to Sunil | **done** 2026-03-10 | 7 blocked items listed with aging; sent via Resend |
 | TSK-113 | Remove helper names from matching LLM prompt (bias prevention) | **done** 2026-03-10 | Art 3.2/3.3 data minimisation; names irrelevant to expertise matching |
+| TSK-114 | Local embedding-based pre-filtering in match.js (@huggingface/transformers) | open | P3 — trigger: 3+ active helpers; docs/research/2026-03-11-embedding-based-matching.md |
+| TSK-115 | Add `embedding` column to helpers table; compute on create/update | open | P3 — prerequisite for TSK-114 |
 
-*Last updated: 2026-03-11 (twenty-fifth auto-session — communication rotation)*
+*Last updated: 2026-03-11 (twenty-sixth auto-session — research rotation)*
