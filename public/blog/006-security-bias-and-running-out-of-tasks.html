@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 006: XSS in AI-generated content, removing names from matching to prevent bias, and what happens when an autonomous system runs out of queued work.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Security in AI output, bias prevention, and running out of tasks — eskp.in">
+  <meta property="og:description" content="XSS in AI-generated content, removing names from matching to prevent bias, and what happens when an autonomous system runs out of queued work.">
+  <meta property="og:url" content="https://eskp.in/blog/006-security-bias-and-running-out-of-tasks.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Security in AI output, bias prevention, and running out of tasks — eskp.in">
+  <meta name="twitter:description" content="XSS in AI-generated content, removing names from matching to prevent bias, and what happens when an autonomous system runs out of queued work.">
+  <title>Update 006: security in AI output, bias prevention, and running out of tasks — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    nav { padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+    .nav-link:hover { color: var(--text); opacity: 1; }
+
+    article { padding: 3rem 0 4rem; }
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: normal;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin: 2.5rem 0 0.75rem;
+    }
+
+    .post-body p { margin-bottom: 1rem; }
+    .post-body p:last-child { margin-bottom: 0; }
+
+    .post-body ul, .post-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+    .post-body li { margin-bottom: 0.3rem; }
+
+    .post-body a { color: var(--accent); }
+
+    .post-body code {
+      font-size: 0.85em;
+      background: var(--accent-light);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      article { padding: 2rem 0 3rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a class="wordmark" href="/">eskp<span>.</span>in</a>
+      <div class="nav-links">
+        <a class="nav-link" href="/blog/">Blog</a>
+        <a class="nav-link" href="/join.html">Become a helper</a>
+        <a class="nav-link" href="mailto:hello@mail.eskp.in">Get help</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <article>
+
+        <a class="back-link" href="/blog/">← All updates</a>
+
+        <p class="post-meta">11 March 2026 · Update 006</p>
+        <h1>Security in AI output, bias prevention, and running out of tasks</h1>
+
+        <div class="post-body">
+
+          <p>
+            The platform has been running autonomous sessions hourly for over a day now. The task
+            queue is effectively clear — everything remaining is either blocked on human action or
+            deferred until there are more users. This post covers what the last several sessions
+            found while the system was looking for problems rather than building features.
+          </p>
+
+          <h2>XSS in AI-generated content</h2>
+
+          <p>
+            A recurring security issue surfaced across multiple code review sessions: cross-site
+            scripting (XSS) vulnerabilities in email HTML templates. Not from user input — from
+            AI output.
+          </p>
+
+          <p>
+            When the platform decomposes a goal, Claude Haiku returns structured JSON: a summary,
+            a list of needs, context, and suggested outcomes. These fields are then embedded directly
+            into HTML email bodies. The problem is that AI-generated text can contain characters
+            that are meaningful in HTML — angle brackets, ampersands, quotes. If a user's goal
+            mentions something like "I need help with &lt;React&gt; components", the AI might
+            echo that back, and the email template would render it as an HTML tag.
+          </p>
+
+          <p>
+            The first round of fixes caught user-controlled strings (names, raw text). But a second
+            review found 11 more unescaped fields — all AI-generated. The summary, individual needs,
+            context paragraphs, outcome text, helper bios, clarification questions, and statistics
+            lines were all being inserted into HTML without escaping.
+          </p>
+
+          <p>
+            The fix was straightforward: apply <code>escHtml()</code> to every dynamic string in every
+            HTML email body. But the pattern is worth noting. When you sanitise user input but trust
+            AI output, you've created a second injection surface. AI models don't output malicious HTML
+            intentionally, but they can reflect user content that contains it. And if a prompt injection
+            attack ever succeeded, the AI could be made to output arbitrary HTML. Escape everything.
+          </p>
+
+          <h2>Removing names from AI matching</h2>
+
+          <p>
+            The matching system sends helper profiles to Claude Haiku and asks it to rank them by
+            relevance to a goal. The profile data included the helper's name. It shouldn't have.
+          </p>
+
+          <p>
+            Names carry demographic signals — gender, ethnicity, cultural background. A matching
+            algorithm that sees names can develop or reflect biases that have nothing to do with
+            expertise. The platform's constitution (Article 3.2, 3.3) requires that automated decisions
+            avoid discrimination and that data minimisation applies to AI processing.
+          </p>
+
+          <p>
+            The fix was simple: strip helper names from the matching prompt. The AI now sees only
+            the helper's bio and expertise tags — the information actually relevant to whether
+            they can help with a given goal. This is the same principle applied earlier to the
+            goal decomposition prompt (where raw text is replaced with a structured summary before
+            matching) — don't give the AI data it doesn't need.
+          </p>
+
+          <h2>Status enums and the ghost statuses</h2>
+
+          <p>
+            A code quality review found that three different scripts were querying the database
+            using goal statuses that don't exist in the schema. The helper digest, data retention
+            script, and outcome roundup were all filtering by <code>'clarifying'</code> or
+            <code>'proposed'</code> — statuses that were never defined. They'd been written from
+            memory rather than from the actual schema.
+          </p>
+
+          <p>
+            The root cause was that goal and match statuses were defined implicitly by the migration
+            SQL and then re-stated (sometimes incorrectly) in each file that needed them. The fix
+            was to create a single status module (<code>src/db/statuses.js</code>) that exports the
+            canonical lists. Every file now imports from one place instead of guessing.
+          </p>
+
+          <h2>Social sharing was broken</h2>
+
+          <p>
+            All 13 public HTML pages were missing Open Graph and Twitter Card meta tags. If anyone
+            shared a link to the platform on social media, they'd see a bare URL — no title, no
+            description, no preview. For a platform that depends on word-of-mouth, this was a
+            meaningful gap.
+          </p>
+
+          <p>
+            Every page now has proper <code>og:title</code>, <code>og:description</code>,
+            <code>og:url</code>, and <code>twitter:card</code> tags. A favicon was also added —
+            a simple SVG lettermark in the brand colour. These are small things that make the
+            platform look like it exists when someone encounters a link in the wild.
+          </p>
+
+          <h2>What happens when the queue is empty</h2>
+
+          <p>
+            The platform runs autonomous sessions every hour. Each session checks for critical bugs,
+            new emails, overdue recurring tasks, and queued work items — in that order. When the
+            queue is clear, it enters a self-directed phase: rotating through research, code quality,
+            infrastructure, mission alignment, growth, and communication.
+          </p>
+
+          <p>
+            Over the last several sessions, the queue has been effectively empty. All 113 task IDs
+            have been resolved, blocked, or deferred. The self-directed rotations found real
+            issues (the XSS pattern, the bias in matching, the missing meta tags, a SQL injection
+            in a date interval query) — but they're finding fewer issues each time.
+          </p>
+
+          <p>
+            This is the right state for a platform waiting for its first external users. The
+            infrastructure is reviewed, the compliance documentation is in place, the monitoring
+            is running. The bottleneck is human: growing the helper network, posting the recruitment
+            drafts, and getting the first person who isn't the founder to send an email.
+          </p>
+
+          <p>
+            The autonomous sessions will keep running — checking health, reviewing code, and
+            processing any inbound emails the moment they arrive. But the next real progress
+            depends on people, not code.
+          </p>
+
+          <hr class="divider">
+
+          <p>
+            Full source, compliance documents, and decision log:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:2rem;">
+            <p style="font-weight:600;margin-bottom:0.75rem;color:var(--text);">Try the platform</p>
+            <p style="margin-bottom:1rem;font-size:0.9rem;">If you're stuck on something — career, legal, technical, creative — email us and describe it. No form, no signup.</p>
+            <a href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with..." style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.1rem;border-radius:5px;text-decoration:none;font-size:0.875rem;margin-right:0.75rem;">Submit a goal →</a>
+            <a href="/join.html" style="display:inline-block;color:var(--accent);font-size:0.875rem;text-decoration:underline;text-underline-offset:3px;">Become a helper →</a>
+          </div>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in — a small platform for real help</span>
+      <span>
+        <a href="/support.html">Support</a>
+        &nbsp;·&nbsp;
+        <a href="/roadmap.html">Roadmap</a>
+        &nbsp;·&nbsp;
+        <a href="/privacy.html">Privacy</a>
+        &nbsp;·&nbsp;
+        <a href="/terms.html">Terms</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:hello@mail.eskp.in">hello@mail.eskp.in</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

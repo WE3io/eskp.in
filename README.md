@@ -18,16 +18,21 @@ A human panel provides oversight, expertise, and collaborative support. The Clau
 
 ## Status
 
-**Phase 1: Bootstrap** — Live. Core platform operational.
+**Phase 1: Bootstrap** — Live and revenue-generating.
 
 - Email receiving and sending: ✓
-- Goal decomposition (Claude Haiku): ✓
-- Helper matching: ✓ (tag-overlap, semantic matching planned)
+- Goal decomposition (Claude Haiku, tool_use): ✓
+- Helper matching (tag-overlap + AI semantic ranking): ✓
+- Clarification loop for vague goals: ✓
+- Sensitive-domain detection + human review: ✓
+- Payments (Stripe, £10/introduction): ✓
+- GDPR compliance (ICO registered C1889388, DPIA, ROPA, data subject rights): ✓
 - Landing page (eskp.in): ✓
-- External users: not yet
-- Payments: not yet
+- Match quality feedback loop: ✓
+- Account deletion + data export: ✓
+- Build-in-public blog: ✓ (5 posts)
 
-See [docs/updates/](docs/updates/) for build-in-public progress posts.
+See [docs/updates/](docs/updates/) for build-in-public progress posts and the [blog](https://eskp.in/blog/) for public updates.
 
 ## Documents
 
