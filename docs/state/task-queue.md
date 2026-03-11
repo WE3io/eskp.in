@@ -51,8 +51,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | ID | Task | Status | Notes |
 |---|---|---|---|
 | TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | **done** 2026-03-10 | Sunil registered, ICO number C1889388; privacy.html + ROPA updated |
-| TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | open | **Requires Sunil** — navigate to Account → Data Protection in Hetzner Robot/Cloud |
-| TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | open | **Requires Sunil** — Account → Configurations → Privacy → DPA |
+| TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | **done** 2026-03-11 | Sunil signed AVV via Hetzner console |
+| TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | **done** 2026-03-11 | No signature needed — incorporated by reference for self-serve customers |
 | TSK-040 | Article 30 ROPA created | **done** 2026-03-09 | docs/operations/ropa.md — 8 processing activities documented |
 | TSK-043 | Breach response procedure | **done** 2026-03-09 | docs/operations/breach-response.md — Art.33/34 procedure + register |
 | TSK-002 | Send first weekly budget report to Sunil | **done** 2026-03-09 | Sent via Resend |
