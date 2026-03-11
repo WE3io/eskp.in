@@ -343,6 +343,15 @@
   - TSK-114/115 generated (local embeddings + helper embedding column)
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Session 2026-03-11 (twenty-seventh auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Self-directed (Code quality): pnpm audit clean (0 CVEs); reviewed webhooks.js, account.js (API + service), payments.js, email.js, email-reply-token.js, email-suppression.js, platform.js, helper-application.js, decompose.js, match.js, goals.js, index.js
+- [x] TSK-116: Bug fix — 3 unescaped user.name/userName in account.js HTML email bodies (export, deletion request, post-deletion). Same XSS-in-email class as TSK-099/104/110.
+- [x] TSK-117: Bug fix — JSON.parse in email.js response handler had no try/catch; non-JSON Resend responses would crash the process with unhandled exception
+- [x] App redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-11 — twenty-sixth auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; code quality rotation is next in self-directed cycle*
+*Last updated: 2026-03-11 — twenty-seventh auto-session*
+*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; infrastructure rotation is next in self-directed cycle*

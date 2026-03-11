@@ -211,5 +211,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-113 | Remove helper names from matching LLM prompt (bias prevention) | **done** 2026-03-10 | Art 3.2/3.3 data minimisation; names irrelevant to expertise matching |
 | TSK-114 | Local embedding-based pre-filtering in match.js (@huggingface/transformers) | open | P3 — trigger: 3+ active helpers; docs/research/2026-03-11-embedding-based-matching.md |
 | TSK-115 | Add `embedding` column to helpers table; compute on create/update | open | P3 — prerequisite for TSK-114 |
+| TSK-116 | Bug fix: 3 unescaped user.name in account.js HTML email bodies (XSS) | **done** 2026-03-11 | escHtml() applied to export, deletion request, post-deletion emails |
+| TSK-117 | Bug fix: unhandled JSON.parse in email.js response handler | **done** 2026-03-11 | try/catch added; non-JSON Resend responses no longer crash process |
 
-*Last updated: 2026-03-11 (twenty-sixth auto-session — research rotation)*
+*Last updated: 2026-03-11 (twenty-seventh auto-session — code quality rotation)*
