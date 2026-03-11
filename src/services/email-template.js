@@ -90,4 +90,52 @@ function escHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-module.exports = { renderEmail, textToHtml, escHtml };
+/**
+ * Marker class for pre-escaped HTML that should NOT be double-escaped.
+ * Wrap trusted HTML strings with rawHtml() when using safeHtml`...`.
+ */
+class RawHtml {
+  constructor(value) { this.value = value; }
+  toString() { return this.value; }
+}
+
+/**
+ * Mark a string as pre-escaped/trusted HTML, so safeHtml`` won't escape it.
+ * Use for: pre-built HTML snippets, renderEmail output, static HTML.
+ */
+function rawHtml(value) {
+  return new RawHtml(String(value));
+}
+
+/**
+ * Tagged template literal that auto-escapes all interpolated values.
+ * Eliminates the XSS-in-email bug class by making escaping the default.
+ *
+ * Usage:
+ *   const body = safeHtml`<p>Hi ${userName}</p>`;           // userName is escaped
+ *   const body = safeHtml`<p>${rawHtml(preBuiltHtml)}</p>`; // not escaped
+ *
+ * Arrays are joined (each element escaped unless RawHtml).
+ * Null/undefined become empty string.
+ */
+function safeHtml(strings, ...values) {
+  let result = '';
+  for (let i = 0; i < strings.length; i++) {
+    result += strings[i];
+    if (i < values.length) {
+      const val = values[i];
+      if (val == null) {
+        // skip — null/undefined become empty
+      } else if (val instanceof RawHtml) {
+        result += val.value;
+      } else if (Array.isArray(val)) {
+        result += val.map(v => v instanceof RawHtml ? v.value : escHtml(String(v))).join('');
+      } else {
+        result += escHtml(String(val));
+      }
+    }
+  }
+  return result;
+}
+
+module.exports = { renderEmail, textToHtml, escHtml, safeHtml, rawHtml };

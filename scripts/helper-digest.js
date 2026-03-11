@@ -14,7 +14,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const { send } = require('../src/services/email');
-const { renderEmail } = require('../src/services/email-template');
+const { renderEmail, escHtml } = require('../src/services/email-template');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
@@ -213,7 +213,7 @@ function buildPlainText({ greeting, weekOf, totalGoals, topTags, relevantTags, i
 }
 
 function buildHtmlBody({ greeting, weekOf, totalGoals, topTags, relevantTags, introduced, matched, unmatched, pipelineInDomain, avgRating, ratingCount }) {
-  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const esc = escHtml;
   let html = `<p>${esc(greeting)}</p>
     <p>Here's a quick summary of what came through eskp.in in the week ending <strong>${esc(weekOf)}</strong>.</p>`;
 
