@@ -18,7 +18,7 @@
 const crypto = require('crypto');
 const { pool } = require('../db/connection');
 const { send } = require('./email');
-const { renderEmail } = require('./email-template');
+const { renderEmail, escHtml } = require('./email-template');
 const { getOrCreateUser } = require('./platform');
 
 const BASE_URL = process.env.BASE_URL || 'https://eskp.in';
@@ -74,7 +74,7 @@ If you didn't request this, you can ignore this email.
 — The eskp.in team`;
 
   const htmlBody = `
-    <p>Hi${user.name ? ` ${user.name}` : ''},</p>
+    <p>Hi${user.name ? ` ${escHtml(user.name)}` : ''},</p>
     <p>We received your data export request.</p>
     <p>Your download link is valid for 48 hours:</p>
     <p style="text-align:center;margin:24px 0;">
@@ -164,7 +164,7 @@ If you didn't request this, you can ignore this email — no action will be take
 — The eskp.in team`;
 
   const htmlBody = `
-    <p>Hi${user.name ? ` ${user.name}` : ''},</p>
+    <p>Hi${user.name ? ` ${escHtml(user.name)}` : ''},</p>
     <p>We received your request to delete your eskp.in account.</p>
     <p>To confirm the deletion, click the button below (valid for 48 hours):</p>
     <p style="text-align:center;margin:24px 0;">
@@ -302,7 +302,7 @@ If you have any questions, you can contact us at ${PANEL_EMAIL}.
 — The eskp.in team`;
 
   const htmlBody = `
-    <p>Hi${userName ? ` ${userName}` : ''},</p>
+    <p>Hi${userName ? ` ${escHtml(userName)}` : ''},</p>
     <p>Your eskp.in account has been deleted.</p>
     <p>All data associated with your account has been permanently removed from our systems.</p>
     <p style="color:#7A6E68;font-size:14px;">If you have any questions, contact us at <a href="mailto:${PANEL_EMAIL}" style="color:#C4622D;">${PANEL_EMAIL}</a>.</p>`;

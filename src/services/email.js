@@ -40,11 +40,15 @@ async function send({ to, subject, text, html, from, replyTo }) {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        const parsed = JSON.parse(data);
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(parsed);
-        } else {
-          reject(new Error(`Resend error ${res.statusCode}: ${JSON.stringify(parsed)}`));
+        try {
+          const parsed = JSON.parse(data);
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(parsed);
+          } else {
+            reject(new Error(`Resend error ${res.statusCode}: ${JSON.stringify(parsed)}`));
+          }
+        } catch (parseErr) {
+          reject(new Error(`Resend response parse error (${res.statusCode}): ${data.slice(0, 200)}`));
         }
       });
     });
