@@ -614,4 +614,87 @@ If you want to try again in the future, just send us a new message.
   console.log(`closeGoal: goal ${goal.id} closed at user request`);
 }
 
-module.exports = { processGoal, processGoalSensitive, processClarification, closeGoal, recordInbound, getOrCreateUser, sendHelperIntroById };
+/**
+ * TSK-118: Process a goal where the user has opted out of AI processing.
+ * Art 10.2.3(c) — algorithmic features must be user-adjustable or fully opt-outable.
+ *
+ * Creates the goal with ai_opted_out=true, sends user acknowledgement,
+ * and alerts panel for manual decomposition and matching.
+ */
+async function processGoalManual(userEmail, userName, rawText) {
+  const user = await getOrCreateUser(userEmail, userName);
+
+  const { rows: [goal] } = await pool.query(
+    `INSERT INTO goals (user_id, raw_text, status, ai_opted_out)
+     VALUES ($1, $2, 'submitted', TRUE) RETURNING *`,
+    [user.id, rawText]
+  );
+
+  // Acknowledge to user
+  const greeting = `Hi${user.name ? ` ${user.name}` : ''},`;
+  const greetingHtml = `Hi${user.name ? ` ${escHtml(user.name)}` : ''},`;
+
+  const plainText = `${greeting}
+
+We received your message. As you've requested, we won't use AI to process your goal — a member of our team will review it personally and find you a match.
+
+This may take a little longer than our usual process, but we'll be in touch within a few days.
+
+— The eskp.in team`;
+
+  const htmlBody = `
+    <p>${greetingHtml}</p>
+    <p>We received your message. As you've requested, we won't use AI to process your goal — a member of our team will review it personally and find you a match.</p>
+    <p style="color:#7A6E68;font-size:14px;">This may take a little longer than our usual process, but we'll be in touch within a few days.</p>`;
+
+  await send({
+    to: user.email,
+    subject: 'We received your goal — manual review',
+    text: plainText,
+    html: renderEmail({ preheader: 'Your goal will be reviewed personally by our team.', body: htmlBody }),
+    replyTo: generateReplyTo(goal.id),
+  });
+
+  await logEmail('outbound', FROM, user.email, 'We received your goal — manual review', goal.id, null);
+
+  // Alert panel for manual processing
+  const panelEmail = process.env.PANEL_EMAIL || 'panel@eskp.in';
+  const panelText = `AI opt-out goal requires manual review.
+
+Goal ID: ${goal.id}
+User: ${user.email}${user.name ? ` (${user.name})` : ''}
+
+The user has opted out of AI processing. Please manually:
+1. Read and decompose the goal
+2. Find an appropriate helper match
+3. Create a match record and use sendHelperIntroById() after payment
+
+Raw text:
+---
+${rawText.substring(0, 2000)}${rawText.length > 2000 ? '\n[truncated]' : ''}
+---`;
+
+  await send({
+    to: panelEmail,
+    subject: '[eskp.in] AI opt-out goal — manual review needed',
+    text: panelText,
+    html: renderEmail({
+      preheader: 'A user has opted out of AI processing.',
+      body: `<p>A user has opted out of AI processing. Manual decomposition and matching required.</p>
+        <table style="border-collapse:collapse;width:100%;margin:16px 0;">
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;width:140px;">Goal ID</td><td style="padding:6px 12px;">${escHtml(goal.id)}</td></tr>
+          <tr><td style="padding:6px 12px;font-weight:bold;background:#F7EDE6;">User</td><td style="padding:6px 12px;">${escHtml(user.email)}${user.name ? ` (${escHtml(user.name)})` : ''}</td></tr>
+        </table>
+        <p><strong>Raw text:</strong></p>
+        <pre style="background:#f4f4f4;padding:12px;border-radius:4px;font-size:13px;white-space:pre-wrap;">${escHtml(rawText.substring(0, 2000))}${rawText.length > 2000 ? '\n[truncated]' : ''}</pre>`,
+    }),
+    replyTo: panelEmail,
+  });
+
+  await logEmail('outbound', FROM, panelEmail, '[eskp.in] AI opt-out goal — manual review needed', goal.id, null);
+
+  console.log(`ai-opt-out: goal ${goal.id} created for manual review (user: ${user.email})`);
+  return { goal, user };
+}
+
+module.exports = { processGoal, processGoalSensitive, processGoalManual, processClarification, closeGoal, recordInbound, getOrCreateUser, sendHelperIntroById };

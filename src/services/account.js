@@ -106,7 +106,7 @@ async function getExportData(token) {
 
   const [userRows, goalRows, matchRows, emailRows, feedbackRows, helperRows, helperAppRows] = await Promise.all([
     pool.query(`SELECT id, email, name, created_at FROM users WHERE id = $1`, [userId]),
-    pool.query(`SELECT id, raw_text, decomposed, status, sensitive_domain, created_at, updated_at FROM goals WHERE user_id = $1 ORDER BY created_at`, [userId]),
+    pool.query(`SELECT id, raw_text, decomposed, status, sensitive_domain, ai_opted_out, created_at, updated_at FROM goals WHERE user_id = $1 ORDER BY created_at`, [userId]),
     pool.query(`
       SELECT m.id, m.goal_id, m.status, m.reasoning, m.created_at, m.updated_at
       FROM matches m

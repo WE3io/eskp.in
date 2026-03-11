@@ -162,6 +162,9 @@ const migrations = [
 
   // 24h no-match acknowledgement tracking (separate from follow_up_sent_at so 7-day timeout still fires)
   `ALTER TABLE goals ADD COLUMN IF NOT EXISTS ack_24h_sent_at TIMESTAMPTZ`,
+
+  // TSK-118: AI opt-out flag (Art 10.2.3(c) — algorithmic features must be opt-outable)
+  `ALTER TABLE goals ADD COLUMN IF NOT EXISTS ai_opted_out BOOLEAN NOT NULL DEFAULT FALSE`,
 ];
 
 async function migrate() {

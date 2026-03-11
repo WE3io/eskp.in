@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
-const { processGoal, processGoalSensitive, processClarification, closeGoal, recordInbound } = require('../services/platform');
+const { processGoal, processGoalSensitive, processGoalManual, processClarification, closeGoal, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
 const { detectSensitiveDomain } = require('../services/sensitive-flag');
@@ -98,6 +98,15 @@ router.post('/email', verifySecret, async (req, res) => {
     if (isHelperApplication(subject)) {
       const result = await processHelperApplication(userEmail, userName, text);
       return res.json({ ok: true, type: 'helper-application', duplicate: result.duplicate || false });
+    }
+
+    // TSK-118: AI opt-out detection (Art 10.2.3(c) — algorithmic features must be opt-outable)
+    // Matches: "no AI", "without AI", "opt out", "don't use AI", "manual only", "human only"
+    const AI_OPT_OUT_RE = /\b(?:no\s+ai|without\s+ai|opt\s*out|don'?t\s+use\s+ai|manual\s+(?:only|process|review|handling)|human\s+only|no\s+artificial\s+intelligence)\b/i;
+    if (AI_OPT_OUT_RE.test(subject || '') || AI_OPT_OUT_RE.test(text.slice(0, 500))) {
+      const result = await processGoalManual(userEmail, userName, text);
+      console.log(`ai-opt-out: detected in email from ${userEmail}`);
+      return res.json({ ok: true, type: 'manual-goal', goalId: result.goal.id });
     }
 
     // Hard exclusion check (Art. 11.1.2) — must run before processGoal
