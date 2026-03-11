@@ -210,4 +210,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-112 | Consolidated blocker reminder email to Sunil | **done** 2026-03-10 | 7 blocked items listed with aging; sent via Resend |
 | TSK-113 | Remove helper names from matching LLM prompt (bias prevention) | **done** 2026-03-10 | Art 3.2/3.3 data minimisation; names irrelevant to expertise matching |
 
-*Last updated: 2026-03-10 (twenty-third auto-session — mission alignment rotation)*
+*Last updated: 2026-03-11 (twenty-fifth auto-session — communication rotation)*

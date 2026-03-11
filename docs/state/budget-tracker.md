@@ -20,7 +20,7 @@
 | claude-opus-4-6 | $15.00 | $75.00 |
 
 ### Month progress
-Day 10 of ~31 (~32% of month elapsed)
+Day 11 of ~31 (~35% of month elapsed)
 
 ## Budget Alert Threshold
 - 70% of budget before the 21st → reduce activity, notify panel@eskp.in
@@ -40,6 +40,6 @@ Day 10 of ~31 (~32% of month elapsed)
 
 ---
 
-*Last updated: 2026-03-10T23:08:13.776Z*
+*Last updated: 2026-03-11T00:04:01.128Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*

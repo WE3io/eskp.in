@@ -322,6 +322,17 @@
 - [x] Fixed broken blog link in roadmap.html
 - [x] App redeployed (health: passing)
 
+### Session 2026-03-11 (twenty-fifth auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Communication rotation:
+  - Blog post 006 published: "Security in AI output, bias prevention, and running out of tasks" (sessions 18-24 recap)
+  - Blog index updated
+  - README.md updated — was stale (payments "not yet", semantic matching "planned"); now reflects current platform state
+  - docs/updates/ reviewed: recruitment drafts (002, 003) still current and ready for Sunil to post
+- [x] App redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-10 — twenty-fourth auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; communication rotation is next in self-directed cycle*
+*Last updated: 2026-03-11 — twenty-fifth auto-session*
+*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; research rotation is next in self-directed cycle*
