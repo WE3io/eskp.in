@@ -72,9 +72,9 @@ eskp.in uses the following processors. This document records whether a DPA is in
 | Data location | Germany (Hetzner EU data centres) — within UK/EU adequate territory |
 | DPA mechanism | Hetzner provides an order processing contract (Auftragsverarbeitungsvertrag / AVV) under Art.28 GDPR. Available through the Hetzner Robot / Cloud console under Account → Data Protection. |
 | Transfer mechanism | No transfer needed — data stays in EU/EEA. Germany is an EU member state. Post-Brexit, EU→UK transfers covered by UK adequacy decision for EEA; Hetzner Germany to our access from UK does not constitute a restricted transfer (data stays in Germany). |
-| Status | **DPA available — must be formally accepted via Hetzner console** |
-| Action needed | **ACTION REQUIRED:** Log into Hetzner account, navigate to Data Protection / AVV section, and formally accept Hetzner's AVV. This is not automatic. |
-| Notes | This is the highest-priority DPA action as Hetzner processes all platform data. The AVV is standard for Hetzner customers and has no additional cost. |
+| Status | **✅ AVV signed by Sunil 2026-03-11** |
+| Action needed | None — review annually (next: 2027-03-11) |
+| Notes | Hetzner AVV formally signed via Hetzner console. Copy retained by Sunil. |
 
 ---
 
@@ -85,10 +85,10 @@ eskp.in uses the following processors. This document records whether a DPA is in
 | Purpose | (a) DNS resolution; (b) CDN/proxy for web traffic; (c) Email routing (inbound email forwarding to our server) |
 | Personal data | (a) DNS: metadata only (no personal data processed); (b) CDN: IP addresses of web visitors; (c) Email routing: email content including personal data in goal submissions |
 | Data location | Global Cloudflare network; EU/UK presence available |
-| DPA mechanism | Cloudflare provides a Data Processing Addendum. Available at: cloudflare.com/cloudflare-customer-dpa. Requires acceptance via the Cloudflare dashboard (Account → Configurations → Privacy → Data Processing Agreement). |
+| DPA mechanism | Cloudflare's DPA is incorporated by reference into their Terms of Service for self-serve customers. No separate signature required. Available at: cloudflare.com/cloudflare-customer-dpa |
 | Transfer mechanism | Cloudflare relies on SCCs for EU/UK-to-US transfers. The Cloudflare DPA covers this. |
-| Status | **DPA available — must be formally accepted via Cloudflare dashboard** |
-| Action needed | **ACTION REQUIRED:** Log into Cloudflare, navigate to Account → Configurations → Privacy, and accept the DPA. Email routing (processing inbound user goal submissions) means this is a real processor relationship, not just a DNS provider. |
+| Status | **✅ Covered automatically — DPA incorporated by reference for self-serve customers (confirmed 2026-03-11)** |
+| Action needed | None — review annually (next: 2027-03-11) |
 | Notes | Email routing is the most significant personal data processing by Cloudflare — inbound emails containing user goal text pass through Cloudflare Email Routing before reaching our webhook. |
 
 ---
@@ -100,8 +100,8 @@ eskp.in uses the following processors. This document records whether a DPA is in
 | Anthropic | ✅ Covered via API terms | Verify IDTA/SCCs current annually | Low |
 | Resend | ✅ Covered via terms | Review DPA for UK GDPR specifics | Low |
 | Stripe | ✅ Covered via terms | Confirm UK GDPR scope applies | Low |
-| Hetzner | ⚠️ DPA not yet formally accepted | **Accept AVV via Hetzner console** | **High** |
-| Cloudflare | ⚠️ DPA not yet formally accepted | **Accept DPA via Cloudflare dashboard** | **High** |
+| Hetzner | ✅ AVV signed 2026-03-11 | Review annually (2027-03-11) | Low |
+| Cloudflare | ✅ Covered by reference (self-serve) | Review annually (2027-03-11) | Low |
 
 ---
 
@@ -109,10 +109,8 @@ eskp.in uses the following processors. This document records whether a DPA is in
 
 | ID | Task | Priority |
 |----|------|---------|
-| TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console — requires Sunil to log in | P1 |
-| TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard — requires Sunil to log in | P1 |
-
-Both TSK-080 and TSK-081 require action from Sunil (account holder). Escalation email to be sent.
+| TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | P1 — **done 2026-03-11** |
+| TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | P1 — **done 2026-03-11** (incorporated by reference, no signature needed) |
 
 ---
 

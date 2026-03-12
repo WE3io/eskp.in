@@ -1,5 +1,5 @@
 #!/bin/bash
-# Auto-session: runs a Claude Code session every 6 hours.
+# Auto-session: runs a Claude Code session every 4 hours.
 # Includes budget safety check, lock file, .env loading, outcome
 # verification, failure alerting, and optional success notification.
 # Logs to ~/logs/session-YYYYMMDD-HHMM.log

@@ -176,6 +176,6 @@ Session end: run `/session-end` (updates all state files, commits, pushes). **Th
 | `scripts/heartbeat.sh` | App, PostgreSQL, nginx, disk | `*/15 * * * *` | sunil@eskp.in |
 | `scripts/check-cron-health.sh` | Auto-session freshness (<7h) | `0 4,12,20 * * *` | sunil@eskp.in |
 | `scripts/backup-db.sh` | Daily backup | `0 2 * * *` | ~/logs/backup.log |
-| `scripts/auto-session.sh` | Claude session + outcome report | `0 * * * *` | sunil@eskp.in on failure |
+| `scripts/auto-session.sh` | Claude session + outcome report | `0 */4 * * *` | sunil@eskp.in on failure |
 
 Alerts from `hello@mail.eskp.in` via Resend. Subject prefix: `[eskp.in]`.
