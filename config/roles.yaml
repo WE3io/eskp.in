@@ -1,0 +1,42 @@
+# Role-to-model mapping — maps application roles to model entries.
+# Each role defines which model to use, with optional fallback and budget caps.
+
+version: 1
+
+roles:
+  # --- Platform inference roles ---
+  decomposer:
+    default: haiku-openrouter
+    fallback: haiku-anthropic
+    max_tokens: 1024
+    temperature: 0
+    budget:
+      monthly_usd: 5.00
+
+  matcher:
+    default: haiku-openrouter
+    fallback: haiku-anthropic
+    max_tokens: 512
+    temperature: 0
+
+  # --- Auto-session delegated tasks ---
+  classifier:
+    default: haiku-openrouter
+    fallback: haiku-anthropic
+    max_tokens: 256
+    temperature: 0
+    description: "Classify inbound emails (goal/feedback/spam/other)"
+
+  drafter:
+    default: haiku-openrouter
+    fallback: haiku-anthropic
+    max_tokens: 2048
+    temperature: 0.7
+    description: "Draft build-in-public posts, status reports"
+
+  analyser:
+    default: haiku-openrouter
+    fallback: haiku-anthropic
+    max_tokens: 1024
+    temperature: 0
+    description: "Analyse feedback, summarise patterns"

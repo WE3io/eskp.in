@@ -1,0 +1,90 @@
+# Model registry — all available LLM providers and models.
+# Each entry defines a model the orchestration layer can dispatch to.
+
+version: 1
+
+# Global OpenRouter provider preferences (merged with per-model settings)
+openrouter:
+  api_key_env: OPENROUTER_API_KEY
+  base_url: "https://openrouter.ai/api/v1"
+  app_url: "https://eskp.in"
+  app_name: "eskp.in"
+  request_timeout_ms: 30000
+  global_provider:
+    data_collection: "deny"
+    require_parameters: true
+    allow_fallbacks: true
+
+models:
+  # --- Cloud via OpenRouter (primary) ---
+  haiku-openrouter:
+    type: openrouter
+    model: "anthropic/claude-haiku-4-5-20251001"
+    capabilities: [text, json_output]
+    cost_tier: economy
+    intelligence_tier: medium
+    speed_class: fast
+    constraints:
+      context_window: 200000
+      max_output_tokens: 8192
+    cost:
+      input_per_mtok: 0.80
+      output_per_mtok: 4.00
+    provider:
+      sort: "price"
+
+  sonnet-openrouter:
+    type: openrouter
+    model: "anthropic/claude-sonnet-4-6"
+    capabilities: [text, json_output, tool_use, code_generation]
+    cost_tier: standard
+    intelligence_tier: high
+    speed_class: standard
+    constraints:
+      context_window: 200000
+      max_output_tokens: 8192
+    cost:
+      input_per_mtok: 3.00
+      output_per_mtok: 15.00
+    provider:
+      sort: "price"
+
+  # --- Cloud via Anthropic SDK (fallback) ---
+  haiku-anthropic:
+    type: anthropic
+    model: "claude-haiku-4-5-20251001"
+    capabilities: [text, json_output]
+    cost_tier: economy
+    intelligence_tier: medium
+    speed_class: fast
+    constraints:
+      context_window: 200000
+      max_output_tokens: 8192
+    cost:
+      input_per_mtok: 0.80
+      output_per_mtok: 4.00
+
+  # --- Local via Ollama (zero cost, hardware-dependent) ---
+  # Uncomment and configure after running: node -e "require('./src/orchestration/hardware').detectHardware().then(console.log)"
+  # local-best:
+  #   type: local
+  #   adapter: ollama
+  #   endpoint: "http://localhost:11434"
+  #   model_name: "determined-by-llmfit"
+  #   capabilities: [text, json_output]
+  #   cost_tier: free
+  #   intelligence_tier: medium
+  #   speed_class: standard
+  #   constraints:
+  #     context_window: 128000
+  #     max_output_tokens: 4096
+  #     max_concurrent: 1
+  #   imputed_cost:
+  #     input_per_mtok: 0
+  #     output_per_mtok: 0
+  #   llmfit:
+  #     fit_level: good
+  #     run_mode: cpu
+  #     quantisation: Q4_K_M
+  #     estimated_tok_s: 10
+  #     memory_usage_pct: 60

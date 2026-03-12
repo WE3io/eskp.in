@@ -165,6 +165,26 @@ const migrations = [
 
   // TSK-118: AI opt-out flag (Art 10.2.3(c) — algorithmic features must be opt-outable)
   `ALTER TABLE goals ADD COLUMN IF NOT EXISTS ai_opted_out BOOLEAN NOT NULL DEFAULT FALSE`,
+
+  // Orchestration layer: token_usage table with provider + cost tracking
+  // On fresh installs this creates the full table. On existing databases the
+  // CREATE TABLE is a no-op and the ALTER TABLE statements add new columns.
+  `
+  CREATE TABLE IF NOT EXISTS token_usage (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    model TEXT NOT NULL,
+    input_tokens INT NOT NULL DEFAULT 0,
+    output_tokens INT NOT NULL DEFAULT 0,
+    operation TEXT,
+    goal_id UUID REFERENCES goals(id),
+    provider TEXT DEFAULT 'anthropic',
+    cost_usd NUMERIC(10,6),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_token_usage_created_at ON token_usage(created_at)`,
+  `CREATE INDEX IF NOT EXISTS idx_token_usage_operation ON token_usage(operation)`,
+  `ALTER TABLE token_usage ADD COLUMN IF NOT EXISTS provider TEXT DEFAULT 'anthropic'`,
+  `ALTER TABLE token_usage ADD COLUMN IF NOT EXISTS cost_usd NUMERIC(10,6)`,
 ];
 
 async function migrate() {

@@ -8,6 +8,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 
 COPY src/ ./src/
+COPY config/ ./config/
 
 ENV NODE_ENV=production
 ENV PORT=3000

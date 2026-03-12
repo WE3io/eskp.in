@@ -1,10 +1,10 @@
-const Anthropic = require('@anthropic-ai/sdk');
 const { pool } = require('../db/connection');
 const { detectSensitiveDomain } = require('./sensitive-flag');
+const { infer } = require('../orchestration');
 
 /**
  * Find the best helper for a decomposed goal.
- * Uses Claude Haiku for semantic relevance scoring.
+ * Uses semantic relevance scoring via the orchestration layer.
  * Falls back to tag-overlap if the AI call fails.
  *
  * Defence in depth (TSK-036): if the decomposed summary contains sensitive-domain
@@ -12,11 +12,6 @@ const { detectSensitiveDomain } = require('./sensitive-flag');
  * catches most cases before decomposition, but this layer catches any that slip
  * through (e.g. sensitivity surfaced only after AI decomposition).
  */
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const HAIKU_INPUT_PRICE  = 0.80 / 1_000_000;
-const HAIKU_OUTPUT_PRICE = 4.00 / 1_000_000;
 
 // Tool definition: enforces ranked output schema via API, eliminating JSON parse errors
 const RANK_HELPERS_TOOL = {
@@ -114,29 +109,20 @@ Rules:
 - Prefer helpers whose expertise directly addresses the most urgent needs
 - A helper with 0 overlap should score below 20`;
 
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 512,
+  const response = await infer({
+    role: 'matcher',
+    messages: [{ role: 'user', content: prompt }],
     tools: [RANK_HELPERS_TOOL],
     tool_choice: { type: 'tool', name: 'rank_helpers' },
-    messages: [{ role: 'user', content: prompt }],
   });
 
-  // Log token usage
-  const { input_tokens, output_tokens } = message.usage;
-  pool.query(
-    `INSERT INTO token_usage (model, input_tokens, output_tokens, operation)
-     VALUES ($1, $2, $3, 'match')`,
-    ['claude-haiku-4-5-20251001', input_tokens, output_tokens]
-  ).catch(err => console.error('token_usage log error (match):', err));
+  // Extract tool_use result from normalised response
+  const toolCall = response.tool_calls && response.tool_calls[0];
+  if (!toolCall) throw new Error('Match ranking: no tool_use block in response');
 
-  const toolBlock = message.content.find(c => c.type === 'tool_use');
-  if (!toolBlock) throw new Error('Match ranking: no tool_use block in response');
-
-  const { ranked } = toolBlock.input;
+  const { ranked } = toolCall.arguments;
   if (!Array.isArray(ranked)) throw new Error('Match ranking: ranked is not an array');
 
-  // Map ranked IDs back to helper objects, in order
   const helperMap = Object.fromEntries(helpers.map(h => [h.helper_id, h]));
   return ranked
     .sort((a, b) => (b.score || 0) - (a.score || 0))

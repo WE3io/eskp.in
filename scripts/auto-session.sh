@@ -40,6 +40,17 @@ set +a
 
 NOTIFY_ON_SUCCESS="${NOTIFY_ON_SUCCESS:-false}"
 
+# ── Route Claude CLI through OpenRouter for unified cost tracking ──────────────
+# Overrides the direct Anthropic key for the Claude CLI subprocess only.
+# The Node.js app container still reads ANTHROPIC_API_KEY from .env for the
+# Anthropic fallback adapter.
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+  export ANTHROPIC_AUTH_TOKEN="${OPENROUTER_API_KEY}"
+  export ANTHROPIC_API_KEY=""
+  echo "[${TIMESTAMP}] Claude CLI routed through OpenRouter" >> "${LOG_FILE}"
+fi
+
 # ── Budget safety check ───────────────────────────────────────────────────────
 cd "${PROJECT_DIR}"
 BUDGET_CHECK=$(node scripts/budget-check.js 2>&1)
@@ -124,6 +135,13 @@ Rules in .claude/rules/ are auto-loaded. At session start, also read these skill
 - .claude/skills/work-item-designer/SKILL.md — invoke this when creating a new work item. In non-interactive mode: draft the item and persist it directly to docs/backlog/<phase>/ (do not wait for confirmation).
 - .claude/skills/safety-lens/SKILL.md — invoke before any risky or public-facing change.
 - .claude/skills/decision-lens/SKILL.md — invoke when evaluating options with architectural consequences.
+
+Delegate inference sub-tasks to the orchestration layer when appropriate:
+  * Email classification: node scripts/orch-infer.js --role classifier --input '<email body>'
+  * Feedback analysis: node scripts/orch-infer.js --role analyser --input '<feedback text>'
+  * Draft generation: node scripts/orch-infer.js --role drafter --system '<instructions>' --input '<context>'
+  This routes through cheaper models (OpenRouter or local) instead of using your own API.
+  Use this for tasks where the result is a text classification, summary, or draft — not for complex reasoning or code generation.
 --- END SKILLS AND RULES ---
 
 Constraints for this automated session:

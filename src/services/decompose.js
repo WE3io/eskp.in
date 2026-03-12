@@ -1,13 +1,5 @@
-const Anthropic = require('@anthropic-ai/sdk');
 const { pool } = require('../db/connection');
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-// Monthly cost cap for decomposition in USD.
-// If exceeded, submissions are queued rather than processed automatically.
-const DECOMPOSE_MONTHLY_CAP_USD = 5.00;
-const HAIKU_INPUT_PRICE  = 0.80 / 1_000_000;
-const HAIKU_OUTPUT_PRICE = 4.00 / 1_000_000;
+const { infer, BudgetExceededError } = require('../orchestration');
 
 const SYSTEM_PROMPT = `You are a goal decomposition engine for a platform that connects people with helpers.
 
@@ -83,71 +75,41 @@ const DECOMPOSE_TOOL = {
   },
 };
 
-async function checkMonthlyCap() {
-  const startOfMonth = new Date();
-  startOfMonth.setDate(1);
-  startOfMonth.setHours(0, 0, 0, 0);
-
-  const { rows } = await pool.query(`
-    SELECT SUM(input_tokens) AS input, SUM(output_tokens) AS output
-    FROM token_usage
-    WHERE operation = 'decompose' AND created_at >= $1
-  `, [startOfMonth.toISOString()]);
-
-  const input = parseInt(rows[0]?.input || 0);
-  const output = parseInt(rows[0]?.output || 0);
-  const spent = (input * HAIKU_INPUT_PRICE) + (output * HAIKU_OUTPUT_PRICE);
-  return { spent, overCap: spent >= DECOMPOSE_MONTHLY_CAP_USD };
-}
-
 function sanitiseInput(text) {
   // Strip null bytes and control characters (except newlines/tabs)
   return text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').trim();
 }
 
-async function callHaiku(safeText, goalId) {
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
+async function callModel(safeText, goalId) {
+  const response = await infer({
+    role: 'decomposer',
     system: SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: `<user_submission>\n${safeText}\n</user_submission>` }],
+    goalId,
     tools: [DECOMPOSE_TOOL],
     tool_choice: { type: 'tool', name: 'decompose_goal' },
-    messages: [{
-      role: 'user',
-      content: `<user_submission>\n${safeText}\n</user_submission>`,
-    }],
   });
 
-  const { input_tokens, output_tokens } = message.usage;
-  pool.query(
-    `INSERT INTO token_usage (model, input_tokens, output_tokens, operation, goal_id)
-     VALUES ($1, $2, $3, 'decompose', $4)`,
-    ['claude-haiku-4-5-20251001', input_tokens, output_tokens, goalId]
-  ).catch(err => console.error('token_usage log error:', err));
-
-  const toolBlock = message.content.find(c => c.type === 'tool_use');
-  if (!toolBlock) throw new Error('Decomposition: no tool_use block in response');
-  return validateDecomposition(toolBlock.input);
+  // Extract tool_use result from normalised response
+  const toolCall = response.tool_calls && response.tool_calls[0];
+  if (!toolCall) throw new Error('Decomposition: no tool_use block in response');
+  return validateDecomposition(toolCall.arguments);
 }
 
 async function decompose(rawGoalText, goalId = null) {
-  // Cost cap check
-  const { spent, overCap } = await checkMonthlyCap();
-  if (overCap) {
-    console.warn(`decompose: monthly cap reached ($${spent.toFixed(4)}). Goal ${goalId} queued.`);
-    await pool.query(`UPDATE goals SET status = 'submitted' WHERE id = $1`, [goalId]);
-    throw new Error('Decomposition paused — monthly cost cap reached. Queued for manual review.');
-  }
-
-  // Sanitise and wrap in delimiter to prevent prompt injection
   const safeText = sanitiseInput(rawGoalText);
 
   try {
-    return await callHaiku(safeText, goalId);
+    return await callModel(safeText, goalId);
   } catch (firstErr) {
+    if (firstErr instanceof BudgetExceededError) {
+      console.warn(`decompose: budget exceeded. Goal ${goalId} queued.`);
+      await pool.query(`UPDATE goals SET status = 'submitted' WHERE id = $1`, [goalId]);
+      throw new Error('Decomposition paused — budget cap reached. Queued for manual review.');
+    }
     console.warn(`decompose: first attempt failed (${firstErr.message}), retrying once`);
     try {
-      return await callHaiku(safeText, goalId);
+      return await callModel(safeText, goalId);
     } catch (retryErr) {
       console.error(`decompose: retry also failed (${retryErr.message})`);
       throw retryErr;

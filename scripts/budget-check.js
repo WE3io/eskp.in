@@ -37,14 +37,18 @@ async function main() {
   let usageNote = '';
 
   try {
+    // Use cost_usd when populated (orchestration layer rows), fall back to token-based pricing
     const { rows } = await pool.query(`
       SELECT model,
+             COALESCE(provider, 'anthropic') AS provider,
              SUM(input_tokens)::int  AS input_tokens,
              SUM(output_tokens)::int AS output_tokens,
+             SUM(CASE WHEN cost_usd IS NOT NULL THEN cost_usd ELSE 0 END)::numeric AS recorded_cost,
+             SUM(CASE WHEN cost_usd IS NULL THEN 1 ELSE 0 END)::int AS uncosted_rows,
              COUNT(*)::int           AS calls
       FROM token_usage
       WHERE created_at >= $1
-      GROUP BY model
+      GROUP BY model, COALESCE(provider, 'anthropic')
       ORDER BY model
     `, [startOfMonth]);
 
@@ -52,11 +56,18 @@ async function main() {
       usageNote = 'No API calls recorded this month yet';
     } else {
       for (const row of rows) {
-        const p = PRICING[row.model] || DEFAULT_PRICING;
-        const cost = (row.input_tokens / 1_000_000 * p.input) +
-                     (row.output_tokens / 1_000_000 * p.output);
+        let cost = parseFloat(row.recorded_cost) || 0;
+        // For rows without cost_usd (legacy), compute from token pricing
+        if (row.uncosted_rows > 0) {
+          const p = PRICING[row.model] || DEFAULT_PRICING;
+          const tokenCost = (row.input_tokens / 1_000_000 * p.input) +
+                       (row.output_tokens / 1_000_000 * p.output);
+          // If all rows lack cost_usd, use full token estimate; otherwise add proportional estimate
+          if (cost === 0) cost = tokenCost;
+        }
         spentUSD += cost;
-        const line = `  ${row.model}: ${row.calls} calls, ${row.input_tokens.toLocaleString()} in / ${row.output_tokens.toLocaleString()} out = $${cost.toFixed(4)}`;
+        const providerTag = row.provider !== 'anthropic' ? ` [${row.provider}]` : '';
+        const line = `  ${row.model}${providerTag}: ${row.calls} calls, ${row.input_tokens.toLocaleString()} in / ${row.output_tokens.toLocaleString()} out = $${cost.toFixed(4)}`;
         usageLines.push(line);
         console.log(line);
       }
