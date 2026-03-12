@@ -40,6 +40,6 @@ Day 12 of ~31 (~39% of month elapsed)
 
 ---
 
-*Last updated: 2026-03-12T12:00:01.229Z*
+*Last updated: 2026-03-12T16:00:01.722Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*
