@@ -4,12 +4,12 @@
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $30 | $0.0000 | $30.0000 | 0.00% | ✅ OK |
-| **Total** | **$30** | **$0.0000** | **$30.0000** | **0.00%** | **✅ OK** |
+| Anthropic API tokens | $30 | $0.0140 | $29.9860 | 0.05% | ✅ OK |
+| **Total** | **$30** | **$0.0140** | **$29.9860** | **0.05%** | **✅ OK** |
 
 ### Usage detail (from local token_usage table)
 ```
-DB query failed: column "provider" does not exist
+  claude-haiku-4-5-20251001: 8 calls, 6,814 in / 2,128 out = $0.0140
 ```
 
 ### Pricing reference
@@ -36,10 +36,10 @@ Day 13 of ~31 (~42% of month elapsed)
 
 | Month | Budget | Spent | Revenue | Net |
 |-------|--------|-------|---------|-----|
-| March 2026 | $30 | $0.0000 | $0 | -$0.0000 |
+| March 2026 | $30 | $0.0140 | $0 | -$0.0140 |
 
 ---
 
-*Last updated: 2026-03-13T00:00:01.867Z*
+*Last updated: 2026-03-13T00:14:26.880Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*
