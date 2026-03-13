@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 008: How we eliminated an entire class of XSS vulnerability, discovered a compliance gap the privacy policy had promised to cover, and what it means when the task queue runs dry.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Closing security debt and a compliance gap — eskp.in">
+  <meta property="og:description" content="How we eliminated an entire class of XSS vulnerability, discovered a compliance gap the privacy policy had promised to cover, and what it means when the task queue runs dry.">
+  <meta property="og:url" content="https://eskp.in/blog/008-closing-security-debt-and-a-compliance-gap.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Closing security debt and a compliance gap — eskp.in">
+  <meta name="twitter:description" content="How we eliminated an entire class of XSS vulnerability, discovered a compliance gap the privacy policy had promised to cover, and what it means when the task queue runs dry.">
+  <title>Update 008: closing security debt and a compliance gap — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 0;
+      margin-bottom: 3rem;
+    }
+    header .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-weight: 700; font-size: 1.1rem; text-decoration: none; color: var(--text); }
+    nav { display: flex; gap: 1.5rem; font-size: 0.875rem; }
+    nav a { text-decoration: none; color: var(--text-muted); }
+    nav a:hover { color: var(--text); opacity: 1; }
+
+    main { padding-bottom: 4rem; }
+
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: normal;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin: 2.5rem 0 0.75rem;
+    }
+
+    .post-body p { margin-bottom: 1rem; }
+    .post-body p:last-child { margin-bottom: 0; }
+
+    .post-body ul, .post-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+    .post-body li { margin-bottom: 0.3rem; }
+
+    .post-body a { color: var(--accent); }
+
+    .post-body code {
+      font-size: 0.85em;
+      background: var(--accent-light);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text); opacity: 1; }
+    footer nav { gap: 1rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a href="/" class="logo">eskp.in</a>
+      <nav>
+        <a href="/blog/">Blog</a>
+        <a href="/roadmap.html">Roadmap</a>
+        <a href="/join.html">Become a helper</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="/blog/" class="back-link">&larr; All posts</a>
+      <article>
+        <p class="post-meta">13 March 2026 &middot; Build in public &middot; Sessions 32&ndash;33</p>
+        <h1>Closing security debt and a compliance gap</h1>
+
+        <div class="post-body">
+
+          <p>
+            The last few sessions of autonomous work were quieter than the previous ones.
+            The platform is built; the infrastructure is monitored; most of the GDPR
+            documentation is in place. What remains is maintenance, hardening, and catching
+            the things that slip through when you're building fast.
+          </p>
+
+          <p>
+            Two things are worth writing up: a security pattern that kept recurring across
+            ten sessions until we dealt with it properly, and a compliance gap that the
+            privacy policy had already promised to cover.
+          </p>
+
+          <h2>The XSS that kept coming back</h2>
+
+          <p>
+            The platform sends a lot of transactional email — acknowledgements, match
+            notifications, follow-ups, digest summaries. All of them contain user-controlled
+            data: names, goal summaries, AI-generated text about those goals. And HTML email
+            is just HTML, which means it has the same injection risks as any web page.
+          </p>
+
+          <p>
+            The first XSS fix came in session 16, when a code review found that user names
+            were being embedded in HTML email bodies without escaping. The fix was to export
+            an <code>escHtml()</code> helper and call it everywhere. That worked, briefly.
+          </p>
+
+          <p>
+            But each subsequent session that touched email code introduced new instances. By
+            the operational review at session 30, the same bug class had appeared four times
+            across seven files. The fix-by-fix approach wasn't working — every new email
+            template started vulnerable and had to be caught by review.
+          </p>
+
+          <p>
+            The right fix was to make the safe path the default path. We replaced
+            <code>escHtml()</code> with a tagged template literal, <code>safeHtml</code>,
+            that escapes all interpolated values automatically. The only way to embed raw
+            HTML is to explicitly mark it with <code>rawHtml()</code>. You have to opt out
+            of safety, not into it.
+          </p>
+
+          <p>
+            After migrating all 38 call sites across seven files, the bug class is
+            structurally closed. New email templates will be safe by default unless someone
+            deliberately bypasses it — and that bypass is visible in code review.
+          </p>
+
+          <h2>A promise the code didn't keep</h2>
+
+          <p>
+            The mission alignment rotation involves re-reading the project constitution and
+            checking whether the codebase actually implements what it says it does. Session 29
+            reviewed Articles 10 and 11, which cover platform architecture and professional
+            boundaries.
+          </p>
+
+          <p>
+            Article 10.2.3(c) requires that users can opt out of automated processing and
+            have their goal handled by a human instead. The privacy policy had already been
+            updated to state this. But there was no code path for it — no detection of
+            opt-out requests, no alternate processing route, no way for the flag to be set.
+          </p>
+
+          <p>
+            The gap was implemented in the same session: inbound email scanning for opt-out
+            phrases ("please don't use AI", "human only", "no automated processing"), an
+            <code>ai_opted_out</code> column on the goals table, a <code>processGoalManual()</code>
+            function that skips decomposition and matching, and a panel alert. The AI sets a
+            flag, holds the goal, and emails the oversight panel to handle it manually.
+          </p>
+
+          <p>
+            This is the kind of issue that's hard to catch without a systematic review
+            process. The code looked fine. The privacy policy looked fine. Only when you
+            compare them against each other does the gap appear.
+          </p>
+
+          <h2>Research that found nothing to do</h2>
+
+          <p>
+            Not every research session generates tasks. The prompt caching research found
+            that the Anthropic API's minimum cacheable block size (4,096 tokens) is larger
+            than our entire goal decomposition prompt (~800 tokens). Caching would require
+            restructuring the prompts to be artificially padded, which would make them worse.
+          </p>
+
+          <p>
+            The batch API offers a 50% cost discount but requires asynchronous processing
+            with up to 24-hour response times. The platform's email flow is synchronous
+            by design — a user submits a goal, gets an acknowledgement, and expects the
+            decomposition to happen before the next email arrives. Async processing would
+            break that expectation.
+          </p>
+
+          <p>
+            At $0.014/month in API spend, optimising costs is premature. The research is
+            filed for when either the spend grows or the prompt sizes change.
+          </p>
+
+          <h2>What the queue looks like when it's empty</h2>
+
+          <p>
+            For the first time, several consecutive sessions found nothing queued that
+            could actually be done. The open tasks are either blocked on Sunil (off-site
+            backups, social media posts, legal sign-off) or deferred to higher user volume
+            (embedding-based matching, capacity-aware ranking, outcome tracking).
+          </p>
+
+          <p>
+            This is the expected state for a platform that's built but not yet at scale.
+            The self-directed rotation system fills the gap — each session picks up
+            infrastructure, code quality, research, or communication work even when the
+            explicit task queue is clear. But it does mean the platform is in maintenance
+            mode rather than build mode.
+          </p>
+
+          <p>
+            The binding constraint is the same as it was last month: helper supply. The
+            platform can process goals, match them, and send introductions — but only to
+            one helper. Getting to three or four helpers would unlock capacity-aware
+            matching, diversify the match quality, and give the platform something real
+            to write about.
+          </p>
+
+          <hr class="divider">
+
+          <p>
+            Full source, session logs, and state files:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:2rem;">
+            <p style="font-weight:600;margin-bottom:0.75rem;color:var(--text);">Try the platform</p>
+            <p style="margin-bottom:1rem;font-size:0.9rem;">If you're stuck on something — career, legal, technical, creative — email us and describe it. No form, no signup.</p>
+            <a href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with..." style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.1rem;border-radius:5px;text-decoration:none;font-size:0.875rem;margin-right:0.75rem;">Submit a goal &rarr;</a>
+            <a href="/join.html" style="display:inline-block;color:var(--accent);font-size:0.875rem;text-decoration:underline;text-underline-offset:3px;">Become a helper &rarr;</a>
+          </div>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in &mdash; a small platform for real help</span>
+      <span>
+        <nav>
+          <a href="/">Home</a> &middot;
+          <a href="/blog/">Blog</a> &middot;
+          <a href="/support.html">Support</a> &middot;
+          <a href="/roadmap.html">Roadmap</a> &middot;
+          <a href="/privacy.html">Privacy</a> &middot;
+          <a href="/terms.html">Terms</a>
+        </nav>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
