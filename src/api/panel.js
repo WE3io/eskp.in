@@ -97,6 +97,34 @@ router.post('/invite', express.json({ limit: '16kb' }), async (req, res) => {
     return res.status(400).json({ error: 'Invalid email address' });
   }
 
+  // TSK-141: Per-user invite rate limits (5 per goal, 10 per day)
+  try {
+    const { pool } = require('../db/connection');
+    const [perGoal, perDay] = await Promise.all([
+      pool.query(
+        `SELECT COUNT(*) FROM panel_members pm
+         JOIN panels p ON p.id = pm.panel_id
+         WHERE p.goal_id = $1 AND p.user_id = $2`,
+        [goalId, userId]
+      ),
+      pool.query(
+        `SELECT COUNT(*) FROM panel_members pm
+         JOIN panels p ON p.id = pm.panel_id
+         WHERE p.user_id = $1 AND pm.created_at > NOW() - INTERVAL '1 day'`,
+        [userId]
+      ),
+    ]);
+    if (parseInt(perGoal.rows[0].count, 10) >= 5) {
+      return res.status(429).json({ error: 'Maximum 5 invitations per goal' });
+    }
+    if (parseInt(perDay.rows[0].count, 10) >= 10) {
+      return res.status(429).json({ error: 'Maximum 10 invitations per day' });
+    }
+  } catch (err) {
+    logger.error({ err }, 'POST /panel/invite rate limit check failed');
+    // Continue on failure — defence in depth, not a hard gate
+  }
+
   try {
     const result = await createPanelInvitation(goalId, userId, { email, name, roleLabel, roleCharterText, note });
     res.json({ success: true, panelMemberId: result.panelMember.id });
