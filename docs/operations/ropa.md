@@ -92,9 +92,9 @@
 
 | Field | Detail |
 |-------|--------|
-| **Purpose** | Send acknowledgement, introduction, and referral emails to users and helpers |
+| **Purpose** | Send acknowledgement, introduction, referral, and panel invitation/notification emails to users, helpers, and advisors |
 | **Lawful basis** | Legitimate interests (Art.6(1)(f)) for service emails; contract performance for payment confirmations |
-| **Categories of data subjects** | Users; helpers |
+| **Categories of data subjects** | Users; helpers; advisory panel members |
 | **Categories of personal data** | Email address, name, goal summary, helper name |
 | **Recipients** | Resend (email delivery processor, US) |
 | **International transfers** | Resend is a US company. Standard processor DPA in place |
@@ -148,6 +148,21 @@
 
 ---
 
+## Processing Activity 10: Advisory panel member data
+
+| Field | Detail |
+|-------|--------|
+| **Purpose** | Manage advisory panel invitations, onboarding, session authentication, thread access, and support flagging for goal-specific advisors |
+| **Lawful basis** | Legitimate interests (Art.6(1)(f)) — advisor has accepted an invitation to advise on a specific goal |
+| **Categories of data subjects** | External advisors invited to advise on goals; helpers who are auto-enrolled as panel members after payment |
+| **Categories of personal data** | Email address, name, role label, role charter text, invitation token, session token, onboarding completion status, flagging activity |
+| **Recipients** | Resend (email processor — invitation, acceptance notification, support check-in emails); Hetzner (server/DB processor) |
+| **International transfers** | None for storage (Hetzner EU). Email delivery via Resend (US — see Activity 6) |
+| **Retention** | Active panel members: retained while panel is active. Expired invitations (14 days): purged by data-retention.js. Account deletion: full cascade delete of all panel data |
+| **Security measures** | Invitation tokens: 32-byte cryptographic random, single-use, 14-day expiry. Session tokens: 32-byte, 30-day expiry, httpOnly cookie. Thread isolation: every query scoped to authenticated panel_member_id. No cross-member data access. |
+
+---
+
 ## Processors summary
 
 | Processor | Role | Location | Safeguard |
@@ -167,7 +182,8 @@
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-03-09 | Initial ROPA created | Claude instance (auto-session, TSK-040) |
-| 2026-03-13 | Added Activity 9 (orchestrated AI inference via OpenRouter/DeepSeek); updated Activities 2 and 3 to reflect OpenRouter routing; updated processors summary (TSK-148) | Claude instance (auto-session, session 37) |
+| 2026-03-13 | Added Activity 9 (orchestrated AI inference via OpenRouter/DeepSeek); updated Activities 2 and 3 to reflect OpenRouter routing; updated processors summary (TSK-148 partial) | Claude instance (auto-session, session 37) |
+| 2026-03-13 | Added Activity 10 (advisory panel member data) — completes TSK-148 | Claude instance (auto-session, session 38) |
 
 ---
 
