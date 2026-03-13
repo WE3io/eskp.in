@@ -62,3 +62,22 @@ roles:
     budget:
       monthly_usd: 10.00
     description: "Code generation, refactoring, implementation"
+
+  # --- Session orchestration roles ---
+  planner:
+    default: haiku-openrouter
+    fallback: haiku-anthropic
+    budget_fallback: local-best
+    max_tokens: 1024
+    temperature: 0
+    budget:
+      monthly_usd: 1.00
+    description: "Session coordinator: reads state, picks tasks, outputs structured plan"
+
+  reviewer:
+    default: sonnet-openrouter
+    max_tokens: 512
+    temperature: 0
+    budget:
+      monthly_usd: 5.00
+    description: "Reviews diffs against acceptance criteria before commit"

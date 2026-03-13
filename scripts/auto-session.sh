@@ -83,23 +83,79 @@ fi
 
 echo "[${TIMESTAMP}] Budget OK (${PCT_USED}%). Starting Claude session." | tee -a "${LOG_FILE}"
 
-# ── Session pre-check: skip if no actionable work ────────────────────────────
-PRECHECK=$(node scripts/session-precheck.js 2>/dev/null || echo "work")
-if [ "$PRECHECK" = "skip" ]; then
+# ── Session pre-check: determine work type ───────────────────────────────────
+# Outputs: "skip", "routine", "agentic", or "strategic"
+SESSION_TYPE=$(node scripts/session-precheck.js 2>>"${LOG_FILE}" || echo "agentic")
+echo "[${TIMESTAMP}] Pre-check result: ${SESSION_TYPE}" >> "${LOG_FILE}"
+
+if [ "${SESSION_TYPE}" = "skip" ]; then
   echo "[${TIMESTAMP}] No actionable work found — skipping session." | tee -a "${LOG_FILE}"
   exit 0
 fi
-echo "[${TIMESTAMP}] Pre-check: ${PRECHECK}" >> "${LOG_FILE}"
 
-# ── Session model routing: Opus for planning, Sonnet for implementation ──────
-TOP_TASK=$(grep -m1 'P[01]' "${PROJECT_DIR}/docs/state/task-queue.md" 2>/dev/null | head -1 || echo "")
+# ── Route by session type ────────────────────────────────────────────────────
+# "routine"   → session-orchestrator.sh (cheap: Haiku+DeepSeek+Sonnet review)
+# "agentic"   → Claude CLI with Sonnet (full agent capability)
+# "strategic" → Claude CLI with Opus (architectural/planning decisions)
 
-if echo "$TOP_TASK" | grep -qiE 'research|plan|architect|design|spec|decision|strategy'; then
+if [ "${SESSION_TYPE}" = "routine" ]; then
+  echo "[${TIMESTAMP}] Routine session → orchestrator (Haiku+DeepSeek+Sonnet review)" | tee -a "${LOG_FILE}"
+
+  # Run orchestrator — may complete multiple task cycles
+  ORCH_TASKS_DONE=0
+  ORCH_CYCLES=0
+  MAX_ORCH_CYCLES=3
+
+  while [ "${ORCH_CYCLES}" -lt "${MAX_ORCH_CYCLES}" ]; do
+    ORCH_CYCLES=$((ORCH_CYCLES + 1))
+    ORCH_EXIT=0
+    bash "${PROJECT_DIR}/scripts/session-orchestrator.sh" >> "${LOG_FILE}" 2>&1 || ORCH_EXIT=$?
+
+    case ${ORCH_EXIT} in
+      0) ORCH_TASKS_DONE=$((ORCH_TASKS_DONE + 1))
+         echo "[${TIMESTAMP}] Orchestrator cycle ${ORCH_CYCLES}: task completed" >> "${LOG_FILE}"
+         ;;
+      2) echo "[${TIMESTAMP}] Orchestrator cycle ${ORCH_CYCLES}: no more work" >> "${LOG_FILE}"
+         break
+         ;;
+      3) echo "[${TIMESTAMP}] Orchestrator cycle ${ORCH_CYCLES}: task needs CLI — falling back" >> "${LOG_FILE}"
+         SESSION_TYPE="agentic"
+         break
+         ;;
+      *) echo "[${TIMESTAMP}] Orchestrator cycle ${ORCH_CYCLES}: error (exit ${ORCH_EXIT})" >> "${LOG_FILE}"
+         break
+         ;;
+    esac
+  done
+
+  if [ "${ORCH_TASKS_DONE}" -gt 0 ] && [ "${SESSION_TYPE}" = "routine" ]; then
+    # Orchestrator completed work — push and exit without starting CLI
+    echo "[${TIMESTAMP}] Orchestrator completed ${ORCH_TASKS_DONE} task(s) in ${ORCH_CYCLES} cycle(s)" | tee -a "${LOG_FILE}"
+    git push 2>> "${LOG_FILE}" || true
+
+    # Skip to outcome verification (jump past the CLI session block)
+    # We set these variables so the outcome section works correctly
+    SESSION_EXIT=0
+    HEAD_BEFORE=$(git log --oneline -"$((ORCH_TASKS_DONE + 1))" --format='%H' | tail -1 2>/dev/null || echo "none")
+  else
+    echo "[${TIMESTAMP}] Orchestrator produced no commits — continuing to CLI" >> "${LOG_FILE}"
+  fi
+fi
+
+# Initialise variables used by outcome verification (set by CLI or orchestrator)
+SESSION_EXIT="${SESSION_EXIT:-0}"
+HEAD_BEFORE="${HEAD_BEFORE:-$(git rev-parse HEAD 2>/dev/null || echo 'none')}"
+
+# Only run CLI session if orchestrator didn't handle everything
+if [ "${SESSION_TYPE}" = "agentic" ] || [ "${SESSION_TYPE}" = "strategic" ]; then
+
+# Set model based on session type
+if [ "${SESSION_TYPE}" = "strategic" ]; then
   SESSION_MODEL="opus"
-  echo "[${TIMESTAMP}] Planning session → Opus" >> "${LOG_FILE}"
+  echo "[${TIMESTAMP}] Strategic session → Opus" >> "${LOG_FILE}"
 else
   SESSION_MODEL="sonnet"
-  echo "[${TIMESTAMP}] Implementation session → Sonnet" >> "${LOG_FILE}"
+  echo "[${TIMESTAMP}] Agentic session → Sonnet" >> "${LOG_FILE}"
 fi
 
 # ── Capture state before session ──────────────────────────────────────────────
@@ -205,6 +261,14 @@ Before this session ends:
 # ── Push any commits made during the session ─────────────────────────────────
 git push 2>> "${LOG_FILE}" || true
 
+# ── Log CLI session cost estimate to token_usage table ───────────────────────
+node scripts/log-cli-session-cost.js \
+  --since "${SESSION_START_EPOCH}" \
+  --model "${SESSION_MODEL}" \
+  --type "${SESSION_TYPE}" >> "${LOG_FILE}" 2>&1 || true
+
+fi # end of "if agentic or strategic" CLI session block
+
 # ── Outcome verification ──────────────────────────────────────────────────────
 HEAD_AFTER=$(git rev-parse HEAD 2>/dev/null || echo "none")
 COMMITS_MADE=0
@@ -225,7 +289,7 @@ SESSION_DURATION_S=$(( SESSION_END_EPOCH - SESSION_START_EPOCH ))
 SESSION_DURATION_MIN=$(( SESSION_DURATION_S / 60 ))
 SESSION_DURATION_SEC=$(( SESSION_DURATION_S % 60 ))
 
-SUMMARY_LINE="[${TIMESTAMP}] Summary: Commits: ${COMMITS_MADE}. State updated: ${STATE_UPDATED}. Output lines: ${OUTPUT_LINES}. Exit: ${SESSION_EXIT}. Duration: ${SESSION_DURATION_MIN}m${SESSION_DURATION_SEC}s."
+SUMMARY_LINE="[${TIMESTAMP}] Summary: Type: ${SESSION_TYPE}. Commits: ${COMMITS_MADE}. State updated: ${STATE_UPDATED}. Output lines: ${OUTPUT_LINES}. Exit: ${SESSION_EXIT}. Duration: ${SESSION_DURATION_MIN}m${SESSION_DURATION_SEC}s."
 echo "${SUMMARY_LINE}" | tee -a "${LOG_FILE}"
 
 # ── Failure alerting ──────────────────────────────────────────────────────────
