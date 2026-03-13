@@ -48,6 +48,9 @@ function validate(config) {
     if (roleConfig.fallback && !config.models[roleConfig.fallback]) {
       errors.push(`roles.${role}: fallback model "${roleConfig.fallback}" not found in models registry`);
     }
+    if (roleConfig.budget_fallback && !config.models[roleConfig.budget_fallback]) {
+      errors.push(`roles.${role}: budget_fallback model "${roleConfig.budget_fallback}" not found in models registry`);
+    }
   }
 
   return errors;

@@ -27,6 +27,7 @@ function resolveRole(role, config) {
 
   const model = getModel(roleConfig.default, cfg);
   const fallback = roleConfig.fallback ? getModel(roleConfig.fallback, cfg) : null;
+  const budgetFallback = roleConfig.budget_fallback ? getModel(roleConfig.budget_fallback, cfg) : null;
 
   const overrides = {};
   if (roleConfig.max_tokens !== undefined) overrides.max_tokens = roleConfig.max_tokens;
@@ -35,6 +36,7 @@ function resolveRole(role, config) {
   return {
     model,
     fallback,
+    budgetFallback,
     overrides,
     budget: roleConfig.budget || null,
     role,

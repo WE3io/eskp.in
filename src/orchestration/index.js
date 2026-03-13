@@ -25,6 +25,38 @@ async function infer({ role, messages, system, goalId, tools, tool_choice, metad
   // 2. Check budget gate
   const budget = await checkBudget(role, resolved.budget);
   if (!budget.ok) {
+    // Budget exhausted — try local fallback if configured
+    if (resolved.budgetFallback) {
+      console.warn(`infer: budget exhausted for ${role}, attempting local fallback via ${resolved.budgetFallback.id}`);
+      try {
+        const localHealth = await checkOllamaHealth(resolved.budgetFallback.endpoint);
+        if (!localHealth.healthy) {
+          throw new Error('Ollama is not running or not healthy');
+        }
+        if (!localHealth.models.some(m => m.includes(resolved.budgetFallback.model_name))) {
+          throw new Error(`Model ${resolved.budgetFallback.model_name} not available in Ollama`);
+        }
+
+        const extra = {};
+        if (tools) extra.tools = tools;
+        if (tool_choice) extra.tool_choice = tool_choice;
+
+        const localResolved = {
+          model: resolved.budgetFallback,
+          fallback: null,
+          overrides: resolved.overrides,
+        };
+        const response = await dispatch(localResolved, messages, system, extra);
+
+        logUsage(response, role, goalId);
+        console.log(`infer: ${role} served by local fallback ${resolved.budgetFallback.id} (budget exhausted)`);
+        return response;
+      } catch (localErr) {
+        console.warn(`infer: local fallback failed for ${role}: ${localErr.message}`);
+        // Fall through to throw BudgetExceededError
+      }
+    }
+
     throw new BudgetExceededError(
       `Budget exceeded for ${budget.scope}: $${budget.spent.toFixed(4)} / $${budget.cap.toFixed(2)}`,
       budget

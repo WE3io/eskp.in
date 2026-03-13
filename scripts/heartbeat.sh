@@ -58,6 +58,12 @@ if [ "${DISK_PCT}" -ge "${DISK_ALERT_PCT}" ]; then
   FAILURES+=("Disk usage: ${DISK_PCT}% used (threshold: ${DISK_ALERT_PCT}%)")
 fi
 
+# ── 6. Ollama (optional — warning only, not a critical failure) ───────────────
+OLLAMA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://localhost:11434/api/tags 2>/dev/null || echo "000")
+if [ "${OLLAMA_STATUS}" != "200" ]; then
+  echo "[heartbeat ${TIMESTAMP}] WARN: Ollama not responding (HTTP ${OLLAMA_STATUS}) — local fallback unavailable"
+fi
+
 # ── Alert if any failures ─────────────────────────────────────────────────────
 if [ "${#FAILURES[@]}" -gt 0 ]; then
   FAILURE_LIST=$(printf '%s\n' "${FAILURES[@]}")
@@ -74,4 +80,4 @@ if [ "${#FAILURES[@]}" -gt 0 ]; then
   exit 1
 fi
 
-echo "[heartbeat ${TIMESTAMP}] OK: app=${APP_HEALTH}, pg=ready, nginx=${NGINX_STATUS}, disk=${DISK_PCT}%"
+echo "[heartbeat ${TIMESTAMP}] OK: app=${APP_HEALTH}, pg=ready, nginx=${NGINX_STATUS}, disk=${DISK_PCT}%, ollama=${OLLAMA_STATUS}"

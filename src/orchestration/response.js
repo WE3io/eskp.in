@@ -54,9 +54,27 @@ function normaliseAnthropic(raw, modelId, startTime) {
 function normaliseOllama(raw, modelId, startTime) {
   const message = raw.message || {};
 
+  // Handle synthetic tool calls from JSON-mode shim
+  let toolCalls = [];
+  if (raw._synthetic_tool_call) {
+    try {
+      const parsed = typeof raw._synthetic_tool_call.content === 'string'
+        ? JSON.parse(raw._synthetic_tool_call.content)
+        : raw._synthetic_tool_call.content;
+      toolCalls = [{
+        id: `local_${Date.now()}`,
+        name: raw._synthetic_tool_call.name,
+        arguments: parsed,
+      }];
+    } catch (parseErr) {
+      console.warn(`ollama: failed to parse JSON tool response: ${parseErr.message}`);
+      // Fall through with empty tool_calls; caller handles missing tool_call
+    }
+  }
+
   return {
     text: message.content || null,
-    tool_calls: [],
+    tool_calls: toolCalls,
     stop_reason: raw.done ? 'end' : 'error',
     usage: {
       input_tokens: raw.prompt_eval_count || 0,

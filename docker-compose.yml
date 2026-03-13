@@ -22,6 +22,8 @@ services:
     image: platform-app:latest
     container_name: platform-app
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     expose:
       - "3000"
     environment:

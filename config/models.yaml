@@ -99,27 +99,22 @@ models:
       input_per_mtok: 0.80
       output_per_mtok: 4.00
 
-  # --- Local via Ollama (zero cost, hardware-dependent) ---
-  # Uncomment and configure after running: node -e "require('./src/orchestration/hardware').detectHardware().then(console.log)"
-  # local-best:
-  #   type: local
-  #   adapter: ollama
-  #   endpoint: "http://localhost:11434"
-  #   model_name: "determined-by-llmfit"
-  #   capabilities: [text, json_output]
-  #   cost_tier: free
-  #   intelligence_tier: medium
-  #   speed_class: standard
-  #   constraints:
-  #     context_window: 128000
-  #     max_output_tokens: 4096
-  #     max_concurrent: 1
-  #   imputed_cost:
-  #     input_per_mtok: 0
-  #     output_per_mtok: 0
-  #   llmfit:
-  #     fit_level: good
-  #     run_mode: cpu
-  #     quantisation: Q4_K_M
-  #     estimated_tok_s: 10
-  #     memory_usage_pct: 60
+  # --- Local via Ollama (zero cost, budget-exhaustion fallback) ---
+  # Qwen 2.5 1.5B Q4_K_M — ~1.0 GB in memory, adequate for classification/decomposition.
+  # Runs on host via Ollama systemd service; reached from Docker via host.docker.internal.
+  local-best:
+    type: local
+    adapter: ollama
+    endpoint: "http://host.docker.internal:11434"
+    model_name: "qwen2.5:1.5b"
+    capabilities: [text, json_output]
+    cost_tier: free
+    intelligence_tier: low
+    speed_class: slow
+    constraints:
+      context_window: 32768
+      max_output_tokens: 2048
+      max_concurrent: 1
+    cost:
+      input_per_mtok: 0
+      output_per_mtok: 0
