@@ -18,7 +18,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | Task | Frequency | Last completed | Next due | SLA |
 |---|---|---|---|---|
-| Budget report to panel | Weekly (Monday) | 2026-03-09 | 2026-03-16 | Send by EOD Monday |
+| Budget report to panel | Weekly (Monday) | 2026-03-09 | 2026-03-16 | Send by EOD Monday. Automated: `scripts/budget-report.js` cron `0 9 * * 1` |
 | Build-in-public post | Weekly (Friday) | 2026-03-13 | 2026-03-20 | — |
 | Backup verification (restore test) | Monthly | 2026-03-09 | 2026-04-09 | See backup-restore-log.md |
 | State file accuracy check | Every session | 2026-03-09 | Next session | Before session ends |
@@ -207,8 +207,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-108 | Add historical match rating to helper ranking | open | P3 — defer to 3+ helpers; blend avg rating into score |
 | TSK-109 | Add active match count to helper ranking (capacity-aware) | open | P3 — defer to 3+ helpers |
 | TSK-122 | Add Docker log rotation to docker-compose.yml (max-size: 10m, max-file: 5) | **done** 2026-03-13 | All 3 containers updated; log rotation active; from observability research |
-| TSK-123 | Integrate Pino + pino-http as structured logger; replace console.* in src/; configure PII redaction | open | P2 — before external users |
-| TSK-124 | Add uncaughtExceptionMonitor + unhandledRejection handlers (depends TSK-123) | open | P2 — before external users |
+| TSK-123 | Integrate Pino + pino-http as structured logger; replace console.* in src/; configure PII redaction | **done** 2026-03-13 | 21 files migrated; PII redaction; pino-http middleware |
+| TSK-124 | Add uncaughtExceptionMonitor + unhandledRejection handlers (depends TSK-123) | **done** 2026-03-13 | Crash handlers in src/index.js |
+| TSK-126 | Automated weekly budget report email to panel (Art 5.1 compliance) | **done** 2026-03-13 | scripts/budget-report.js; cron Monday 09:00 UTC; dry-run tested |
+| TSK-127 | Phase transition detection: compare revenue vs costs, alert when Phase 2 eligible | open | P3 — deferred at $0 revenue |
 | TSK-125 | Evaluate Sentry free tier: instrument, test beforeSend PII scrubbing, confirm GDPR suitability | open | P3 — decision gate before external users |
 | TSK-110 | Bug fix: 11 unescaped AI-generated fields in HTML email bodies (platform.js, outcome-roundup.js) | **done** 2026-03-10 | escHtml() applied to decomposed.summary, needs[].need, context, outcome, helper.bio, clarification_questions, statsLine |
 | TSK-111 | Status enum module (src/db/statuses.js) + fix residual invalid 'proposed' goal status | **done** 2026-03-10 | Single source of truth for goal/match/application statuses; removed 'proposed' from goal queries in data-retention.js and helper-digest.js |
@@ -223,4 +225,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-13 (thirty-fourth auto-session — infra rotation + observability research + TSK-122 done)*
+*Last updated: 2026-03-13 (thirty-fifth auto-session — TSK-123/124 Pino logging, TSK-126 budget report, mission alignment audit)*

@@ -9,6 +9,7 @@
     "budget": "node scripts/budget-check.js",
     "manage-helpers": "node scripts/manage-helpers.js",
     "test": "node --test src/orchestration/__tests__/*.test.js",
+    "budget-report": "node scripts/budget-report.js",
     "stats": "node scripts/stats.js",
     "orch:infer": "node scripts/orch-infer.js"
   },
