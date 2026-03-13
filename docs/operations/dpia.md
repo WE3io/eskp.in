@@ -243,4 +243,37 @@ This DPIA was prepared by the Claude platform operator. It should be reviewed by
 
 ---
 
+## 10. DPIA trigger criteria
+
+Based on GDPR Art.35 and ICO guidance, a new or updated DPIA is required when:
+
+### Full DPIA required
+
+- A **new AI/ML processing activity** is introduced (new model, new use case for automated decision-making)
+- Processing of **special category data** at scale begins or changes
+- A **new category of data subjects** is processed (e.g., panel members, children)
+- **Systematic monitoring** of data subjects is introduced
+- Processing involves **innovative technology** not previously assessed
+- Processing could **deny service** or produce legal/significant effects on individuals
+
+### DPIA addendum required
+
+- An existing processing activity changes **model, provider, or data flow** (e.g., switching from Anthropic to OpenRouter)
+- **New data elements** are added to an existing processing activity
+- A **new processor** is added that handles personal data already covered by this DPIA
+- **Retention periods** change for data covered by existing risks
+
+### No DPIA update needed
+
+- Routine configuration changes (e.g., prompt wording, threshold adjustments)
+- Changes that reduce data processing scope
+- Bug fixes that don't change data flows
+- Infrastructure changes that don't affect what data is processed (e.g., server migration with same security controls)
+
+### How to apply
+
+When implementing a feature, check the trigger criteria above. If a full DPIA or addendum is needed, complete it **before** the feature goes live. Reference this criteria in the feature compliance checklist (`.claude/rules/privacy-features.md`).
+
+---
+
 *This DPIA is a living document. Update when processing activities change materially. File alongside lia.md and ropa.md in docs/operations/.*
