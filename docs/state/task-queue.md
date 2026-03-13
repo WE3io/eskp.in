@@ -73,13 +73,13 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-010 | Feedback mechanism surfaced to users | **done** 2026-03-09 | /feedback.html created; linked from index.html |
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |
 | TSK-012 | First external user (non-panel) end-to-end | open | Depends on TSK-003 and helper network |
-| TSK-013 | Off-site backup | **blocked** | Needs Sunil to provide S3-compatible bucket + credentials |
+| TSK-013 | Off-site backup | **done** 2026-03-13 | Backblaze B2 bucket (eskp-backups); backup-db.sh uploads after each dump; daily cron |
 | TSK-014 | `hard-exclusion-content-triggers` | **done** 2026-03-09 | Art.11 Phase 1 — email webhook warm referral |
 | TSK-015 | `privacy-tension-disclosure` | **done** 2026-03-09 | Art.11 Phase 1 — OSA/dyadic disclosure in privacy.html and terms.html |
 | TSK-016 | `safety-resources-page` | **done** 2026-03-09 | Art.11 Phase 1 — /support.html created, footers updated |
 | TSK-017 | `safeguarding-disclosure-terms` | **done** 2026-03-09 | Art.11 Phase 1 — section 7 in terms.html, section in join.html |
 | TSK-018 | `emergency-override-protocol` | **done** 2026-03-09 | Art.11 Phase 1 — docs/operations/emergency-override-protocol.md + privacy.html ref |
-| TSK-019 | Privacy policy legal sign-off | open | Target 2026-04-08 — remove draft banner when done |
+| TSK-019 | Privacy policy legal sign-off | **done** 2026-03-13 | Signed off by Sunil — remove draft banner from privacy.html |
 
 ---
 
@@ -128,7 +128,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-045 | Review and document that processor DPAs are in place (Anthropic, Resend, Stripe, Hetzner, Cloudflare) | **done** 2026-03-10 | docs/operations/processor-dpas.md; TSK-080/081 generated for Hetzner/Cloudflare DPA acceptance |
 | TSK-046 | Add 1GB swapfile to prevent OOM kills under memory pressure | **done** 2026-03-10 | fallocate -l 1G /swapfile + fstab entry; 1GB swap now active |
 | TSK-047 | Configure log rotation (logrotate) for ~/logs/ directory | **done** 2026-03-10 | /etc/logrotate.d/eskp-logs; daily rotate, 14-day retention; session log cleanup cron |
-| TSK-052 | Register mail.eskp.in with Google Postmaster Tools | **needs Sunil** | Instructions at docs/operations/google-postmaster-tools-setup.md — requires Google account login |
+| TSK-052 | Register mail.eskp.in with Google Postmaster Tools | **done** 2026-03-13 | Domain verified by Sunil via Google Postmaster Tools |
 | TSK-021 | `account-deletion-flow` | **done** 2026-03-10 | Art.10 Phase 1 — email-triggered, token confirmation, cascade delete, audit log |
 | TSK-022 | `data-export-endpoint` | **done** 2026-03-10 | Art.10 Phase 1 — GET /account/export?token=xxx, one-time token, 48h expiry |
 | TSK-056 | Design basic data retention/deletion automation | **done** 2026-03-10 | scripts/data-retention.js: auto-close stale goals (90d active, 180d introduced), purge decomposed JSONB (365d closed). Monthly cron 1st 06:00 UTC. |
@@ -140,7 +140,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-059 | Add "What to expect" timeline section to landing page | **done** 2026-03-10 | index.html — 4-step timeline: 24h ack, match, no-match, after intro |
 | TSK-060 | Draft Twitter/X thread for @awebot1529222 — helper recruitment | **done** 2026-03-10 | docs/updates/002-helper-recruitment-thread.md — 6 tweets ready to post |
 | TSK-061 | Add CTA to end of each blog post (join + submit) | **done** 2026-03-10 | All 3 blog posts updated with styled 'Try the platform' CTA box |
-| TSK-062 | Grow helper network — reach 3 new helper candidates | open | LinkedIn post + personal outreach template drafted (docs/updates/003-linkedin-helper-recruitment.md); awaiting Sunil to post/send |
+| TSK-062 | Grow helper network — reach 3 new helper candidates | **paused** | LinkedIn post + outreach template ready (docs/updates/003-linkedin-helper-recruitment.md); on hold until backlog cleared |
 | TSK-063 | No-match timeout: email user after 7 days if goal still in 'matched' | **done** 2026-03-10 | scripts/followup.js — no-match + unpaid reminder variants; daily 09:00 cron; follow_up_sent_at column |
 | TSK-064 | AI goal-decomposition email reframed as hypothesis | **done** 2026-03-10 | "Here's how we've understood your goal — reply if anything looks off" |
 | TSK-065 | Add 24-hour SLA to no-match acknowledgement email | **done** 2026-03-10 | "We'll get back to you within 24 hours" added to no-match variant |
