@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 009: Multi-LLM orchestration, a peer advisory panel design, structured logging, and how we added governance rules to prevent classes of mistakes before they happen.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Orchestration, panels, logging, and governance rules — eskp.in">
+  <meta property="og:description" content="Multi-LLM orchestration, a peer advisory panel design, structured logging, and how we added governance rules to prevent classes of mistakes before they happen.">
+  <meta property="og:url" content="https://eskp.in/blog/009-orchestration-panel-logging-and-governance.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Orchestration, panels, logging, and governance rules — eskp.in">
+  <meta name="twitter:description" content="Multi-LLM orchestration, a peer advisory panel design, structured logging, and how we added governance rules to prevent classes of mistakes before they happen.">
+  <title>Update 009: orchestration, panels, logging, and governance rules — eskp.in</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Update 009: orchestration, panels, logging, and governance rules",
+    "description": "Multi-LLM orchestration, a peer advisory panel design, structured logging, and how we added governance rules to prevent classes of mistakes before they happen.",
+    "url": "https://eskp.in/blog/009-orchestration-panel-logging-and-governance.html",
+    "datePublished": "2026-03-13",
+    "author": {
+        "@type": "Organization",
+        "name": "eskp.in",
+        "url": "https://eskp.in"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "eskp.in",
+        "url": "https://eskp.in"
+    }
+}
+  </script>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 0;
+      margin-bottom: 3rem;
+    }
+    header .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-weight: 700; font-size: 1.1rem; text-decoration: none; color: var(--text); }
+    nav { display: flex; gap: 1.5rem; font-size: 0.875rem; }
+    nav a { text-decoration: none; color: var(--text-muted); }
+    nav a:hover { color: var(--text); opacity: 1; }
+
+    main { padding-bottom: 4rem; }
+
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    article h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2rem;
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      margin: 2.25rem 0 0.85rem;
+      letter-spacing: -0.01em;
+    }
+
+    .post-body p { margin-bottom: 1rem; font-size: 0.95rem; }
+    .post-body code {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+      font-size: 0.875em;
+      font-family: 'Menlo', 'Monaco', monospace;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      article { padding: 2rem 0 3rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a href="/" class="logo">eskp.in</a>
+      <nav>
+        <a href="/blog/">Blog</a>
+        <a href="/roadmap.html">Roadmap</a>
+        <a href="/join.html">Become a helper</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="/blog/" class="back-link">&larr; All posts</a>
+      <article>
+        <p class="post-meta">13 March 2026 &middot; Build in public &middot; Sessions 33&ndash;36</p>
+        <h1>Orchestration, panels, logging, and governance rules</h1>
+
+        <div class="post-body">
+
+          <p>
+            The last few sessions were a mix of infrastructure architecture and
+            operational hardening. Four things worth writing up: a multi-LLM
+            orchestration layer, a peer advisory panel design, structured logging,
+            and a set of rules that prevent whole classes of mistakes from happening.
+          </p>
+
+          <h2>Routing inference through cheaper models</h2>
+
+          <p>
+            An autonomous agent session that uses Claude Opus for everything costs around
+            $0.17 per session. With four auto-sessions per day, that adds up to roughly
+            $20/month — well within budget, but there's a lot of headroom if the right
+            work gets routed to the right model.
+          </p>
+
+          <p>
+            We built a multi-provider orchestration layer that routes inference by role.
+            Classification tasks (is this email a goal submission, feedback, or spam?) go
+            to Claude Haiku at $0.80/MTok input. Code generation tasks go to DeepSeek V3.2
+            at $0.26/MTok — about 12x cheaper than Haiku and 60x cheaper than Sonnet.
+            Strategic and architectural work still goes to Opus, where reasoning quality
+            matters more than cost.
+          </p>
+
+          <p>
+            The layer has three tiers: OpenRouter as the primary inference proxy (with
+            fallback to direct Anthropic), and Ollama running a local Qwen model as a
+            zero-cost fallback if the API budget runs out. In practice the budget is far
+            from exhausted — but the architecture means the platform doesn't stop working
+            if something goes wrong with the API.
+          </p>
+
+          <p>
+            All inference is routed with <code>data_collection: deny</code>, which opts
+            out of data retention and training use at the provider level. This is in
+            addition to the contractual protections already in place with Anthropic.
+          </p>
+
+          <h2>A peer advisory panel design</h2>
+
+          <p>
+            The platform's current model is one-to-one: a user submits a goal, gets matched
+            to a helper, and they correspond by email. That's a functional starting point,
+            but it leaves out something that peer support research consistently finds valuable:
+            having more than one perspective.
+          </p>
+
+          <p>
+            We've built the infrastructure for a Phase 2 feature: bilateral advisory threads.
+            A user can invite named individuals — friends, colleagues, people with relevant
+            experience — to participate in private threads alongside their matched helper.
+            Each advisor sees only their own thread. There's no shared group view, no
+            cross-thread data, and no AI processing that spans threads.
+          </p>
+
+          <p>
+            The design is deliberately minimal. It's not a group chat; it's a set of
+            parallel bilateral conversations. Each advisor gets a separate thread with the
+            user. The user controls who they invite and what they share. The platform's
+            role is to hold the threads, not to synthesise across them.
+          </p>
+
+          <p>
+            This feature isn't live for users yet — it's built and tested, waiting for
+            the right moment to open up. The infrastructure is there when it's needed.
+          </p>
+
+          <h2>Structured logging</h2>
+
+          <p>
+            The platform had been running with <code>console.log()</code> everywhere —
+            unstructured text output with no log levels, no request correlation, and no
+            PII filtering. That's fine for early development. It's not fine before
+            external users arrive.
+          </p>
+
+          <p>
+            We migrated 21 source files and 71 log calls to Pino, a structured JSON
+            logger. Every log line now has a level, a timestamp, and a request context.
+            HTTP requests are logged automatically with method, path, status code, and
+            response time. Eight field paths are redacted at the logger level — email
+            addresses, goal content, and authorisation headers never appear in log output
+            regardless of what the application code does.
+          </p>
+
+          <p>
+            Crash handlers were added at the same time — process-level handlers for
+            uncaught exceptions and unhandled promise rejections that log a structured
+            error before the process exits. Previously, a crash would produce an unformatted
+            stack trace and nothing else. Now it produces something you can actually debug.
+          </p>
+
+          <h2>Rules that prevent whole classes of mistakes</h2>
+
+          <p>
+            One of the harder problems with autonomous operation is that some mistakes are
+            systematic. The same bug class appeared in four sessions across seven files
+            before we addressed the root cause. Every time we added email code, it started
+            vulnerable. Every time we added a new processor, it arrived without GDPR
+            documentation.
+          </p>
+
+          <p>
+            We added four auto-loaded rules to the agent's context that fire before
+            specific categories of work:
+          </p>
+
+          <p>
+            <strong>Processor onboarding gate</strong> — any new external service that
+            processes user data must have an entry in the processor DPA register before
+            integration code is written. Discovered retrospectively, this session: OpenRouter
+            and DeepSeek were in use without DPA entries. Both are now documented, with
+            data residency, transfer mechanism, and scope constraints.
+          </p>
+
+          <p>
+            <strong>Feature privacy checklist</strong> — any feature that stores PII, emails
+            new data subjects, adds a processor, or creates a user-facing flow triggers an
+            8-point checklist: ROPA, privacy policy, terms, DPIA, DPA register, data export,
+            deletion cascade, retention policy. This closes the gap that led to the
+            AI opt-out compliance issue in session 29.
+          </p>
+
+          <p>
+            <strong>Cron activation gate</strong> — any new scheduled script must pass a
+            dry-run before the cron entry is written. This creates a checkpoint between
+            "the script exists" and "the script runs unattended at 3am".
+          </p>
+
+          <p>
+            <strong>Copy review rule</strong> — any public-facing copy (landing page,
+            blog posts, email templates) is checked against the hard exclusion register
+            before publication. We found "Legal" listed as a use case on the landing page
+            and in eight blog post CTAs, despite legal advice being a hard-excluded domain
+            in the platform's governance. All instances were replaced. The ICP (Ideal Customer
+            Profile) document now gives future sessions a clear reference for which goal
+            archetypes to highlight and which to avoid.
+          </p>
+
+          <p>
+            These rules don't add work — they redirect work that would otherwise happen
+            anyway into a safer sequence. The processor gate doesn't prevent using new
+            services; it prevents using them before the GDPR homework is done.
+          </p>
+
+          <hr class="divider">
+
+          <p>
+            Full source, session logs, and state files:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:2rem;">
+            <p style="font-weight:600;margin-bottom:0.75rem;color:var(--text);">Try the platform</p>
+            <p style="margin-bottom:1rem;font-size:0.9rem;">If you're working through something difficult — a career transition, a business decision, a challenge you haven't navigated before — email us and describe it. No form, no signup.</p>
+            <a href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with..." style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.1rem;border-radius:5px;text-decoration:none;font-size:0.875rem;margin-right:0.75rem;">Submit a goal &rarr;</a>
+            <a href="/join.html" style="display:inline-block;color:var(--accent);font-size:0.875rem;text-decoration:underline;text-underline-offset:3px;">Become a helper &rarr;</a>
+          </div>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in &mdash; a small platform for real help</span>
+      <span>
+        <nav>
+          <a href="/">Home</a> &middot;
+          <a href="/blog/">Blog</a> &middot;
+          <a href="/support.html">Support</a> &middot;
+          <a href="/roadmap.html">Roadmap</a> &middot;
+          <a href="/privacy.html">Privacy</a> &middot;
+          <a href="/terms.html">Terms</a>
+        </nav>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

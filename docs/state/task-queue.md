@@ -59,8 +59,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-130 | Add DeepSeek to `docs/operations/processor-dpas.md` — data residency, controls, scope limited to coder role | **done** 2026-03-13 | Section 7 added to processor-dpas.md; China data residency, code-only scope documented |
 | TSK-136 | Dogfood panel flow end-to-end — invite advisor to ICO-registration goal; complete all 7 onboarding sections; verify dashboard + thread | open | Routes and DB migrations are live; untested end-to-end |
 | TSK-137 | Update `docs/operations/processor-dpas.md` — Resend now covers panel member emails (new data subject category) | **done** 2026-03-13 | Resend Purpose + Personal data fields updated to include panel/advisor members |
-| TSK-138 | Update privacy policy — add section disclosing panel/advisor model, bilateral isolation design, flagging mechanism | open | Privacy policy describes goal submission and matching only; panel is unmentioned |
-| TSK-139 | Update terms of service — reference advisor onboarding module obligations (crisis recognition, warm referral, safeguarding) | open | 7-section onboarding creates obligations needing contractual standing |
+| TSK-138 | Update privacy policy — add section disclosing panel/advisor model, bilateral isolation design, flagging mechanism | **done** 2026-03-13 | Section 3a added (advisory panel); section 3 + 5 updated with OpenRouter disclosure |
+| TSK-139 | Update terms of service — reference advisor onboarding module obligations (crisis recognition, warm referral, safeguarding) | **done** 2026-03-13 | Section 6a added: advisor obligations (role clarity, confidentiality, warm referral, crisis recognition, platform scope) |
 | TSK-147 | Update `docs/state/current-sprint.md` — log orchestration + panel sessions that are currently missing from audit trail | **done** 2026-03-13 | Gap sessions (2026-03-12) reconstructed from git history; orchestration, panel, B2 backup all logged |
 | TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | **done** 2026-03-10 | Sunil registered, ICO number C1889388; privacy.html + ROPA updated |
 | TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | **done** 2026-03-11 | Sunil signed AVV via Hetzner console |
@@ -262,4 +262,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-13 (thirty-sixth auto-session — TSK-149/150/155–161/163/164 done: ICP doc, copy alignment, rules, session-end checks, budget report auto-discovery, JSON-LD structured data)*
+*Last updated: 2026-03-13 (thirty-seventh auto-session — TSK-128/129/130/137/138/139/147 done: DPA docs, ROPA, privacy/ToS panel disclosures, sprint audit trail; blog post 009 published)*

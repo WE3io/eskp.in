@@ -456,12 +456,18 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
 - [x] Growth rotation: JSON-LD structured data — Organization + WebSite on landing page, BlogPosting on all 8 blog posts
 - [x] docs/research/2026-03-13-growth-seo-structured-data.md
 
-### Session 2026-03-13 (thirty-seventh auto-session) — in progress
+### Session 2026-03-13 (thirty-seventh auto-session) — done ✅
 - [x] TSK-147: Missing session audit trail reconstructed from git history (2026-03-12 sessions documented above)
-- [ ] TSK-128/129/130: OpenRouter/DeepSeek DPA entries + env vars
-- [ ] TSK-138/139: Privacy policy + ToS updates for panel model
-- [ ] Communication rotation
+- [x] TSK-128: OPENROUTER_API_KEY confirmed in .env/.env.example; 5 operations tracked in token_usage
+- [x] TSK-129: OpenRouter added to processor-dpas.md (section 6, data_collection:deny documented)
+- [x] TSK-130: DeepSeek added to processor-dpas.md (section 7, code-only scope, China residency)
+- [x] TSK-137: Resend DPA entry extended to cover panel/advisor member emails
+- [x] TSK-148 (partial): ROPA Activity 9 added (orchestrated AI inference); Activities 2+3 updated
+- [x] TSK-138: Privacy policy updated — section 3a (advisory panel disclosure), section 3 + 5 (OpenRouter)
+- [x] TSK-139: Terms of service updated — section 6a (advisor onboarding obligations)
+- [x] Communication rotation: Blog post 009 published — "Orchestration, panels, logging, and governance rules"; blog index + sitemap updated
+- [x] App redeployed (health: passing)
 
 ---
 *Last updated: 2026-03-13 — thirty-seventh auto-session*
-*Next session starts with: P1 open: TSK-128/129/130 (OpenRouter/DeepSeek DPA + env), TSK-136–139 (panel flow); P2 open: TSK-125 (Sentry), TSK-131/132/133 (orchestrator); communication next in rotation*
+*Next session starts with: P1 open: TSK-136 (panel dogfood end-to-end); P2 open: TSK-125 (Sentry), TSK-131/132 (orchestrator verification), TSK-141/142/143/144 (panel GDPR hygiene), TSK-151/152/153/154 (copy/brand); research rotation next*
