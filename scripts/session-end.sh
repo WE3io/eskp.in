@@ -72,7 +72,16 @@ else
   echo "[session-end] OK: 'Next session starts with:' pointer present"
 fi
 
-# ── 3. Exclusion-register alignment check ─────────────────────────────────────
+# ── 3. Session log content verification ───────────────────────────────────────
+TODAY=$(date +%Y-%m-%d)
+if ! grep -q "${TODAY}" docs/state/current-sprint.md 2>/dev/null; then
+  echo "[session-end] WARNING: Today's date (${TODAY}) not found in current-sprint.md session entries"
+  WARNINGS=$((WARNINGS + 1))
+else
+  echo "[session-end] OK: current-sprint.md contains today's date"
+fi
+
+# ── 4. Exclusion-register alignment check ─────────────────────────────────────
 # Scan public HTML for hard-excluded domains marketed as use cases.
 # Only checks staged/modified public files (not full history).
 EXCLUDED_PATTERNS='<strong>Legal</strong>|<strong>Financial</strong>|<strong>Immigration</strong>|<strong>Medical</strong>'
@@ -88,7 +97,7 @@ if [ -n "${CHANGED_PUBLIC}" ]; then
   fi
 fi
 
-# ── 4. Uncommitted changes — auto-commit state files only ────────────────────
+# ── 5. Uncommitted changes — auto-commit state files only ────────────────────
 # Only commits docs/state/*.md — never source code or other files.
 # If Claude crashed mid-edit, uncommitted source changes are left as-is
 # so they can be reviewed and committed intentionally next session.
