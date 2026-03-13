@@ -38,7 +38,25 @@ set -a
 source "${PROJECT_DIR}/.env" 2>/dev/null || true
 set +a
 
+ALERT_EMAIL="${ALERT_EMAIL:-sunil@eskp.in}"
+
 log() { echo "[orchestrator ${TIMESTAMP}] $*" >&2; }
+
+# TSK-162: Alert on orchestrator failure (retries exhausted or reviewer rejection)
+alert_failure() {
+  local reason="$1"
+  local task_id="${2:-unknown}"
+  log "Sending failure alert: ${reason}"
+  node -e "
+    require('dotenv').config({ quiet: true });
+    const { send } = require('./src/services/email');
+    send({
+      to: '${ALERT_EMAIL}',
+      subject: '[eskp.in] Orchestrator failure: ${task_id}',
+      text: 'Session orchestrator failed.\n\nTask: ${task_id}\nReason: ${reason}\nTimestamp: ${TIMESTAMP}\n\nThis task will be retried by the next CLI session.',
+    }).then(() => process.exit(0)).catch(() => process.exit(0));
+  " 2>/dev/null || true
+}
 
 # ── 1. Coordinator: pick task and plan ──────────────────────────────────────
 
@@ -86,6 +104,7 @@ PLAN=$(node scripts/orch-infer.js --role planner \
   --system "${COORDINATOR_SYSTEM}" \
   --input "${COORDINATOR_INPUT}" 2>/dev/null) || {
   log "ERROR: Coordinator failed"
+  alert_failure "Coordinator (planner) failed to produce a plan" "none"
   exit 1
 }
 
@@ -197,6 +216,7 @@ done
 
 if [ "${WORKER_SUCCESS}" -ne 1 ]; then
   log "ERROR: Worker failed after ${MAX_RETRIES} attempts — needs CLI session"
+  alert_failure "Worker failed after ${MAX_RETRIES} attempts" "${TASK_ID}"
   # Reset any partial changes
   git checkout -- . 2>/dev/null || true
   exit 3
@@ -259,6 +279,7 @@ log "Review result: ${REVIEW}"
 
 if echo "${REVIEW}" | grep -qi "REJECTED"; then
   log "Review REJECTED — reverting changes"
+  alert_failure "Reviewer rejected: $(echo "${REVIEW}" | head -1)" "${TASK_ID}"
   git reset HEAD -- . 2>/dev/null || true
   git checkout -- . 2>/dev/null || true
   # Could retry with feedback, but for now escalate to CLI
