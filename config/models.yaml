@@ -49,6 +49,41 @@ models:
     provider:
       sort: "price"
 
+  # --- Tier 2: Mid-tier coding models via OpenRouter ---
+  deepseek-v3:
+    type: openrouter
+    model: "deepseek/deepseek-v3.2"
+    capabilities: [text, json_output, code_generation, tool_use, reasoning]
+    cost_tier: economy
+    intelligence_tier: high
+    speed_class: fast
+    constraints:
+      context_window: 163840
+      max_output_tokens: 8192
+    cost:
+      input_per_mtok: 0.26
+      output_per_mtok: 0.38
+    provider:
+      sort: "price"
+      data_collection: "deny"
+
+  qwen-coder:
+    type: openrouter
+    model: "qwen/qwen3-coder"
+    capabilities: [text, json_output, code_generation, tool_use]
+    cost_tier: economy
+    intelligence_tier: high
+    speed_class: fast
+    constraints:
+      context_window: 262144
+      max_output_tokens: 8192
+    cost:
+      input_per_mtok: 0.22
+      output_per_mtok: 1.00
+    provider:
+      sort: "price"
+      data_collection: "deny"
+
   # --- Cloud via Anthropic SDK (fallback) ---
   haiku-anthropic:
     type: anthropic

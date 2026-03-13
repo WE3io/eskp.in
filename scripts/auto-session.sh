@@ -84,6 +84,25 @@ fi
 
 echo "[${TIMESTAMP}] Budget OK (${PCT_USED}%). Starting Claude session." | tee -a "${LOG_FILE}"
 
+# ── Session pre-check: skip if no actionable work ────────────────────────────
+PRECHECK=$(node scripts/session-precheck.js 2>/dev/null || echo "work")
+if [ "$PRECHECK" = "skip" ]; then
+  echo "[${TIMESTAMP}] No actionable work found — skipping session." | tee -a "${LOG_FILE}"
+  exit 0
+fi
+echo "[${TIMESTAMP}] Pre-check: ${PRECHECK}" >> "${LOG_FILE}"
+
+# ── Session model routing: Opus for planning, Sonnet for implementation ──────
+TOP_TASK=$(grep -m1 'P[01]' "${PROJECT_DIR}/docs/state/task-queue.md" 2>/dev/null | head -1 || echo "")
+
+if echo "$TOP_TASK" | grep -qiE 'research|plan|architect|design|spec|decision|strategy'; then
+  SESSION_MODEL="opus"
+  echo "[${TIMESTAMP}] Planning session → Opus" >> "${LOG_FILE}"
+else
+  SESSION_MODEL="sonnet"
+  echo "[${TIMESTAMP}] Implementation session → Sonnet" >> "${LOG_FILE}"
+fi
+
 # ── Capture state before session ──────────────────────────────────────────────
 HEAD_BEFORE=$(git rev-parse HEAD 2>/dev/null || echo "none")
 
@@ -95,6 +114,7 @@ unset CLAUDECODE 2>/dev/null || true
 
 SESSION_EXIT=0
 timeout 2700 claude \
+  --model "$SESSION_MODEL" \
   --permission-mode acceptEdits \
   --print \
   "Read CLAUDE.md (focus on: Identity, Current Phase, Risk Assessment Protocol, Session Continuity, Task Management). Read docs/state/current-sprint.md — the 'Next session starts with' line is your first task. Read docs/state/task-queue.md for the prioritised task list. Read docs/state/budget-tracker.md.
@@ -141,8 +161,24 @@ Delegate inference sub-tasks to the orchestration layer when appropriate:
   * Email classification: node scripts/orch-infer.js --role classifier --input '<email body>'
   * Feedback analysis: node scripts/orch-infer.js --role analyser --input '<feedback text>'
   * Draft generation: node scripts/orch-infer.js --role drafter --system '<instructions>' --input '<context>'
-  This routes through cheaper models (OpenRouter or local) instead of using your own API.
-  Use this for tasks where the result is a text classification, summary, or draft — not for complex reasoning or code generation.
+  * Code generation: node scripts/orch-infer.js --role coder --system '<what to implement>' --input '<task details>' --files <relevant source files>
+  This routes through cheaper models via OpenRouter instead of using your own API.
+
+--- CODE DELEGATION (IMPORTANT) ---
+When implementing code changes, you MUST delegate code generation to the coder role:
+1. Plan the change yourself (read files, understand the task, design the approach)
+2. Delegate actual code writing to DeepSeek V3.2 ($0.26/$0.38 per MTok) via the coder role:
+   node scripts/orch-infer.js --role coder \
+     --system "Given these files, implement: [description of what to change]" \
+     --input "[detailed task description with acceptance criteria]" \
+     --files [paths to relevant source files] \
+     --validate
+3. Review the output — check it matches your plan and is correct
+4. Apply the generated code using your file editing tools
+5. If --validate exits with code 2, the output was malformed — retry or adjust the prompt
+This uses DeepSeek V3.2 ($0.26/$0.38 per MTok) instead of your own API ($3-15/$15-75 per MTok).
+Only skip delegation for trivial one-line fixes where the overhead exceeds the savings.
+--- END CODE DELEGATION ---
 --- END SKILLS AND RULES ---
 
 Constraints for this automated session:

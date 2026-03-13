@@ -18,13 +18,17 @@ roles:
     fallback: haiku-anthropic
     max_tokens: 512
     temperature: 0
+    budget:
+      monthly_usd: 3.00
 
   # --- Auto-session delegated tasks ---
   classifier:
     default: haiku-openrouter
     fallback: haiku-anthropic
-    max_tokens: 256
+    max_tokens: 128
     temperature: 0
+    budget:
+      monthly_usd: 2.00
     description: "Classify inbound emails (goal/feedback/spam/other)"
 
   drafter:
@@ -32,11 +36,25 @@ roles:
     fallback: haiku-anthropic
     max_tokens: 2048
     temperature: 0.7
+    budget:
+      monthly_usd: 3.00
     description: "Draft build-in-public posts, status reports"
 
   analyser:
     default: haiku-openrouter
     fallback: haiku-anthropic
-    max_tokens: 1024
+    max_tokens: 512
     temperature: 0
+    budget:
+      monthly_usd: 2.00
     description: "Analyse feedback, summarise patterns"
+
+  # --- Tier 2: Code generation (delegated from CLI) ---
+  coder:
+    default: deepseek-v3
+    fallback: qwen-coder
+    max_tokens: 8192
+    temperature: 0
+    budget:
+      monthly_usd: 10.00
+    description: "Code generation, refactoring, implementation"
