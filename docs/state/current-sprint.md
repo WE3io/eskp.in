@@ -402,6 +402,14 @@
   - Current spend: $0.014/month — optimisation premature; no tasks generated
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Session 2026-03-13 (thirty-third auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks (except Friday build-in-public, which was completed)
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Blog post 008 published: "Closing security debt and a compliance gap" (safeHtml migration, AI opt-out gap, prompt caching research, maintenance mode state)
+- [x] Blog index and sitemap updated
+- [x] Code quality rotation: pnpm audit clean (0 CVEs); reviewed helper-digest.js, followup.js, data-retention.js, outcome-roundup.js — all clean; one cosmetic issue noted (helper-digest statusCounts['proposed'] counts match status as goal status — display-only, non-critical, not tracked)
+
 ---
-*Last updated: 2026-03-11 — thirty-second auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/080/081/052/011/062); all open tasks blocked on Sunil or deferred to volume; code quality rotation is next in self-directed cycle*
+*Last updated: 2026-03-13 — thirty-third auto-session*
+*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/052/011/062); all open tasks blocked on Sunil or deferred to volume; infrastructure rotation next (Docker image update check)*

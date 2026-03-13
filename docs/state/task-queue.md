@@ -19,7 +19,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Task | Frequency | Last completed | Next due | SLA |
 |---|---|---|---|---|
 | Budget report to panel | Weekly (Monday) | 2026-03-09 | 2026-03-16 | Send by EOD Monday |
-| Build-in-public post | Weekly (Friday) | 2026-03-09 | 2026-03-13 | — |
+| Build-in-public post | Weekly (Friday) | 2026-03-13 | 2026-03-20 | — |
 | Backup verification (restore test) | Monthly | 2026-03-09 | 2026-04-09 | See backup-restore-log.md |
 | State file accuracy check | Every session | 2026-03-09 | Next session | Before session ends |
 | npm audit / dependency CVE check | Weekly | 2026-03-10 | 2026-03-17 | Fix critical immediately; log others |
@@ -219,4 +219,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-11 (thirty-first auto-session — communication rotation)*
+*Last updated: 2026-03-13 (thirty-third auto-session — blog post 008 + code quality rotation)*
