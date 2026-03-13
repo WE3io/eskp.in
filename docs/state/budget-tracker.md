@@ -4,12 +4,14 @@
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $30 | $0.0140 | $29.9860 | 0.05% | ✅ OK |
-| **Total** | **$30** | **$0.0140** | **$29.9860** | **0.05%** | **✅ OK** |
+| Anthropic API tokens | $30 | $0.0163 | $29.9837 | 0.05% | ✅ OK |
+| **Total** | **$30** | **$0.0163** | **$29.9837** | **0.05%** | **✅ OK** |
 
 ### Usage detail (from local token_usage table)
 ```
+  anthropic/claude-4.5-haiku-20251001 [openrouter]: 2 calls, 57 in / 338 out = $0.0017
   claude-haiku-4-5-20251001: 8 calls, 6,814 in / 2,128 out = $0.0140
+  deepseek/deepseek-v3.2-20251201 [openrouter]: 1 calls, 989 in / 950 out = $0.0006
 ```
 
 ### Pricing reference
@@ -36,10 +38,10 @@ Day 13 of ~31 (~42% of month elapsed)
 
 | Month | Budget | Spent | Revenue | Net |
 |-------|--------|-------|---------|-----|
-| March 2026 | $30 | $0.0140 | $0 | -$0.0140 |
+| March 2026 | $30 | $0.0163 | $0 | -$0.0163 |
 
 ---
 
-*Last updated: 2026-03-13T00:14:26.880Z*
+*Last updated: 2026-03-13T01:17:51.936Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*
