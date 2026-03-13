@@ -24,7 +24,7 @@
  *   DRY_RUN=1 node scripts/data-retention.js  # print actions, don't execute
  */
 
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
 const { renderEmail, safeHtml, rawHtml } = require('../src/services/email-template');

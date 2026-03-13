@@ -20,7 +20,7 @@
  *   0  Logged successfully (or no OpenRouter key — skip silently)
  *   1  Error
  */
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 const https = require('https');
 

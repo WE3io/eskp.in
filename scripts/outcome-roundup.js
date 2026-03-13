@@ -19,7 +19,7 @@
  * Cron: 0 10 1 * * (1st of each month at 10:00 UTC)
  */
 
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { Pool } = require('pg');
 const { send } = require('../src/services/email');
 const { renderEmail, safeHtml, rawHtml } = require('../src/services/email-template');

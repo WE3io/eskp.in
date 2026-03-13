@@ -6,7 +6,7 @@
  *
  * Run: pnpm budget
  */
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');

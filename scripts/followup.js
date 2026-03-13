@@ -24,7 +24,7 @@
  * Run via cron: 0 9 * * * (daily at 09:00 UTC).
  */
 
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
 const { renderEmail, safeHtml, rawHtml } = require('../src/services/email-template');

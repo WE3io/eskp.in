@@ -10,7 +10,7 @@
  *   pnpm manage-helpers add-tags <id> [tags...]  Set expertise tags on an approved helper
  *   pnpm manage-helpers helpers           List all active helpers
  */
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { pool } = require('../src/db/connection');
 const { send } = require('../src/services/email');
 const { renderEmail } = require('../src/services/email-template');

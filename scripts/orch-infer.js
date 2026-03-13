@@ -24,7 +24,7 @@
  *
  * Run: pnpm orch:infer -- --role <role> --input "text"
  */
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 const fs = require('fs');
 const path = require('path');

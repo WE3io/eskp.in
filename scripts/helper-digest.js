@@ -11,7 +11,7 @@
  *   DRY_RUN=1 node scripts/helper-digest.js  # print emails, don't send
  */
 
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { Pool } = require('pg');
 const { send } = require('../src/services/email');
 const { renderEmail, escHtml, safeHtml, rawHtml } = require('../src/services/email-template');
