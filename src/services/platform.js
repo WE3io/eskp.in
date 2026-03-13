@@ -9,6 +9,7 @@ const { send } = require('./email');
 const { renderEmail, textToHtml, escHtml, safeHtml, rawHtml } = require('./email-template');
 const { createIntroCheckout } = require('./payments');
 const { generateReplyTo } = require('./email-reply-token');
+const { ensurePanelMember } = require('./panel');
 
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 
@@ -412,11 +413,11 @@ This introduction is made because your expertise overlaps with what they need. T
   });
 }
 
-async function logEmail(direction, from, to, subject, goalId, matchId) {
+async function logEmail(direction, from, to, subject, goalId, matchId, panelMemberId) {
   await pool.query(
-    `INSERT INTO emails (direction, from_address, to_address, subject, goal_id, match_id)
-     VALUES ($1, $2, $3, $4, $5, $6)`,
-    [direction, from, to, subject, goalId || null, matchId || null]
+    `INSERT INTO emails (direction, from_address, to_address, subject, goal_id, match_id, panel_member_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [direction, from, to, subject, goalId || null, matchId || null, panelMemberId || null]
   );
 }
 
@@ -433,7 +434,7 @@ async function sendHelperIntroById(goalId, matchId) {
     SELECT
       g.id AS goal_id, g.decomposed,
       u.id AS user_id, u.email AS user_email, u.name AS user_name,
-      m.id AS match_id,
+      m.id AS match_id, m.helper_id,
       hu.email AS helper_email, hu.name AS helper_name
     FROM matches m
     JOIN goals g ON g.id = m.goal_id
@@ -448,6 +449,7 @@ async function sendHelperIntroById(goalId, matchId) {
   const decomposed = r.decomposed;
   const user = { id: r.user_id, email: r.user_email, name: r.user_name };
   const helper = { email: r.helper_email, name: r.helper_name };
+  const match = { id: r.match_id, helper_id: r.helper_id };
 
   // Mark paid
   await pool.query(
@@ -464,6 +466,11 @@ async function sendHelperIntroById(goalId, matchId) {
 
   await logEmail('outbound', FROM, helper.email,
     `New introduction request from ${user.name || user.email}`, goalId, matchId);
+
+  // Phase 2: create panel + panel_member for this helper (panel-first model)
+  await ensurePanelMember(goalId, helper, match).catch(err =>
+    console.warn('ensurePanelMember failed (non-fatal):', err.message)
+  );
 
   console.log(`sendHelperIntroById: introduced match ${matchId}`);
 }

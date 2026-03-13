@@ -185,6 +185,60 @@ const migrations = [
   `CREATE INDEX IF NOT EXISTS idx_token_usage_operation ON token_usage(operation)`,
   `ALTER TABLE token_usage ADD COLUMN IF NOT EXISTS provider TEXT DEFAULT 'anthropic'`,
   `ALTER TABLE token_usage ADD COLUMN IF NOT EXISTS cost_usd NUMERIC(10,6)`,
+
+  // Phase 2: panel infrastructure
+  `
+  CREATE TABLE IF NOT EXISTS panels (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    goal_id UUID REFERENCES goals(id) NOT NULL,
+    user_id UUID REFERENCES users(id) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_panels_goal_id ON panels(goal_id)`,
+
+  `
+  CREATE TABLE IF NOT EXISTS panel_members (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    panel_id UUID REFERENCES panels(id) NOT NULL,
+    helper_id UUID REFERENCES helpers(id),
+    email TEXT NOT NULL,
+    name TEXT,
+    role_label TEXT,
+    role_charter_text TEXT,
+    status TEXT NOT NULL DEFAULT 'invited',
+    onboarding_completed_at TIMESTAMPTZ,
+    invited_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    accepted_at TIMESTAMPTZ,
+    invitation_token TEXT UNIQUE,
+    invitation_expires_at TIMESTAMPTZ
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_panel_members_panel_id ON panel_members(panel_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_panel_members_invitation_token ON panel_members(invitation_token)`,
+  `CREATE INDEX IF NOT EXISTS idx_panel_members_email ON panel_members(email)`,
+
+  `
+  CREATE TABLE IF NOT EXISTS panel_interactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    panel_member_id UUID REFERENCES panel_members(id) NOT NULL,
+    goal_id UUID REFERENCES goals(id) NOT NULL,
+    interaction_type TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_panel_interactions_panel_member_id ON panel_interactions(panel_member_id)`,
+
+  `
+  CREATE TABLE IF NOT EXISTS panel_sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    panel_member_id UUID REFERENCES panel_members(id) NOT NULL,
+    token TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expires_at TIMESTAMPTZ NOT NULL,
+    last_used_at TIMESTAMPTZ
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_panel_sessions_token ON panel_sessions(token)`,
+
+  `ALTER TABLE emails ADD COLUMN IF NOT EXISTS panel_member_id UUID REFERENCES panel_members(id)`,
+  `CREATE INDEX IF NOT EXISTS idx_emails_panel_member_id ON emails(panel_member_id)`,
 ];
 
 async function migrate() {

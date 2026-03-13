@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Advisory thread — eskp.in panel">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Advisory Thread — eskp.in</title>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2C2420;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    nav {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+    .nav-link:hover { color: var(--text); opacity: 1; }
+
+    .support-banner {
+      background: #F7EDE6;
+      border-left: 3px solid #C4622D;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+    .support-banner a { font-weight: 600; }
+
+    .prose {
+      padding: 2rem 0 4rem;
+    }
+    .prose h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2rem;
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .prose h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      font-weight: normal;
+      color: var(--text);
+      margin: 2rem 0 0.75rem;
+      letter-spacing: -0.01em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+    .prose p {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .role-label {
+      display: inline-block;
+      font-size: 0.825rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .needs-list {
+      list-style: disc;
+      margin: 0.5rem 0 1rem 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    .charter-text {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .email-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .email-item .email-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+    .email-item .direction {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .direction-inbound  { color: var(--accent); }
+    .direction-outbound { color: #2D6A2D; }
+    .email-item .subject {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .email-item .timestamp {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .email-item .snippet {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+      line-height: 1.5;
+    }
+
+    .flag-section {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .btn-flag {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-flag:hover { opacity: 0.85; }
+    .btn-flag:disabled { opacity: 0.4; cursor: not-allowed; }
+    .flag-confirm {
+      display: none;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: #2D6A2D;
+    }
+    .flag-error {
+      display: none;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .error-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      .prose h1 { font-size: 1.6rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a class="wordmark" href="/">eskp<span>.</span>in</a>
+      <div class="nav-links">
+        <a class="nav-link" href="/panel/dashboard">Dashboard</a>
+        <a class="nav-link" href="/support.html">Support</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="support-banner">
+      Support is always available &rarr; <a href="/support.html">eskp.in/support.html</a>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="prose">
+        <div id="thread-content">
+          <div class="loading">Loading thread&hellip;</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in — a small platform for real help</span>
+      <span>
+        <a href="/support.html">Support</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/privacy.html">Privacy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/terms.html">Terms</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var memberId = params.get('m') || '';
+      var container = document.getElementById('thread-content');
+
+      function escHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+      }
+
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var d = new Date(dateStr);
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      function snippet(text, max) {
+        if (!text) return '';
+        return text.length > max ? text.slice(0, max) + '...' : text;
+      }
+
+      function render(data) {
+        var html = '';
+
+        html += '<a class="back-link" href="/panel/dashboard">&larr; Back to dashboard</a>';
+        html += '<h1>' + escHtml(data.goalSummary || 'Advisory Thread') + '</h1>';
+
+        if (data.roleLabel) {
+          html += '<span class="role-label">' + escHtml(data.roleLabel) + '</span>';
+        }
+
+        if (data.roleCharter) {
+          html += '<div class="charter-text">' + escHtml(data.roleCharter) + '</div>';
+        }
+
+        if (data.needs && data.needs.length) {
+          html += '<h2>Needs</h2><ul class="needs-list">';
+          data.needs.forEach(function (n) {
+            html += '<li>' + escHtml(n) + '</li>';
+          });
+          html += '</ul>';
+        }
+
+        html += '<h2>Email thread</h2>';
+
+        if (data.emails && data.emails.length) {
+          data.emails.forEach(function (e) {
+            var dirClass = e.direction === 'inbound' ? 'direction-inbound' : 'direction-outbound';
+            html += '<div class="email-item">'
+              + '<div class="email-header">'
+              + '<span class="direction ' + dirClass + '">' + escHtml(e.direction) + '</span>'
+              + '<span class="timestamp">' + formatDate(e.timestamp) + '</span>'
+              + '</div>'
+              + (e.subject ? '<div class="subject">' + escHtml(e.subject) + '</div>' : '')
+              + '<div class="snippet">' + escHtml(snippet(e.body, 200)) + '</div>'
+              + '</div>';
+          });
+        } else {
+          html += '<p style="color:var(--text-muted)">No emails yet.</p>';
+        }
+
+        html += '<div class="flag-section">'
+          + '<button class="btn-flag" id="flag-btn">Flag for support</button>'
+          + '<div class="flag-confirm" id="flag-confirm">Support check-in sent. Thank you for looking out.</div>'
+          + '<div class="flag-error" id="flag-error">Could not send flag. Please try again.</div>'
+          + '</div>';
+
+        container.innerHTML = html;
+
+        document.getElementById('flag-btn').addEventListener('click', function () {
+          var btn = this;
+          btn.disabled = true;
+          fetch('/panel/api/flag/' + encodeURIComponent(memberId), {
+            method: 'POST',
+            credentials: 'same-origin'
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              document.getElementById('flag-confirm').style.display = 'block';
+              document.getElementById('flag-error').style.display = 'none';
+            })
+            .catch(function () {
+              document.getElementById('flag-error').style.display = 'block';
+              document.getElementById('flag-confirm').style.display = 'none';
+              btn.disabled = false;
+            });
+        });
+      }
+
+      if (!memberId) {
+        container.innerHTML = '<div class="error-state">No thread specified.</div>';
+        return;
+      }
+
+      fetch('/panel/api/thread/' + encodeURIComponent(memberId), { credentials: 'same-origin' })
+        .then(function (res) {
+          if (res.status === 401 || res.status === 403) {
+            window.location.href = '/panel/login';
+            return;
+          }
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          if (data) render(data);
+        })
+        .catch(function () {
+          container.innerHTML = '<div class="error-state">Could not load thread. Please try again.</div>';
+        });
+    })();
+  </script>
+
+</body>
+</html>

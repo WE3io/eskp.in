@@ -139,6 +139,9 @@ app.use('/goals', require('./api/goals'));
 app.use('/webhooks', require('./api/webhooks'));
 app.use('/account', require('./api/account'));
 
+// Phase 2: panel infrastructure
+app.use('/panel', require('./api/panel'));
+
 // TSK-094: match quality feedback — 1-click rating link from follow-up email
 // GET /api/match-feedback?t=TOKEN&r=RATING (1–5)
 // Returns HTML (not JSON) — loaded directly in browser from email link click.

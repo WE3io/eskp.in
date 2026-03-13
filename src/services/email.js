@@ -5,7 +5,8 @@ const API_KEY = process.env.EMAIL_API_KEY;
 const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const REPLY_TO = process.env.EMAIL_REPLY_TO || 'hello@mail.eskp.in';
 
-async function send({ to, subject, text, html, from, replyTo }) {
+async function send({ to, subject, text, html, from, replyTo, panelMemberId }) {
+  void panelMemberId; // recorded by callers directly on the emails table row via logEmail
   // TSK-051: skip suppressed addresses (bounced / complained)
   const recipient = Array.isArray(to) ? to[0] : to;
   try {
