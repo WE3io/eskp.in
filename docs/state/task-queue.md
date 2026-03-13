@@ -88,18 +88,18 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-157 | Review join.html Legal expertise framing — not removal; add experience-sharing clarification distinct from regulated advice | **done** 2026-03-13 | Legal→Education on join.html |
 | TSK-160 | Document DPIA trigger criteria in `docs/operations/dpia.md` — conditions for full DPIA vs addendum vs none; based on GDPR Art.35 | **done** 2026-03-13 | Section 10 added with full/addendum/none criteria |
 | TSK-161 | Autonomous script activation gate — `--dry-run` required before cron; `session-end.sh` warns if new cron entry added without dry-run log | **done** 2026-03-13 | .claude/rules/cron-activation.md + session-end.sh check |
-| TSK-162 | Orchestrator component-level failure alerting — alert to ALERT_EMAIL when orchestrator exhausts retries or reviewer rejects; include task and partial-state context | open | Currently orchestrator errors silently fall through to CLI with no notification |
+| TSK-162 | Orchestrator component-level failure alerting — alert to ALERT_EMAIL when orchestrator exhausts retries or reviewer rejects; include task and partial-state context | **done** 2026-03-13 | Email alerts added for coordinator failure, worker exhaustion, reviewer rejection |
 | TSK-163 | Session log content verification in `session-end.sh` — warn if today's date absent from current-sprint.md session entries | **done** 2026-03-13 | Checks for today's date in current-sprint.md |
 | TSK-164 | `budget-report.js` auto-discovers roles from `token_usage` — replace hardcoded role list with `GROUP BY operation` query | **done** 2026-03-13 | Auto-discovers operations via GROUP BY; dry-run verified |
 | TSK-131 | Verify `session-precheck.js` classification against real task queue — confirm routine/agentic/strategic routing is correct | open | Precheck drives model routing; misclassification wastes budget or misses capability |
 | TSK-132 | Test `session-orchestrator.sh` end-to-end dry run on a real P3 task — verify planner output, coder parsing, reviewer acceptance | open | Orchestrator has never been run against a real task |
 | TSK-133 | Add orchestration role spend to `budget-report.js` — classifier, drafter, analyser, coder, planner, reviewer | open | Superseded by TSK-164 if auto-discovery implemented first |
-| TSK-140 | Add panel invitation flow to roadmap.html "Coming next" section | open | Roadmap doesn't mention advisor/panel feature |
-| TSK-141 | Rate-limit `POST /panel/invite` — per-user limit (5/goal, 10/day) to prevent DB record and email abuse | open | Currently only goal ownership check protects endpoint |
-| TSK-142 | Add expired invitation cleanup to `data-retention.js` — purge `panel_members` where status=invited and invited_at > 14 days | open | INVITATION_EXPIRY_DAYS=14 defined but no cleanup job exists |
-| TSK-143 | Add panel tables to GDPR data export — panels, panel_members, panel_interactions, panel_sessions in `getExportData()` | open | Art.20 data portability; panel data currently missing from export |
-| TSK-144 | Cover panel tables in account deletion cascade — goal owner: panels→members→interactions→sessions; panel member: their sessions + interactions | open | Art.17 erasure; panel tables not in deletion cascade |
-| TSK-148 | Update `docs/operations/ropa.md` — add two new processing activities: panel member data, orchestrated AI inference via OpenRouter/DeepSeek | **partial** 2026-03-13 | Activity 9 (OpenRouter/DeepSeek) added; Activities 2+3 updated with OpenRouter routing; panel member data deferred to when panel is in active use |
+| TSK-140 | Add panel invitation flow to roadmap.html "Coming next" section | **done** 2026-03-13 | Advisory panels in "Coming next"; AI opt-out + privacy sign-off added as live; stale entry removed |
+| TSK-141 | Rate-limit `POST /panel/invite` — per-user limit (5/goal, 10/day) to prevent DB record and email abuse | **done** 2026-03-13 | DB-level per-user limits: 5/goal, 10/day; returns 429 |
+| TSK-142 | Add expired invitation cleanup to `data-retention.js` — purge `panel_members` where status=invited and invited_at > 14 days | **done** 2026-03-13 | Purges expired invitations + related sessions/interactions; cleans empty panels |
+| TSK-143 | Add panel tables to GDPR data export — panels, panel_members, panel_interactions, panel_sessions in `getExportData()` | **done** 2026-03-13 | panels_owned, panel_memberships, panel_interactions added to export |
+| TSK-144 | Cover panel tables in account deletion cascade — goal owner: panels→members→interactions→sessions; panel member: their sessions + interactions | **done** 2026-03-13 | Full cascade: sessions→interactions→members→panels for both advisor-by-email and owner paths |
+| TSK-148 | Update `docs/operations/ropa.md` — add two new processing activities: panel member data, orchestrated AI inference via OpenRouter/DeepSeek | **done** 2026-03-13 | Activity 9 (OpenRouter/DeepSeek) + Activity 10 (panel member data) added; Activities 2+3+6 updated |
 | TSK-009 | Second blog post (payment launch / progress update) | **done** 2026-03-09 | public/blog/002-week-4-payments-and-governance.html |
 | TSK-010 | Feedback mechanism surfaced to users | **done** 2026-03-09 | /feedback.html created; linked from index.html |
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |
@@ -261,5 +261,6 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-119 | Outcome tracking design — measure whether goals are achieved | open | P3 — defer to first external users; Art 10.4.1 empirical honesty |
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
+| TSK-165 | Add "Know someone who could help?" soft CTA to post-introduction follow-up email | open | P3 — demand-to-supply flywheel; from cold-start research |
 
-*Last updated: 2026-03-13 (thirty-seventh auto-session — TSK-128/129/130/137/138/139/147 done: DPA docs, ROPA, privacy/ToS panel disclosures, sprint audit trail; blog post 009 published)*
+*Last updated: 2026-03-13 (thirty-eighth auto-session — TSK-140/141/142/143/144/148/162 done: panel GDPR hygiene, rate limiting, roadmap, orchestrator alerting, ROPA complete)*

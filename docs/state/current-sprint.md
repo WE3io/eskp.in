@@ -468,6 +468,18 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
 - [x] Communication rotation: Blog post 009 published — "Orchestration, panels, logging, and governance rules"; blog index + sitemap updated
 - [x] App redeployed (health: passing)
 
+### Session 2026-03-13 (thirty-eighth auto-session) — done ✅
+- [x] TSK-136 assessed: requires human dogfooding (Sunil must invite advisor, click links, complete onboarding in browser). Blocked on Sunil.
+- [x] TSK-142: Expired invitation cleanup added to data-retention.js — purges panel_members past 14-day expiry + related sessions/interactions; cleans empty panels
+- [x] TSK-143: Panel tables added to GDPR data export — panels_owned, panel_memberships, panel_interactions in getExportData()
+- [x] TSK-144: Panel tables covered in account deletion cascade — full cascade for both advisor-by-email and panels-owned-by-user paths; audit log updated
+- [x] TSK-141: Rate-limit POST /panel/invite — DB-level per-user limits (5/goal, 10/day); returns 429
+- [x] TSK-140: Roadmap updated — advisory panels in "Coming next"; AI opt-out + privacy sign-off added as live features; stale entry removed
+- [x] TSK-162: Orchestrator failure alerting — email alerts for coordinator failure, worker exhaustion, reviewer rejection
+- [x] TSK-148: ROPA complete — Activity 10 (panel member data) added; Activity 6 updated to include panel member emails
+- [x] Research rotation: cold-start helper supply strategies — docs/research/2026-03-13-cold-start-helper-supply.md; binding constraint is helper supply; TSK-165 generated
+- [x] App redeployed (health: passing)
+
 ---
-*Last updated: 2026-03-13 — thirty-seventh auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood end-to-end); P2 open: TSK-125 (Sentry), TSK-131/132 (orchestrator verification), TSK-141/142/143/144 (panel GDPR hygiene), TSK-151/152/153/154 (copy/brand); research rotation next*
+*Last updated: 2026-03-13 — thirty-eighth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P2 open: TSK-125 (Sentry), TSK-131/132 (orchestrator verification), TSK-151/152/153/154 (copy/brand); code quality rotation next*
