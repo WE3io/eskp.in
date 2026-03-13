@@ -91,6 +91,28 @@ async function run() {
     WHERE created_at >= $1
   `, [startOfMonth]);
 
+  // Operation-level breakdown (auto-discovered from token_usage)
+  const { rows: opRows } = await pool.query(`
+    SELECT COALESCE(operation, 'unknown') AS operation,
+           SUM(COALESCE(cost_usd, 0))::numeric AS recorded_cost,
+           SUM(input_tokens)::int AS input_tokens,
+           SUM(output_tokens)::int AS output_tokens,
+           COUNT(*)::int AS calls
+    FROM token_usage
+    WHERE created_at >= $1
+    GROUP BY COALESCE(operation, 'unknown')
+    ORDER BY recorded_cost DESC
+  `, [startOfMonth]);
+
+  for (const row of opRows) {
+    let cost = parseFloat(row.recorded_cost) || 0;
+    if (cost === 0 && row.input_tokens > 0) {
+      cost = (row.input_tokens / 1_000_000 * DEFAULT_PRICING.input) +
+             (row.output_tokens / 1_000_000 * DEFAULT_PRICING.output);
+    }
+    row.cost = cost;
+  }
+
   const monthSpent = monthRows.reduce((sum, r) => sum + (r.cost || 0), 0);
   // Week spend: use recorded cost, fallback to token estimate
   let weekSpent = parseFloat(weekRows[0]?.recorded_cost || 0);
@@ -115,6 +137,11 @@ async function run() {
     return `${r.model}${providerTag}: ${r.calls} calls, $${parseFloat(r.cost).toFixed(4)}`;
   });
 
+  // Operation breakdown lines (auto-discovered)
+  const opLines = opRows.map(r =>
+    `${r.operation}: ${r.calls} calls, $${parseFloat(r.cost).toFixed(4)}`
+  );
+
   // Plain text
   const plainText = `Weekly Budget Report — ${monthName}
 Week ending ${now.toISOString().split('T')[0]}
@@ -126,6 +153,9 @@ Status: ${status}
 
 Model breakdown (month to date):
 ${modelLines.length > 0 ? modelLines.join('\n') : '  No API calls this month'}
+
+By operation:
+${opLines.length > 0 ? opLines.join('\n') : '  No operations recorded'}
 
 Revenue this month: ${paidIntros} paid introductions = £${revenueGBP}
 Goals submitted this month: ${totalGoals}
@@ -164,6 +194,13 @@ Phase: ${revenueGBP > 0 ? 'Generating revenue' : 'Phase 1 (Funded, $0 revenue)'}
         + modelLines.map(l => `<li>${l}</li>`).join('')
         + '</ul>'
       : '<p style="color:#7A6E68;font-size:14px;">No API calls recorded this month.</p>'
+    )}
+
+    ${rawHtml(opLines.length > 0
+      ? '<p style="font-size:14px;color:#5a504c;"><strong>By operation:</strong></p><ul style="font-size:13px;color:#5a504c;margin:0 0 16px;">'
+        + opLines.map(l => `<li>${l}</li>`).join('')
+        + '</ul>'
+      : ''
     )}
 
     <table style="border-collapse:collapse;width:100%;margin:0 0 20px;">
