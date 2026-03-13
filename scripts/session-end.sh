@@ -72,7 +72,23 @@ else
   echo "[session-end] OK: 'Next session starts with:' pointer present"
 fi
 
-# ── 3. Uncommitted changes — auto-commit state files only ────────────────────
+# ── 3. Exclusion-register alignment check ─────────────────────────────────────
+# Scan public HTML for hard-excluded domains marketed as use cases.
+# Only checks staged/modified public files (not full history).
+EXCLUDED_PATTERNS='<strong>Legal</strong>|<strong>Financial</strong>|<strong>Immigration</strong>|<strong>Medical</strong>'
+CHANGED_PUBLIC=$(git diff --name-only HEAD 2>/dev/null | grep '^public/' || true)
+if [ -n "${CHANGED_PUBLIC}" ]; then
+  EXCLUSION_HITS=$(echo "${CHANGED_PUBLIC}" | xargs grep -lE "${EXCLUDED_PATTERNS}" 2>/dev/null || true)
+  if [ -n "${EXCLUSION_HITS}" ]; then
+    echo "[session-end] WARNING: Excluded domains found as use cases in modified public files:"
+    echo "${EXCLUSION_HITS}"
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "[session-end] OK: no excluded domains in modified public files"
+  fi
+fi
+
+# ── 4. Uncommitted changes — auto-commit state files only ────────────────────
 # Only commits docs/state/*.md — never source code or other files.
 # If Claude crashed mid-edit, uncommitted source changes are left as-is
 # so they can be reviewed and committed intentionally next session.
