@@ -50,6 +50,18 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
+| TSK-149 | Document the ICP — `docs/operations/icp.md`: target user backgrounds, goal archetypes, boundary cases, example guidance | open | Reference doc for all copy decisions; add to CLAUDE.md alongside exclusion register |
+| TSK-150 | Add exclusion-register alignment check to copy-writing process — CLAUDE.md rule + session-end.sh check | open | Closes structural gap: excluded domains must not appear as marketed use cases |
+| TSK-158 | New processor onboarding gate — `.claude/rules/` rule + CLAUDE.md escalation trigger; no external service used before DPA entry exists | open | Converts processor-dpas.md from retrospective docs to pre-adoption gate |
+| TSK-159 | Feature compliance checklist — `.claude/rules/privacy-features.md`; fires when feature stores PII, emails new data subjects, adds processor, or creates user-facing flow | open | ROPA, privacy policy, terms, DPIA, DPA register — all must be checked before marking done |
+| TSK-128 | Add OPENROUTER_API_KEY to `.env` and `.env.example`; verify OpenRouter routing is live and token spend tracked | open | Orchestration layer is primary inference path; key + tracking must be confirmed |
+| TSK-129 | Add OpenRouter to `docs/operations/processor-dpas.md` — terms URL, data residency, `data_collection: deny` control documented | open | User goal summaries route through OpenRouter |
+| TSK-130 | Add DeepSeek to `docs/operations/processor-dpas.md` — data residency, controls, scope limited to coder role | open | DeepSeek is default coder model; no DPA entry exists |
+| TSK-136 | Dogfood panel flow end-to-end — invite advisor to ICO-registration goal; complete all 7 onboarding sections; verify dashboard + thread | open | Routes and DB migrations are live; untested end-to-end |
+| TSK-137 | Update `docs/operations/processor-dpas.md` — Resend now covers panel member emails (new data subject category) | open | Existing Resend DPA entry needs scope extension |
+| TSK-138 | Update privacy policy — add section disclosing panel/advisor model, bilateral isolation design, flagging mechanism | open | Privacy policy describes goal submission and matching only; panel is unmentioned |
+| TSK-139 | Update terms of service — reference advisor onboarding module obligations (crisis recognition, warm referral, safeguarding) | open | 7-section onboarding creates obligations needing contractual standing |
+| TSK-147 | Update `docs/state/current-sprint.md` — log orchestration + panel sessions that are currently missing from audit trail | open | Gap between session 32 and session 33 covers substantial architectural work |
 | TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | **done** 2026-03-10 | Sunil registered, ICO number C1889388; privacy.html + ROPA updated |
 | TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | **done** 2026-03-11 | Sunil signed AVV via Hetzner console |
 | TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | **done** 2026-03-11 | No signature needed — incorporated by reference for self-serve customers |
@@ -69,6 +81,25 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
+| TSK-151 | Extract shared copy into single-sourced `docs/copy/shared-strings.md` — CTA blurb, nav, footer; auto-sessions copy from here | open | Prevents drift; 9+ files currently have identical strings that diverge |
+| TSK-152 | Add ICP + representation check to copy review — checklist in `.claude/rules/` covering excluded domains, ICP alignment, example diversity | open | Depends on TSK-149 |
+| TSK-155 | Fix index.html — remove Legal use case, replace with non-excluded category; replace 3 tech-heavy examples with diverse ICP examples; broaden Technical card | open | Immediate fix from copy audit |
+| TSK-156 | Update blog CTA string across all 8 posts — remove "legal" from domain enumeration; replace with non-domain-specific phrasing | open | Same string in 8 files; find-and-replace |
+| TSK-157 | Review join.html Legal expertise framing — not removal; add experience-sharing clarification distinct from regulated advice | open | Depends on TSK-149 for ICP context |
+| TSK-160 | Document DPIA trigger criteria in `docs/operations/dpia.md` — conditions for full DPIA vs addendum vs none; based on GDPR Art.35 | open | DPIA currently a one-off document; no criteria for when new features require reassessment |
+| TSK-161 | Autonomous script activation gate — `--dry-run` required before cron; `session-end.sh` warns if new cron entry added without dry-run log | open | Prevents "write, commit, activate" single-step for autonomous processes |
+| TSK-162 | Orchestrator component-level failure alerting — alert to ALERT_EMAIL when orchestrator exhausts retries or reviewer rejects; include task and partial-state context | open | Currently orchestrator errors silently fall through to CLI with no notification |
+| TSK-163 | Session log content verification in `session-end.sh` — warn if today's date absent from current-sprint.md session entries | open | Format check passes even when session work is unlogged |
+| TSK-164 | `budget-report.js` auto-discovers roles from `token_usage` — replace hardcoded role list with `GROUP BY operation` query | open | New orchestration roles invisible in weekly report; will silently undercount spend |
+| TSK-131 | Verify `session-precheck.js` classification against real task queue — confirm routine/agentic/strategic routing is correct | open | Precheck drives model routing; misclassification wastes budget or misses capability |
+| TSK-132 | Test `session-orchestrator.sh` end-to-end dry run on a real P3 task — verify planner output, coder parsing, reviewer acceptance | open | Orchestrator has never been run against a real task |
+| TSK-133 | Add orchestration role spend to `budget-report.js` — classifier, drafter, analyser, coder, planner, reviewer | open | Superseded by TSK-164 if auto-discovery implemented first |
+| TSK-140 | Add panel invitation flow to roadmap.html "Coming next" section | open | Roadmap doesn't mention advisor/panel feature |
+| TSK-141 | Rate-limit `POST /panel/invite` — per-user limit (5/goal, 10/day) to prevent DB record and email abuse | open | Currently only goal ownership check protects endpoint |
+| TSK-142 | Add expired invitation cleanup to `data-retention.js` — purge `panel_members` where status=invited and invited_at > 14 days | open | INVITATION_EXPIRY_DAYS=14 defined but no cleanup job exists |
+| TSK-143 | Add panel tables to GDPR data export — panels, panel_members, panel_interactions, panel_sessions in `getExportData()` | open | Art.20 data portability; panel data currently missing from export |
+| TSK-144 | Cover panel tables in account deletion cascade — goal owner: panels→members→interactions→sessions; panel member: their sessions + interactions | open | Art.17 erasure; panel tables not in deletion cascade |
+| TSK-148 | Update `docs/operations/ropa.md` — add two new processing activities: panel member data, orchestrated AI inference via OpenRouter/DeepSeek | open | Art.30 requires ROPA to cover all processing activities |
 | TSK-009 | Second blog post (payment launch / progress update) | **done** 2026-03-09 | public/blog/002-week-4-payments-and-governance.html |
 | TSK-010 | Feedback mechanism surfaced to users | **done** 2026-03-09 | /feedback.html created; linked from index.html |
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |
@@ -204,6 +235,12 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-106 | Bug fix: invalid 'clarifying' status in helper-digest.js, data-retention.js, outcome-roundup.js | **done** 2026-03-10 | Replaced with correct schema statuses (decomposing, pending_clarification) |
 
 | TSK-107 | Migrate semanticRank() in match.js to Anthropic tool_use | **done** 2026-03-10 | RANK_HELPERS_TOOL with forced tool_choice; eliminates JSON parse risk; consistent with decompose.js |
+| TSK-153 | Add "content audit" self-directed rotation category — reviews all public copy against ICP, exclusion register, claims register; quarterly trigger | open | New rotation slot alongside code quality, infrastructure etc. |
+| TSK-154 | Write brand voice and tone guide — `docs/operations/brand-voice.md`: register, what to avoid, 4–5 before/after examples | open | Reduces copy variance across auto-sessions |
+| TSK-134 | Validate Ollama budget-fallback path — simulate decomposer budget exhaustion; confirm health check, tool-use shim, normalisation, usage logging | open | Local fallback logic exists but has never been triggered |
+| TSK-135 | `session-precheck.js` — add overdue recurring tasks check; overdue tasks should push toward agentic not routine | open | Currently only checks P0 open tasks and unprocessed feedback |
+| TSK-145 | Establish witnessed reflection baseline metric — methodology doc in `docs/operations/`; schedule first measurement 30 days after first panel member onboards | open | ADR-008 defines metric; baseline not yet established |
+| TSK-146 | Add flagging events to `panel_interactions` audit log — `flagForSupport()` should write a row in addition to updating `panel_members.flagged_at` | open | ADR-008 specifies panel_interactions as audit log; flags currently only update member row |
 | TSK-108 | Add historical match rating to helper ranking | open | P3 — defer to 3+ helpers; blend avg rating into score |
 | TSK-109 | Add active match count to helper ranking (capacity-aware) | open | P3 — defer to 3+ helpers |
 | TSK-122 | Add Docker log rotation to docker-compose.yml (max-size: 10m, max-file: 5) | **done** 2026-03-13 | All 3 containers updated; log rotation active; from observability research |
@@ -225,4 +262,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-13 (thirty-fifth auto-session — TSK-123/124 Pino logging, TSK-126 budget report, mission alignment audit)*
+*Last updated: 2026-03-13 (manual session — TSK-128–164 added: panel infrastructure compliance, orchestration layer tasks, copy governance, ICP documentation, new-processor gate, feature compliance checklist, autonomous script gate, session log verification, budget report auto-discovery)*
