@@ -4,6 +4,16 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const pinoHttp = require('pino-http');
 const logger = require('./logger');
+
+// TSK-124: Crash handlers — log structured crash records before the process exits.
+// uncaughtExceptionMonitor fires BEFORE the default handler (which exits); we log but don't prevent exit.
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+  logger.fatal({ err, origin }, 'Uncaught exception');
+});
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error({ err: reason, promise: String(promise) }, 'Unhandled rejection');
+});
+
 const { testConnection } = require('./db/connection');
 const { constructEvent } = require('./services/payments');
 const { sendHelperIntroById } = require('./services/platform');
