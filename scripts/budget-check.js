@@ -37,20 +37,44 @@ async function main() {
   let usageNote = '';
 
   try {
-    // Use cost_usd when populated (orchestration layer rows), fall back to token-based pricing
-    const { rows } = await pool.query(`
-      SELECT model,
-             COALESCE(provider, 'anthropic') AS provider,
-             SUM(input_tokens)::int  AS input_tokens,
-             SUM(output_tokens)::int AS output_tokens,
-             SUM(CASE WHEN cost_usd IS NOT NULL THEN cost_usd ELSE 0 END)::numeric AS recorded_cost,
-             SUM(CASE WHEN cost_usd IS NULL THEN 1 ELSE 0 END)::int AS uncosted_rows,
-             COUNT(*)::int           AS calls
-      FROM token_usage
-      WHERE created_at >= $1
-      GROUP BY model, COALESCE(provider, 'anthropic')
-      ORDER BY model
-    `, [startOfMonth]);
+    // Try the orchestration-aware query first (provider + cost_usd columns).
+    // Falls back to the legacy query if those columns don't exist yet
+    // (migration runs on app startup, but budget-check may run before restart).
+    let rows;
+    try {
+      ({ rows } = await pool.query(`
+        SELECT model,
+               COALESCE(provider, 'anthropic') AS provider,
+               SUM(input_tokens)::int  AS input_tokens,
+               SUM(output_tokens)::int AS output_tokens,
+               SUM(CASE WHEN cost_usd IS NOT NULL THEN cost_usd ELSE 0 END)::numeric AS recorded_cost,
+               SUM(CASE WHEN cost_usd IS NULL THEN 1 ELSE 0 END)::int AS uncosted_rows,
+               COUNT(*)::int           AS calls
+        FROM token_usage
+        WHERE created_at >= $1
+        GROUP BY model, COALESCE(provider, 'anthropic')
+        ORDER BY model
+      `, [startOfMonth]));
+    } catch (queryErr) {
+      if (queryErr.message.includes('column') && (queryErr.message.includes('provider') || queryErr.message.includes('cost_usd'))) {
+        console.warn('Note: provider/cost_usd columns not yet migrated, using legacy query');
+        ({ rows } = await pool.query(`
+          SELECT model,
+                 'anthropic' AS provider,
+                 SUM(input_tokens)::int  AS input_tokens,
+                 SUM(output_tokens)::int AS output_tokens,
+                 0::numeric AS recorded_cost,
+                 COUNT(*)::int AS uncosted_rows,
+                 COUNT(*)::int AS calls
+          FROM token_usage
+          WHERE created_at >= $1
+          GROUP BY model
+          ORDER BY model
+        `, [startOfMonth]));
+      } else {
+        throw queryErr;
+      }
+    }
 
     if (rows.length === 0) {
       usageNote = 'No API calls recorded this month yet';

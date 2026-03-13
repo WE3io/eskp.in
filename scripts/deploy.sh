@@ -31,6 +31,11 @@ if docker image inspect "${APP_NAME}:latest" &>/dev/null; then
   log "Tagged current image as :previous"
 fi
 
+# --- Run database migrations ---
+log "Running database migrations..."
+docker compose -f "$COMPOSE_FILE" run --rm app node src/db/migrate.js
+log "Migrations complete."
+
 # --- Start new container ---
 log "Starting new container..."
 docker compose -f "$COMPOSE_FILE" up -d app
