@@ -141,7 +141,7 @@
 
       <div class="prose">
         <h1>Privacy Policy</h1>
-        <p class="effective-date">Effective date: 13 March 2026 &nbsp;·&nbsp; Last updated: 13 March 2026</p>
+        <p class="effective-date">Effective date: 13 March 2026 &nbsp;·&nbsp; Last updated: 13 March 2026 (added: advisory panel disclosure, OpenRouter routing disclosure)</p>
 
         <p>
           This policy explains what personal information eskp.in collects when you use the platform,
@@ -242,10 +242,11 @@
         </p>
         <p>
           <strong>International transfer:</strong> Anthropic, Inc. is based in the United
-          States. Processing your goal text via their API constitutes a transfer of personal
-          data to the US. This transfer is covered by Anthropic's standard contractual
-          clauses and data processing agreement. Anthropic's API terms prohibit training
-          on API inputs by default.
+          States. API calls are routed through OpenRouter (a US-based API proxy) before
+          reaching Anthropic. Both transfers are covered by standard contractual clauses and
+          data processing agreements. Anthropic's API terms prohibit training on API inputs
+          by default. OpenRouter is configured to opt out of data collection and retention
+          for all our requests.
         </p>
         <div class="note">
           If you would prefer your goal not to be processed by AI, email us and we will
@@ -258,6 +259,39 @@
           oversight panel before matching. This is to ensure you receive appropriate signposting
           to specialist services. Your goal text may be shared with the panel for this purpose.
           Sensitive goals are not automatically matched.
+        </p>
+
+        <h2>3a. Peer advisory panel (when enabled)</h2>
+        <p>
+          As an optional feature, users may invite named individuals — friends, colleagues,
+          or others they trust — to participate in a private advisory panel alongside their
+          matched helper. This feature is described here for transparency; it is not yet
+          available to all users.
+        </p>
+        <p><strong>What this involves:</strong></p>
+        <ul>
+          <li>You choose who to invite — we send them an invitation by email with your name and goal summary</li>
+          <li>Invited advisors complete a short onboarding module before joining</li>
+          <li>Advisors can see only the thread for the specific goal they were invited to assist with</li>
+          <li>Advisors cannot see threads from other users, nor other advisors' threads on the same goal</li>
+        </ul>
+        <p><strong>Bilateral isolation design:</strong> The platform is designed so that each advisor
+          sees only their own bilateral thread. There is no shared group view. No AI processing of
+          thread content occurs across threads. Advisors do not receive your email address unless
+          you include it in the thread yourself.
+        </p>
+        <p><strong>Flagging mechanism:</strong> If you or an advisor identifies a concern about your
+          wellbeing during the conversation, either party can flag it. A flag notifies our oversight
+          panel and triggers a warm referral to specialist services where appropriate. Flagging is
+          manual — the platform does not monitor conversations automatically.
+        </p>
+        <p><strong>Data shared with advisors:</strong> Your first name, goal summary, and the
+          content of your thread with that advisor. Not your email address (unless you share it),
+          not your payment details, not your threads with other advisors.
+        </p>
+        <p>
+          Resend (our email provider) processes advisor invitation emails in the same way as
+          other transactional emails — see section 5.
         </p>
 
         <h2>4. How long we keep your data</h2>
@@ -285,6 +319,12 @@
           <li>
             <strong>Resend</strong> (resend.com) — our transactional email provider.
             They process email addresses and message content to deliver emails on our behalf.
+          </li>
+          <li>
+            <strong>OpenRouter</strong> (openrouter.ai) — an API routing proxy used to
+            forward AI inference requests to Anthropic and other AI providers. OpenRouter
+            processes goal summaries in transit; it is configured to opt out of data
+            collection for all our requests.
           </li>
           <li>
             <strong>Anthropic</strong> — the AI provider used for goal decomposition
