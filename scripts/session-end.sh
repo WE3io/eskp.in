@@ -97,7 +97,16 @@ if [ -n "${CHANGED_PUBLIC}" ]; then
   fi
 fi
 
-# ── 5. Uncommitted changes — auto-commit state files only ────────────────────
+# ── 5. Autonomous script activation gate ──────────────────────────────────────
+# Warn if new cron entries were added during this session without a dry-run log
+if [ -f /tmp/eskp-new-cron-entries.txt ]; then
+  echo "[session-end] WARNING: New cron entries added this session — verify dry-run was completed:"
+  cat /tmp/eskp-new-cron-entries.txt
+  WARNINGS=$((WARNINGS + 1))
+  rm -f /tmp/eskp-new-cron-entries.txt
+fi
+
+# ── 6. Uncommitted changes — auto-commit state files only ────────────────────
 # Only commits docs/state/*.md — never source code or other files.
 # If Claude crashed mid-edit, uncommitted source changes are left as-is
 # so they can be reviewed and committed intentionally next session.
