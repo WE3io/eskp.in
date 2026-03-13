@@ -4,7 +4,7 @@
 **Organisation:** eskp.in (legal entity: TBC — see privacy.html)
 **Data controller contact:** hello@mail.eskp.in
 **ICO registration number:** C1889388
-**Last updated:** 2026-03-10
+**Last updated:** 2026-03-13
 **Review due:** 2027-03-09 (annual)
 
 ---
@@ -36,10 +36,10 @@
 | **Lawful basis** | Legitimate interests (Art.6(1)(f)) — AI decomposition is necessary for the matching service the user has requested |
 | **Categories of data subjects** | Users who have submitted goals |
 | **Categories of personal data** | Goal text (processed); structured decomposition output stored in DB |
-| **Recipients** | Anthropic, Inc. (AI processor, US) — receives goal text via API |
-| **International transfers** | Transfer to USA (Anthropic). Safeguard: Anthropic standard contractual clauses + DPA. Anthropic API terms prohibit training on inputs by default |
+| **Recipients** | OpenRouter (routing proxy, US) → Anthropic, Inc. (AI processor, US) — goal text sent via API chain. OpenRouter `data_collection:deny` flag set. |
+| **International transfers** | Transfer to USA (OpenRouter then Anthropic). Safeguards: OpenRouter ToS + data_collection:deny; Anthropic SCC + DPA. Anthropic API terms prohibit training on inputs by default |
 | **Retention** | Decomposed output retained with goal record (same as Activity 1) |
-| **Security measures** | Data minimisation: email address and name are not included in API requests. Goal text sanitised before submission |
+| **Security measures** | Data minimisation: email address and name are not included in API requests. Goal text sanitised before submission. raw_text nulled immediately after decomposition. |
 
 ---
 
@@ -51,10 +51,10 @@
 | **Lawful basis** | Legitimate interests (Art.6(1)(f)) |
 | **Categories of data subjects** | Users (goal submitters); helpers (network members) |
 | **Categories of personal data** | Goal summary and anonymised need tags (user side); helper expertise tags, bio, name (helper side) — sent to AI for ranking |
-| **Recipients** | Anthropic, Inc. (AI processor, US) |
-| **International transfers** | Transfer to USA (Anthropic) — same safeguards as Activity 2 |
+| **Recipients** | OpenRouter (routing proxy, US) → Anthropic, Inc. (AI processor, US). OpenRouter `data_collection:deny` flag set. |
+| **International transfers** | Transfer to USA (OpenRouter then Anthropic) — same safeguards as Activity 2 |
 | **Retention** | Match records retained while service is live |
-| **Security measures** | Data minimisation: email addresses and full context/outcome fields are not sent to the AI; only summary and anonymised need tags |
+| **Security measures** | Data minimisation: email addresses and full context/outcome fields are not sent to the AI; only summary and anonymised need tags. Helper names excluded from matching prompt (bias prevention). |
 
 ---
 
@@ -133,11 +133,28 @@
 
 ---
 
+## Processing Activity 9: Orchestrated AI inference via OpenRouter/DeepSeek
+
+| Field | Detail |
+|-------|--------|
+| **Purpose** | Route AI inference for auto-session tasks (classification, drafting, analysis, code generation) through cheaper models to reduce token cost |
+| **Lawful basis** | Legitimate interests (Art.6(1)(f)) — operational efficiency; code generation role does not process personal data |
+| **Categories of data subjects** | Users (if goal summaries are involved in classification/drafting roles); helpers (incidentally, if goal/helper summaries are used) |
+| **Categories of personal data** | Goal summary text (classifier, drafter, analyser roles only); source code and task descriptions without personal data (coder role) |
+| **Recipients** | OpenRouter (routing proxy, US) → Anthropic (Haiku — classifier/drafter/analyser roles, US) or DeepSeek (code generation role, China via OpenRouter US). `data_collection:deny` set for all. |
+| **International transfers** | USA (OpenRouter → Anthropic): covered by SCC. USA → China (DeepSeek via OpenRouter): legitimate interests basis; coder role does not process personal data in normal operation |
+| **Retention** | No personal data stored by OpenRouter/DeepSeek (data_collection:deny flag set) |
+| **Security measures** | Scope enforcement: coder role restricted to source code only; personal data fields excluded. data_collection:deny flag on all requests. |
+
+---
+
 ## Processors summary
 
 | Processor | Role | Location | Safeguard |
 |-----------|------|----------|-----------|
 | Anthropic, Inc. | AI model (goal decomposition + matching) | USA | SCC + DPA (API terms) |
+| OpenRouter | AI inference routing proxy (decomposer, matcher, classifier, drafter, analyser) | USA | ToS + data_collection:deny |
+| DeepSeek | Code generation (coder role — no personal data) | China (via OpenRouter) | data_collection:deny; code-only scope |
 | Resend | Transactional email delivery | USA | SCC + DPA |
 | Stripe, Inc. | Payment processing | USA + Ireland | SCC + DPA |
 | Hetzner Online GmbH | Server infrastructure and database hosting | Germany (EU) | GDPR Article 46 — adequacy within EEA |
@@ -150,6 +167,7 @@
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-03-09 | Initial ROPA created | Claude instance (auto-session, TSK-040) |
+| 2026-03-13 | Added Activity 9 (orchestrated AI inference via OpenRouter/DeepSeek); updated Activities 2 and 3 to reflect OpenRouter routing; updated processors summary (TSK-148) | Claude instance (auto-session, session 37) |
 
 ---
 

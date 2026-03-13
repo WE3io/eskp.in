@@ -402,6 +402,20 @@
   - Current spend: $0.014/month — optimisation premature; no tasks generated
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Sessions 2026-03-12 (unlogged auto-sessions — reconstructed from git history)
+Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Reconstructed from git commits:
+
+- [x] TSK-013: Off-site backup to Backblaze B2 — backup-db.sh updated to upload after each dump; B2 credentials in .env.example
+- [x] TSK-019: Privacy policy draft banner removed — signed off by Sunil
+- [x] TSK-052: Google Postmaster Tools domain verification confirmed by Sunil
+- [x] Orchestration architecture: model orchestration layer built (config/models.yaml, config/roles.yaml, src/orchestration/) — role-based multi-provider inference routing through OpenRouter (primary) / Anthropic SDK (fallback) / Ollama (local). 5 test files, 43 tests.
+- [x] Three-tier multi-LLM strategy: DeepSeek V3.2 added as coder role ($0.26/$0.38/MTok); session routing (Opus/planning, Sonnet/implementation); session precheck for skip-idle logic
+- [x] Panel infrastructure (Phase 2): bilateral advisory threads — panels, panel_members, panel_interactions, panel_sessions tables; src/services/panel.js; src/api/panel.js; strict per-member thread isolation
+- [x] Session orchestration: scripts/session-orchestrator.sh (plan→code→review→commit pipeline); scripts/apply-code-output.js; scripts/log-cli-session-cost.js; session routing in auto-session.sh
+- [x] Local model fallback: Ollama integration for budget exhaustion — Qwen 2.5 1.5B local model keeps basic functions running at zero cost
+- [x] Governance + trust research: docs/research/2026-03-13-governance-and-trust-research.md (panel governance, trust directory, governance measurement)
+- [x] OpenRouter model ID fix; auto-session shell escaping fix; budget-check fallback for missing columns; migrations to deploy
+
 ### Session 2026-03-13 (thirty-third auto-session) — done ✅
 - [x] No new inbound emails or unprocessed feedback
 - [x] No P0 tasks; no overdue recurring tasks (except Friday build-in-public, which was completed)
@@ -442,6 +456,12 @@
 - [x] Growth rotation: JSON-LD structured data — Organization + WebSite on landing page, BlogPosting on all 8 blog posts
 - [x] docs/research/2026-03-13-growth-seo-structured-data.md
 
+### Session 2026-03-13 (thirty-seventh auto-session) — in progress
+- [x] TSK-147: Missing session audit trail reconstructed from git history (2026-03-12 sessions documented above)
+- [ ] TSK-128/129/130: OpenRouter/DeepSeek DPA entries + env vars
+- [ ] TSK-138/139: Privacy policy + ToS updates for panel model
+- [ ] Communication rotation
+
 ---
-*Last updated: 2026-03-13 — thirty-sixth auto-session*
-*Next session starts with: Check for Sunil responses (TSK-011/062); P1 open: TSK-128/129/130 (OpenRouter/DeepSeek DPA + env), TSK-136–139/147 (panel flow); P2 open: TSK-125 (Sentry), TSK-131/132 (orchestrator verification); communication next in rotation*
+*Last updated: 2026-03-13 — thirty-seventh auto-session*
+*Next session starts with: P1 open: TSK-128/129/130 (OpenRouter/DeepSeek DPA + env), TSK-136–139 (panel flow); P2 open: TSK-125 (Sentry), TSK-131/132/133 (orchestrator); communication next in rotation*

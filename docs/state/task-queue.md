@@ -54,14 +54,14 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-150 | Add exclusion-register alignment check to copy-writing process — CLAUDE.md rule + session-end.sh check | **done** 2026-03-13 | .claude/rules/copy-review.md + session-end.sh check |
 | TSK-158 | New processor onboarding gate — `.claude/rules/` rule + CLAUDE.md escalation trigger; no external service used before DPA entry exists | **done** 2026-03-13 | .claude/rules/processor-gate.md |
 | TSK-159 | Feature compliance checklist — `.claude/rules/privacy-features.md`; fires when feature stores PII, emails new data subjects, adds processor, or creates user-facing flow | **done** 2026-03-13 | .claude/rules/privacy-features.md — 8-point checklist |
-| TSK-128 | Add OPENROUTER_API_KEY to `.env` and `.env.example`; verify OpenRouter routing is live and token spend tracked | open | Orchestration layer is primary inference path; key + tracking must be confirmed |
-| TSK-129 | Add OpenRouter to `docs/operations/processor-dpas.md` — terms URL, data residency, `data_collection: deny` control documented | open | User goal summaries route through OpenRouter |
-| TSK-130 | Add DeepSeek to `docs/operations/processor-dpas.md` — data residency, controls, scope limited to coder role | open | DeepSeek is default coder model; no DPA entry exists |
+| TSK-128 | Add OPENROUTER_API_KEY to `.env` and `.env.example`; verify OpenRouter routing is live and token spend tracked | **done** 2026-03-13 | Key present in .env/.env.example; routing live (5 operations tracked in token_usage); token spend tracked |
+| TSK-129 | Add OpenRouter to `docs/operations/processor-dpas.md` — terms URL, data residency, `data_collection: deny` control documented | **done** 2026-03-13 | Section 6 added to processor-dpas.md; data_collection:deny documented; ROPA Activities 2+3+9 updated |
+| TSK-130 | Add DeepSeek to `docs/operations/processor-dpas.md` — data residency, controls, scope limited to coder role | **done** 2026-03-13 | Section 7 added to processor-dpas.md; China data residency, code-only scope documented |
 | TSK-136 | Dogfood panel flow end-to-end — invite advisor to ICO-registration goal; complete all 7 onboarding sections; verify dashboard + thread | open | Routes and DB migrations are live; untested end-to-end |
-| TSK-137 | Update `docs/operations/processor-dpas.md` — Resend now covers panel member emails (new data subject category) | open | Existing Resend DPA entry needs scope extension |
+| TSK-137 | Update `docs/operations/processor-dpas.md` — Resend now covers panel member emails (new data subject category) | **done** 2026-03-13 | Resend Purpose + Personal data fields updated to include panel/advisor members |
 | TSK-138 | Update privacy policy — add section disclosing panel/advisor model, bilateral isolation design, flagging mechanism | open | Privacy policy describes goal submission and matching only; panel is unmentioned |
 | TSK-139 | Update terms of service — reference advisor onboarding module obligations (crisis recognition, warm referral, safeguarding) | open | 7-section onboarding creates obligations needing contractual standing |
-| TSK-147 | Update `docs/state/current-sprint.md` — log orchestration + panel sessions that are currently missing from audit trail | open | Gap between session 32 and session 33 covers substantial architectural work |
+| TSK-147 | Update `docs/state/current-sprint.md` — log orchestration + panel sessions that are currently missing from audit trail | **done** 2026-03-13 | Gap sessions (2026-03-12) reconstructed from git history; orchestration, panel, B2 backup all logged |
 | TSK-039 | Register with ICO and pay £52 data protection fee (Tier 1) | **done** 2026-03-10 | Sunil registered, ICO number C1889388; privacy.html + ROPA updated |
 | TSK-080 | Accept Hetzner AVV (Art.28 DPA) via Hetzner console | **done** 2026-03-11 | Sunil signed AVV via Hetzner console |
 | TSK-081 | Accept Cloudflare DPA via Cloudflare dashboard | **done** 2026-03-11 | No signature needed — incorporated by reference for self-serve customers |
@@ -99,7 +99,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-142 | Add expired invitation cleanup to `data-retention.js` — purge `panel_members` where status=invited and invited_at > 14 days | open | INVITATION_EXPIRY_DAYS=14 defined but no cleanup job exists |
 | TSK-143 | Add panel tables to GDPR data export — panels, panel_members, panel_interactions, panel_sessions in `getExportData()` | open | Art.20 data portability; panel data currently missing from export |
 | TSK-144 | Cover panel tables in account deletion cascade — goal owner: panels→members→interactions→sessions; panel member: their sessions + interactions | open | Art.17 erasure; panel tables not in deletion cascade |
-| TSK-148 | Update `docs/operations/ropa.md` — add two new processing activities: panel member data, orchestrated AI inference via OpenRouter/DeepSeek | open | Art.30 requires ROPA to cover all processing activities |
+| TSK-148 | Update `docs/operations/ropa.md` — add two new processing activities: panel member data, orchestrated AI inference via OpenRouter/DeepSeek | **partial** 2026-03-13 | Activity 9 (OpenRouter/DeepSeek) added; Activities 2+3 updated with OpenRouter routing; panel member data deferred to when panel is in active use |
 | TSK-009 | Second blog post (payment launch / progress update) | **done** 2026-03-09 | public/blog/002-week-4-payments-and-governance.html |
 | TSK-010 | Feedback mechanism surfaced to users | **done** 2026-03-09 | /feedback.html created; linked from index.html |
 | TSK-011 | Grow helper network — promote `/join.html`, process applications | open | — |

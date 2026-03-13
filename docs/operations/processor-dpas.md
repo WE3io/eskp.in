@@ -37,8 +37,8 @@ eskp.in uses the following processors. This document records whether a DPA is in
 
 | Field | Detail |
 |-------|--------|
-| Purpose | Sending transactional emails to users and helpers — contains email addresses, names, goal summaries |
-| Personal data | To/from email addresses, names in email body, goal summaries in email body |
+| Purpose | Sending transactional emails to users, helpers, and panel/advisor members — contains email addresses, names, goal summaries, and advisor onboarding content |
+| Personal data | To/from email addresses, names in email body, goal summaries in email body, advisor invitation details |
 | Data location | United States (Resend infrastructure) |
 | DPA mechanism | Resend provides a Data Processing Agreement in their Terms of Service. Available at: resend.com/legal/dpa |
 | Transfer mechanism | Standard Contractual Clauses (SCCs) for EU/UK-to-US transfers |
@@ -93,6 +93,36 @@ eskp.in uses the following processors. This document records whether a DPA is in
 
 ---
 
+### 6. OpenRouter (Inference routing)
+
+| Field | Detail |
+|-------|--------|
+| Purpose | AI inference routing — acts as a reverse-proxy between the platform and multiple LLM providers (Anthropic, DeepSeek) for goal decomposition, helper matching, classification, drafting, and code generation |
+| Personal data | Goal summaries and decomposed goal fields (no raw_text) are sent to LLM inference calls via OpenRouter; the specific data depends on the role (decomposer/matcher roles send goal summary + tags; classifier/drafter roles send goal context; coder role does not handle user personal data) |
+| Data location | United States (OpenRouter infrastructure); models may execute on provider infrastructure (US) |
+| DPA mechanism | OpenRouter's Privacy Policy and Terms of Service govern data handling. OpenRouter offers a `data_collection: deny` flag per request which opts out of data collection for training and logging purposes. This flag is set in the platform's OpenRouter adapter (`data_collection: 'deny'` in request headers). |
+| Transfer mechanism | Standard Contractual Clauses (SCCs) relied upon; OpenRouter's terms reference GDPR compliance. UK-to-US transfer covered by SCCs. |
+| Status | **⚠️ Covered by ToS with data_collection:deny set — full Art.28 DPA not yet signed. Action required (see below).** |
+| Action needed | Sunil should check whether OpenRouter provides a formal Art.28 DPA on request for business customers. If not available, document this limitation in the DPIA addendum. Interim: data_collection:deny mitigates training risk. |
+| Notes | First live usage: 2026-03-12. Token spend tracked in token_usage table with provider='openrouter'. Personal data processed: goal summary text only (raw_text always nulled before LLM calls). |
+
+---
+
+### 7. DeepSeek (Code generation — via OpenRouter)
+
+| Field | Detail |
+|-------|--------|
+| Purpose | Code generation for well-scoped development tasks delegated from auto-sessions — receives task descriptions and source file context; does not receive user personal data from goals or emails |
+| Personal data | None in normal operation. Coder role receives task descriptions and source code only. Source code may contain constants referencing user data structures (table names, field names) but not personal data values. |
+| Data location | China (DeepSeek infrastructure); accessed via OpenRouter proxy (US) |
+| DPA mechanism | DeepSeek's API Terms and Privacy Policy. Accessed via OpenRouter with `data_collection: deny`. DeepSeek does not have a formal UK GDPR Art.28 DPA as of 2026-03-13. |
+| Transfer mechanism | Data transits US (OpenRouter) → China (DeepSeek). China has no UK adequacy decision. Transfer relies on legitimate interests basis (task descriptions are not personal data in normal use). |
+| Status | **⚠️ No formal Art.28 DPA available. Acceptable only because personal data is not processed. Scope must remain limited to code generation.** |
+| Action needed | (1) Confirm coder role scope never includes personal data. (2) If scope expands to include personal data processing, escalate to panel before use. (3) Review DeepSeek DPA availability annually. |
+| Notes | First live usage: 2026-03-12 (1 call logged). Data_collection:deny set via OpenRouter. Scope strictly limited to code generation — no goal text, no email addresses, no names. |
+
+---
+
 ## Summary of Actions Required
 
 | Processor | Status | Action | Priority |
@@ -102,6 +132,8 @@ eskp.in uses the following processors. This document records whether a DPA is in
 | Stripe | ✅ Covered via terms | Confirm UK GDPR scope applies | Low |
 | Hetzner | ✅ AVV signed 2026-03-11 | Review annually (2027-03-11) | Low |
 | Cloudflare | ✅ Covered by reference (self-serve) | Review annually (2027-03-11) | Low |
+| OpenRouter | ⚠️ ToS + data_collection:deny | Check if formal Art.28 DPA available; document in DPIA | Medium |
+| DeepSeek | ⚠️ No Art.28 DPA (no personal data) | Confirm scope stays code-only; review annually | Low |
 
 ---
 
