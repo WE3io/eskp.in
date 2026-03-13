@@ -47,8 +47,7 @@ NOTIFY_ON_SUCCESS="${NOTIFY_ON_SUCCESS:-false}"
 # Anthropic fallback adapter.
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
-  export ANTHROPIC_AUTH_TOKEN="${OPENROUTER_API_KEY}"
-  export ANTHROPIC_API_KEY=""
+  export ANTHROPIC_API_KEY="${OPENROUTER_API_KEY}"
   echo "[${TIMESTAMP}] Claude CLI routed through OpenRouter" >> "${LOG_FILE}"
 fi
 
@@ -167,7 +166,7 @@ Delegate inference sub-tasks to the orchestration layer when appropriate:
 --- CODE DELEGATION (IMPORTANT) ---
 When implementing code changes, you MUST delegate code generation to the coder role:
 1. Plan the change yourself (read files, understand the task, design the approach)
-2. Delegate actual code writing to DeepSeek V3.2 ($0.26/$0.38 per MTok) via the coder role:
+2. Delegate actual code writing to DeepSeek V3.2 (\$0.26/\$0.38 per MTok) via the coder role:
    node scripts/orch-infer.js --role coder \
      --system "Given these files, implement: [description of what to change]" \
      --input "[detailed task description with acceptance criteria]" \
@@ -176,7 +175,7 @@ When implementing code changes, you MUST delegate code generation to the coder r
 3. Review the output — check it matches your plan and is correct
 4. Apply the generated code using your file editing tools
 5. If --validate exits with code 2, the output was malformed — retry or adjust the prompt
-This uses DeepSeek V3.2 ($0.26/$0.38 per MTok) instead of your own API ($3-15/$15-75 per MTok).
+This uses DeepSeek V3.2 (\$0.26/\$0.38 per MTok) instead of your own API (\$3-15/\$15-75 per MTok).
 Only skip delegation for trivial one-line fixes where the overhead exceeds the savings.
 --- END CODE DELEGATION ---
 --- END SKILLS AND RULES ---

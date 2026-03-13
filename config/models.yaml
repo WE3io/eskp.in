@@ -19,7 +19,7 @@ models:
   # --- Cloud via OpenRouter (primary) ---
   haiku-openrouter:
     type: openrouter
-    model: "anthropic/claude-haiku-4-5-20251001"
+    model: "anthropic/claude-haiku-4.5"
     capabilities: [text, json_output]
     cost_tier: economy
     intelligence_tier: medium
