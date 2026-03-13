@@ -410,6 +410,13 @@
 - [x] Blog index and sitemap updated
 - [x] Code quality rotation: pnpm audit clean (0 CVEs); reviewed helper-digest.js, followup.js, data-retention.js, outcome-roundup.js — all clean; one cosmetic issue noted (helper-digest statusCounts['proposed'] counts match status as goal status — display-only, non-critical, not tracked)
 
+### Session 2026-03-13 (thirty-fourth auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback
+- [x] No P0 tasks; no overdue recurring tasks
+- [x] Infrastructure rotation: nginx:alpine updated to latest image (5-week-old → 2-day-old); postgres:16-alpine already current; Docker log rotation added to all 3 services (max-size: 10m, max-file: 5); all containers healthy post-recreation; disk 30%, memory 30%, 0 CVEs, B2 backups confirmed
+- [x] TSK-122: Docker log rotation — done (implemented same session)
+- [x] Research rotation: error monitoring/observability for Node.js — docs/research/2026-03-13-error-monitoring-observability.md; TSK-122–125 generated; Pino + pino-http recommended; Sentry free tier as decision-gate before external users
+
 ---
-*Last updated: 2026-03-13 — thirty-third auto-session*
-*Next session starts with: Check for Sunil responses to blocker reminder (TSK-013/052/011/062); all open tasks blocked on Sunil or deferred to volume; infrastructure rotation next (Docker image update check)*
+*Last updated: 2026-03-13 — thirty-fourth auto-session*
+*Next session starts with: Check for Sunil responses (TSK-011/062); P2 open: TSK-123 (Pino structured logging), TSK-124 (crash handlers); infrastructure/research both done this session; mission alignment next in rotation*

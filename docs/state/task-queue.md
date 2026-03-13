@@ -206,6 +206,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-107 | Migrate semanticRank() in match.js to Anthropic tool_use | **done** 2026-03-10 | RANK_HELPERS_TOOL with forced tool_choice; eliminates JSON parse risk; consistent with decompose.js |
 | TSK-108 | Add historical match rating to helper ranking | open | P3 — defer to 3+ helpers; blend avg rating into score |
 | TSK-109 | Add active match count to helper ranking (capacity-aware) | open | P3 — defer to 3+ helpers |
+| TSK-122 | Add Docker log rotation to docker-compose.yml (max-size: 10m, max-file: 5) | **done** 2026-03-13 | All 3 containers updated; log rotation active; from observability research |
+| TSK-123 | Integrate Pino + pino-http as structured logger; replace console.* in src/; configure PII redaction | open | P2 — before external users |
+| TSK-124 | Add uncaughtExceptionMonitor + unhandledRejection handlers (depends TSK-123) | open | P2 — before external users |
+| TSK-125 | Evaluate Sentry free tier: instrument, test beforeSend PII scrubbing, confirm GDPR suitability | open | P3 — decision gate before external users |
 | TSK-110 | Bug fix: 11 unescaped AI-generated fields in HTML email bodies (platform.js, outcome-roundup.js) | **done** 2026-03-10 | escHtml() applied to decomposed.summary, needs[].need, context, outcome, helper.bio, clarification_questions, statsLine |
 | TSK-111 | Status enum module (src/db/statuses.js) + fix residual invalid 'proposed' goal status | **done** 2026-03-10 | Single source of truth for goal/match/application statuses; removed 'proposed' from goal queries in data-retention.js and helper-digest.js |
 | TSK-112 | Consolidated blocker reminder email to Sunil | **done** 2026-03-10 | 7 blocked items listed with aging; sent via Resend |
@@ -219,4 +223,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-13 (thirty-third auto-session — blog post 008 + code quality rotation)*
+*Last updated: 2026-03-13 (thirty-fourth auto-session — infra rotation + observability research + TSK-122 done)*
