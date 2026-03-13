@@ -36,6 +36,7 @@ const FROM = process.env.EMAIL_FROM_ADDRESS || 'hello@mail.eskp.in';
 const STALE_ACTIVE_DAYS = 90;   // auto-close goals with no activity
 const STALE_INTRO_DAYS  = 180;  // auto-close introductions with no activity
 const PURGE_CLOSED_DAYS = 365;  // delete decomposed data from old closed goals
+const INVITATION_EXPIRY_DAYS = 14;  // purge expired panel invitations
 
 if (DRY_RUN) console.log('[data-retention] DRY RUN — no changes will be committed');
 
@@ -175,7 +176,40 @@ Your personal data has been handled in line with our privacy policy: https://esk
   );
   decomposedPurged = purgeGoals.length;
 
-  console.log(`[data-retention] done — stale-closed: ${staleClosed}, intro-closed: ${introClosed}, decomposed-purged: ${decomposedPurged}`);
+  // ── 4. Purge expired panel invitations (status=invited, older than 14 days) ─
+  // TSK-142: Clean up panel_members where invitation was never accepted.
+  // Related panel_interactions and panel_sessions are also cleaned.
+  const { rows: expiredInvitations } = await pool.query(`
+    SELECT pm.id, pm.panel_id, pm.email
+    FROM panel_members pm
+    WHERE pm.status = 'invited'
+      AND pm.invitation_expires_at < NOW()
+  `);
+
+  let invitationsPurged = 0;
+  for (const inv of expiredInvitations) {
+    if (DRY_RUN) {
+      console.log(`[data-retention] DRY invitation-purge: panel_member ${inv.id} (${inv.email})`);
+      invitationsPurged++;
+      continue;
+    }
+
+    // Delete related records first, then the member
+    await pool.query(`DELETE FROM panel_sessions WHERE panel_member_id = $1`, [inv.id]);
+    await pool.query(`DELETE FROM panel_interactions WHERE panel_member_id = $1`, [inv.id]);
+    await pool.query(`DELETE FROM panel_members WHERE id = $1`, [inv.id]);
+
+    // Clean up empty panels (no members left)
+    await pool.query(`
+      DELETE FROM panels WHERE id = $1
+        AND NOT EXISTS (SELECT 1 FROM panel_members WHERE panel_id = $1)
+    `, [inv.panel_id]);
+
+    console.log(`[data-retention] purged expired invitation: panel_member ${inv.id} (${inv.email})`);
+    invitationsPurged++;
+  }
+
+  console.log(`[data-retention] done — stale-closed: ${staleClosed}, intro-closed: ${introClosed}, decomposed-purged: ${decomposedPurged}, invitations-purged: ${invitationsPurged}`);
   await pool.end();
 }
 

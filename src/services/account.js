@@ -105,7 +105,7 @@ async function getExportData(token) {
   if (!row) return null;
   const userId = row.user_id;
 
-  const [userRows, goalRows, matchRows, emailRows, feedbackRows, helperRows, helperAppRows] = await Promise.all([
+  const [userRows, goalRows, matchRows, emailRows, feedbackRows, helperRows, helperAppRows, panelRows, panelMemberRows, panelInteractionRows] = await Promise.all([
     pool.query(`SELECT id, email, name, created_at FROM users WHERE id = $1`, [userId]),
     pool.query(`SELECT id, raw_text, decomposed, status, sensitive_domain, ai_opted_out, created_at, updated_at FROM goals WHERE user_id = $1 ORDER BY created_at`, [userId]),
     pool.query(`
@@ -118,6 +118,21 @@ async function getExportData(token) {
     pool.query(`SELECT id, goal_id, source, content, created_at FROM feedback WHERE user_id = $1 ORDER BY created_at`, [userId]),
     pool.query(`SELECT id, expertise, bio, is_active, created_at FROM helpers WHERE user_id = $1`, [userId]),
     pool.query(`SELECT id, name, expertise_description, status, created_at FROM helper_applications WHERE email = (SELECT email FROM users WHERE id = $1)`, [userId]),
+    // TSK-143: Panel tables — panels owned by this user
+    pool.query(`SELECT id, goal_id, created_at FROM panels WHERE user_id = $1 ORDER BY created_at`, [userId]),
+    // Panel memberships where this user is an advisor (by email)
+    pool.query(`
+      SELECT pm.id, pm.panel_id, pm.role_label, pm.status, pm.accepted_at, pm.onboarding_completed_at, pm.created_at
+      FROM panel_members pm
+      WHERE pm.email = (SELECT email FROM users WHERE id = $1)
+      ORDER BY pm.created_at`, [userId]),
+    // Panel interactions for this user's memberships
+    pool.query(`
+      SELECT pi.id, pi.panel_member_id, pi.goal_id, pi.interaction_type, pi.created_at
+      FROM panel_interactions pi
+      JOIN panel_members pm ON pm.id = pi.panel_member_id
+      WHERE pm.email = (SELECT email FROM users WHERE id = $1)
+      ORDER BY pi.created_at`, [userId]),
   ]);
 
   return {
@@ -130,6 +145,9 @@ async function getExportData(token) {
     feedback: feedbackRows.rows,
     helper_profile: helperRows.rows[0] || null,
     helper_applications: helperAppRows.rows,
+    panels_owned: panelRows.rows,
+    panel_memberships: panelMemberRows.rows,
+    panel_interactions: panelInteractionRows.rows,
   };
 }
 
@@ -157,6 +175,7 @@ What will be deleted:
 • All emails in our system associated with your account
 • Any feedback you submitted
 • Any helper application you submitted
+• Any advisory panel data (memberships, sessions, interactions)
 
 This action cannot be undone. Your data will be permanently removed within 30 days (usually immediately).
 
@@ -267,6 +286,38 @@ async function executeDeletion(userId, userEmail, userName) {
     await client.query(`DELETE FROM helper_applications WHERE email = $1`, [userEmail]);
     const helperApplicationCount = parseInt(helperAppCount.count, 10);
 
+    // TSK-144: Delete panel data — sessions, interactions, members (as advisor by email)
+    const { rows: membersByEmail } = await client.query(
+      `SELECT id FROM panel_members WHERE email = $1`, [userEmail]
+    );
+    const memberIds = membersByEmail.map(r => r.id);
+    let panelMemberCount = 0;
+    if (memberIds.length > 0) {
+      await client.query(`DELETE FROM panel_sessions WHERE panel_member_id = ANY($1)`, [memberIds]);
+      await client.query(`DELETE FROM panel_interactions WHERE panel_member_id = ANY($1)`, [memberIds]);
+      await client.query(`DELETE FROM panel_members WHERE id = ANY($1)`, [memberIds]);
+      panelMemberCount = memberIds.length;
+    }
+
+    // Delete panels owned by this user (and their remaining members/interactions/sessions)
+    const { rows: ownedPanels } = await client.query(
+      `SELECT id FROM panels WHERE user_id = $1`, [userId]
+    );
+    let panelCount = 0;
+    for (const panel of ownedPanels) {
+      const { rows: panelMembers } = await client.query(
+        `SELECT id FROM panel_members WHERE panel_id = $1`, [panel.id]
+      );
+      const pMemberIds = panelMembers.map(r => r.id);
+      if (pMemberIds.length > 0) {
+        await client.query(`DELETE FROM panel_sessions WHERE panel_member_id = ANY($1)`, [pMemberIds]);
+        await client.query(`DELETE FROM panel_interactions WHERE panel_member_id = ANY($1)`, [pMemberIds]);
+        await client.query(`DELETE FROM panel_members WHERE panel_id = $1`, [panel.id]);
+      }
+      await client.query(`DELETE FROM panels WHERE id = $1`, [panel.id]);
+      panelCount++;
+    }
+
     // Soft-delete user row (set deleted_at); we keep the stub for referential integrity
     // but email is cleared so the account is effectively gone
     await client.query(
@@ -275,11 +326,11 @@ async function executeDeletion(userId, userEmail, userName) {
     );
 
     // Write anonymised audit log
-    const totalRows = feedbackCount + emailCount + matchCount + goalCount + helperCount + helperApplicationCount + 1;
+    const totalRows = feedbackCount + emailCount + matchCount + goalCount + helperCount + helperApplicationCount + panelMemberCount + panelCount + 1;
     await client.query(
       `INSERT INTO deletion_log (tables_affected, rows_deleted)
        VALUES ($1, $2)`,
-      [['users', 'goals', 'matches', 'emails', 'feedback', 'account_tokens', 'helpers', 'helper_applications'], totalRows]
+      [['users', 'goals', 'matches', 'emails', 'feedback', 'account_tokens', 'helpers', 'helper_applications', 'panels', 'panel_members', 'panel_sessions', 'panel_interactions'], totalRows]
     );
 
     await client.query('COMMIT');
