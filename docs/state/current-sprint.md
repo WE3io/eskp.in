@@ -417,6 +417,13 @@
 - [x] TSK-122: Docker log rotation — done (implemented same session)
 - [x] Research rotation: error monitoring/observability for Node.js — docs/research/2026-03-13-error-monitoring-observability.md; TSK-122–125 generated; Pino + pino-http recommended; Sentry free tier as decision-gate before external users
 
+### Session 2026-03-13 (thirty-fifth auto-session) — done ✅
+- [x] TSK-123: Pino structured logging — created src/logger.js (PII redaction for 8 field paths); pino-http middleware (auto request/response logging, skips /health); replaced all 71 console.* calls across 21 src/ files with structured logger calls. pino 10.3.1 + pino-http 11.0.0 added. Deployed.
+- [x] TSK-124: Crash handlers — uncaughtExceptionMonitor + unhandledRejection process handlers in src/index.js with structured logging. Deployed.
+- [x] Self-directed (Mission alignment): reviewed Arts 2 + 5 against codebase — docs/research/2026-03-13-mission-alignment-art2-art5.md. Found Art 5.1 non-compliance (no automated weekly budget report). TSK-126 (P1) and TSK-127 (P3) generated.
+- [x] TSK-126: Automated weekly budget report email (Art 5.1 compliance) — scripts/budget-report.js. Queries token_usage (week + month), revenue, goals. HTML + plain text email to panel. Token-based cost fallback for legacy rows. Cron Monday 09:00 UTC. Dry-run tested with correct figures.
+- All remaining open tasks still blocked on Sunil or deferred to volume
+
 ---
-*Last updated: 2026-03-13 — thirty-fourth auto-session*
-*Next session starts with: Check for Sunil responses (TSK-011/062); P2 open: TSK-123 (Pino structured logging), TSK-124 (crash handlers); infrastructure/research both done this session; mission alignment next in rotation*
+*Last updated: 2026-03-13 — thirty-fifth auto-session*
+*Next session starts with: Check for Sunil responses (TSK-011/062); P2 open: TSK-125 (Sentry evaluation); mission alignment rotation done; growth next in rotation*

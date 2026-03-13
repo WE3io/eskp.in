@@ -1,5 +1,15 @@
 # Recent Decisions
 
+## 2026-03-13 — Pino structured logging replaces console.* (TSK-123)
+- **Decision:** Adopted Pino + pino-http as the structured logging framework across all 21 src/ files. PII redaction configured for 8 field paths (email, content, authorization headers).
+- **Reason:** Structured JSON logs required before external users; console.* provides no redaction, no levels, no request correlation. Pino chosen per observability research (docs/research/2026-03-13-error-monitoring-observability.md).
+- **Confidence:** 95%
+
+## 2026-03-13 — Art 5.1 compliance: automated weekly budget report (TSK-126)
+- **Decision:** Created scripts/budget-report.js to send weekly HTML+text budget report email to panel. Cron Monday 09:00 UTC. Includes month-to-date spend by model, week spend, revenue, goals, budget status.
+- **Reason:** Mission alignment audit found this was the only outright constitutional non-compliance. Art 5.1 requires "Report spend weekly to the panel." Previously manual (sent once 2026-03-09).
+- **Confidence:** 95%
+
 ## 2026-03-10 — Agent context architecture restructure
 - **Decision:** Restructured CLAUDE.md and supporting agent context files based on a formal audit.
 - **Key changes:** CLAUDE.md rewritten from 401→176 lines; added codebase map, DB schema, commands, documentation index; created /session-start and /session-end custom commands; added .githooks/pre-commit secret scanner; resolved duplication (escalation triggers now single-source in CLAUDE.md, credential rules single-source in security.md); safety-lens now references CLAUDE.md instead of restating triggers.
