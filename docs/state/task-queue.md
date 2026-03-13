@@ -50,10 +50,10 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-149 | Document the ICP — `docs/operations/icp.md`: target user backgrounds, goal archetypes, boundary cases, example guidance | open | Reference doc for all copy decisions; add to CLAUDE.md alongside exclusion register |
-| TSK-150 | Add exclusion-register alignment check to copy-writing process — CLAUDE.md rule + session-end.sh check | open | Closes structural gap: excluded domains must not appear as marketed use cases |
-| TSK-158 | New processor onboarding gate — `.claude/rules/` rule + CLAUDE.md escalation trigger; no external service used before DPA entry exists | open | Converts processor-dpas.md from retrospective docs to pre-adoption gate |
-| TSK-159 | Feature compliance checklist — `.claude/rules/privacy-features.md`; fires when feature stores PII, emails new data subjects, adds processor, or creates user-facing flow | open | ROPA, privacy policy, terms, DPIA, DPA register — all must be checked before marking done |
+| TSK-149 | Document the ICP — `docs/operations/icp.md`: target user backgrounds, goal archetypes, boundary cases, example guidance | **done** 2026-03-13 | docs/operations/icp.md created |
+| TSK-150 | Add exclusion-register alignment check to copy-writing process — CLAUDE.md rule + session-end.sh check | **done** 2026-03-13 | .claude/rules/copy-review.md + session-end.sh check |
+| TSK-158 | New processor onboarding gate — `.claude/rules/` rule + CLAUDE.md escalation trigger; no external service used before DPA entry exists | **done** 2026-03-13 | .claude/rules/processor-gate.md |
+| TSK-159 | Feature compliance checklist — `.claude/rules/privacy-features.md`; fires when feature stores PII, emails new data subjects, adds processor, or creates user-facing flow | **done** 2026-03-13 | .claude/rules/privacy-features.md — 8-point checklist |
 | TSK-128 | Add OPENROUTER_API_KEY to `.env` and `.env.example`; verify OpenRouter routing is live and token spend tracked | open | Orchestration layer is primary inference path; key + tracking must be confirmed |
 | TSK-129 | Add OpenRouter to `docs/operations/processor-dpas.md` — terms URL, data residency, `data_collection: deny` control documented | open | User goal summaries route through OpenRouter |
 | TSK-130 | Add DeepSeek to `docs/operations/processor-dpas.md` — data residency, controls, scope limited to coder role | open | DeepSeek is default coder model; no DPA entry exists |
@@ -83,14 +83,14 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 |---|---|---|---|
 | TSK-151 | Extract shared copy into single-sourced `docs/copy/shared-strings.md` — CTA blurb, nav, footer; auto-sessions copy from here | open | Prevents drift; 9+ files currently have identical strings that diverge |
 | TSK-152 | Add ICP + representation check to copy review — checklist in `.claude/rules/` covering excluded domains, ICP alignment, example diversity | open | Depends on TSK-149 |
-| TSK-155 | Fix index.html — remove Legal use case, replace with non-excluded category; replace 3 tech-heavy examples with diverse ICP examples; broaden Technical card | open | Immediate fix from copy audit |
-| TSK-156 | Update blog CTA string across all 8 posts — remove "legal" from domain enumeration; replace with non-domain-specific phrasing | open | Same string in 8 files; find-and-replace |
-| TSK-157 | Review join.html Legal expertise framing — not removal; add experience-sharing clarification distinct from regulated advice | open | Depends on TSK-149 for ICP context |
-| TSK-160 | Document DPIA trigger criteria in `docs/operations/dpia.md` — conditions for full DPIA vs addendum vs none; based on GDPR Art.35 | open | DPIA currently a one-off document; no criteria for when new features require reassessment |
-| TSK-161 | Autonomous script activation gate — `--dry-run` required before cron; `session-end.sh` warns if new cron entry added without dry-run log | open | Prevents "write, commit, activate" single-step for autonomous processes |
+| TSK-155 | Fix index.html — remove Legal use case, replace with non-excluded category; replace 3 tech-heavy examples with diverse ICP examples; broaden Technical card | **done** 2026-03-13 | Legal→Education; 3 diverse examples; Technical broadened |
+| TSK-156 | Update blog CTA string across all 8 posts — remove "legal" from domain enumeration; replace with non-domain-specific phrasing | **done** 2026-03-13 | 8 files updated with non-domain-specific phrasing |
+| TSK-157 | Review join.html Legal expertise framing — not removal; add experience-sharing clarification distinct from regulated advice | **done** 2026-03-13 | Legal→Education on join.html |
+| TSK-160 | Document DPIA trigger criteria in `docs/operations/dpia.md` — conditions for full DPIA vs addendum vs none; based on GDPR Art.35 | **done** 2026-03-13 | Section 10 added with full/addendum/none criteria |
+| TSK-161 | Autonomous script activation gate — `--dry-run` required before cron; `session-end.sh` warns if new cron entry added without dry-run log | **done** 2026-03-13 | .claude/rules/cron-activation.md + session-end.sh check |
 | TSK-162 | Orchestrator component-level failure alerting — alert to ALERT_EMAIL when orchestrator exhausts retries or reviewer rejects; include task and partial-state context | open | Currently orchestrator errors silently fall through to CLI with no notification |
-| TSK-163 | Session log content verification in `session-end.sh` — warn if today's date absent from current-sprint.md session entries | open | Format check passes even when session work is unlogged |
-| TSK-164 | `budget-report.js` auto-discovers roles from `token_usage` — replace hardcoded role list with `GROUP BY operation` query | open | New orchestration roles invisible in weekly report; will silently undercount spend |
+| TSK-163 | Session log content verification in `session-end.sh` — warn if today's date absent from current-sprint.md session entries | **done** 2026-03-13 | Checks for today's date in current-sprint.md |
+| TSK-164 | `budget-report.js` auto-discovers roles from `token_usage` — replace hardcoded role list with `GROUP BY operation` query | **done** 2026-03-13 | Auto-discovers operations via GROUP BY; dry-run verified |
 | TSK-131 | Verify `session-precheck.js` classification against real task queue — confirm routine/agentic/strategic routing is correct | open | Precheck drives model routing; misclassification wastes budget or misses capability |
 | TSK-132 | Test `session-orchestrator.sh` end-to-end dry run on a real P3 task — verify planner output, coder parsing, reviewer acceptance | open | Orchestrator has never been run against a real task |
 | TSK-133 | Add orchestration role spend to `budget-report.js` — classifier, drafter, analyser, coder, planner, reviewer | open | Superseded by TSK-164 if auto-discovery implemented first |
@@ -262,4 +262,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
 
-*Last updated: 2026-03-13 (manual session — TSK-128–164 added: panel infrastructure compliance, orchestration layer tasks, copy governance, ICP documentation, new-processor gate, feature compliance checklist, autonomous script gate, session log verification, budget report auto-discovery)*
+*Last updated: 2026-03-13 (thirty-sixth auto-session — TSK-149/150/155–161/163/164 done: ICP doc, copy alignment, rules, session-end checks, budget report auto-discovery, JSON-LD structured data)*

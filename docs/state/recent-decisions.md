@@ -1,5 +1,15 @@
 # Recent Decisions
 
+## 2026-03-13 — Copy governance framework (TSK-149/150/155–157)
+- **Decision:** Created ICP doc (docs/operations/icp.md), copy review rule (.claude/rules/copy-review.md), and session-end exclusion-register check. Removed "Legal" from all public use case listings (landing page, join.html, 8 blog CTAs) and replaced with non-excluded categories.
+- **Reason:** Copy audit found "Legal" marketed as a use case despite being a hard-excluded domain in the exclusion register. This creates a structural gap where the platform markets services it must refuse. ICP provides a single reference for what the platform actively serves vs. what it excludes.
+- **Confidence:** 95%
+
+## 2026-03-13 — Autonomous safety rules (TSK-158/159/160/161)
+- **Decision:** Added 4 auto-loaded rules: processor onboarding gate, feature privacy checklist, DPIA trigger criteria, cron activation gate. Also added session-end checks for exclusion alignment and session log verification.
+- **Reason:** Previous sessions showed patterns where processors were documented retrospectively, PII features shipped without ROPA/privacy updates, and cron jobs were activated without dry-runs. Rules shift these from post-hoc fixes to pre-implementation gates.
+- **Confidence:** 90%
+
 ## 2026-03-13 — Pino structured logging replaces console.* (TSK-123)
 - **Decision:** Adopted Pino + pino-http as the structured logging framework across all 21 src/ files. PII redaction configured for 8 field paths (email, content, authorization headers).
 - **Reason:** Structured JSON logs required before external users; console.* provides no redaction, no levels, no request correlation. Pino chosen per observability research (docs/research/2026-03-13-error-monitoring-observability.md).

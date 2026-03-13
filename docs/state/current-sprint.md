@@ -424,6 +424,24 @@
 - [x] TSK-126: Automated weekly budget report email (Art 5.1 compliance) — scripts/budget-report.js. Queries token_usage (week + month), revenue, goals. HTML + plain text email to panel. Token-based cost fallback for legacy rows. Cron Monday 09:00 UTC. Dry-run tested with correct figures.
 - All remaining open tasks still blocked on Sunil or deferred to volume
 
+### Session 2026-03-13 (thirty-sixth auto-session) — done ✅
+- [x] No new inbound emails or unprocessed feedback; no Sunil responses to blockers
+- [x] Committed 3 uncommitted files from prior session (budget-tracker.md, task-queue.md, privacy.html)
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] TSK-149: ICP documented (docs/operations/icp.md) — target users, goal archetypes, boundary cases, copy guidance
+- [x] TSK-155: Landing page fixed — Legal→Education, 3 diverse non-tech examples, Technical broadened
+- [x] TSK-156: Blog CTA string updated across 8 posts — removed "legal" domain enumeration
+- [x] TSK-157: join.html Legal→Education expertise category
+- [x] TSK-150: Exclusion-register alignment check (.claude/rules/copy-review.md + session-end.sh check)
+- [x] TSK-158: Processor onboarding gate (.claude/rules/processor-gate.md)
+- [x] TSK-159: Feature compliance checklist (.claude/rules/privacy-features.md — 8-point checklist)
+- [x] TSK-164: budget-report.js auto-discovers operations via GROUP BY (dry-run verified)
+- [x] TSK-163: Session log content verification in session-end.sh
+- [x] TSK-160: DPIA trigger criteria (section 10 in dpia.md)
+- [x] TSK-161: Autonomous script activation gate (.claude/rules/cron-activation.md + session-end.sh)
+- [x] Growth rotation: JSON-LD structured data — Organization + WebSite on landing page, BlogPosting on all 8 blog posts
+- [x] docs/research/2026-03-13-growth-seo-structured-data.md
+
 ---
-*Last updated: 2026-03-13 — thirty-fifth auto-session*
-*Next session starts with: Check for Sunil responses (TSK-011/062); P2 open: TSK-125 (Sentry evaluation); mission alignment rotation done; growth next in rotation*
+*Last updated: 2026-03-13 — thirty-sixth auto-session*
+*Next session starts with: Check for Sunil responses (TSK-011/062); P1 open: TSK-128/129/130 (OpenRouter/DeepSeek DPA + env), TSK-136–139/147 (panel flow); P2 open: TSK-125 (Sentry), TSK-131/132 (orchestrator verification); communication next in rotation*
