@@ -1,4 +1,5 @@
 const https = require('https');
+const logger = require('../logger');
 const { isSuppressed } = require('./email-suppression');
 
 const API_KEY = process.env.EMAIL_API_KEY;
@@ -11,12 +12,12 @@ async function send({ to, subject, text, html, from, replyTo, panelMemberId }) {
   const recipient = Array.isArray(to) ? to[0] : to;
   try {
     if (await isSuppressed(recipient)) {
-      console.log(`email: skipping suppressed address ${recipient} (subject: ${subject})`);
+      logger.info({ subject }, 'email: skipping suppressed address');
       return { skipped: true, reason: 'suppressed' };
     }
   } catch (err) {
     // Non-fatal: if suppression check fails, attempt send anyway
-    console.warn(`email: suppression check failed for ${recipient}: ${err.message}`);
+    logger.warn({ err }, 'email: suppression check failed');
   }
 
   return new Promise((resolve, reject) => {

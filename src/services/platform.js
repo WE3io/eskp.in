@@ -2,6 +2,7 @@
  * Core platform orchestration.
  * Handles the full flow: inbound email → goal → decompose → match → introduce.
  */
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 const { decompose } = require('./decompose');
 const { findMatches } = require('./match');
@@ -51,7 +52,7 @@ async function processGoal(userEmail, userName, rawText) {
     );
     // raw_text is retained while pending_clarification (needed to build combined text on reply)
     await sendClarificationRequest(user, goal, decomposed);
-    console.log(`clarification: goal ${goal.id} set to pending_clarification (attempt 1)`);
+    logger.info({ goalId: goal.id }, 'clarification: goal set to pending_clarification (attempt 1)');
     return { goal, decomposed, needsClarification: true };
   }
 
@@ -68,7 +69,7 @@ async function processGoal(userEmail, userName, rawText) {
   // TSK-073: pre-match notification — heads-up to relevant helpers before formal intro
   if (matches.length > 0) {
     await sendPreMatchNotification(goal, decomposed, matches).catch(err =>
-      console.warn('pre-match notification failed (non-fatal):', err.message)
+      logger.warn({ err }, 'pre-match notification failed (non-fatal)')
     );
   }
 
@@ -260,13 +261,13 @@ async function processClarification(userEmail, userName, replyText, pendingGoal)
       [JSON.stringify(decomposed), attempts + 1, pendingGoal.id]
     );
     await sendClarificationRequest(user, pendingGoal, decomposed);
-    console.log(`clarification: goal ${pendingGoal.id} still vague, sent follow-up (attempt ${attempts + 1})`);
+    logger.info({ goalId: pendingGoal.id, attempt: attempts + 1 }, 'clarification: goal still vague, sent follow-up');
     return { goal: pendingGoal, decomposed, needsClarification: true };
   }
 
   // Max clarification attempts reached or goal is now clear enough — proceed with matching.
   if (decomposed.needs_clarification) {
-    console.log(`clarification: goal ${pendingGoal.id} reached max attempts (${attempts}), proceeding with best decomposition`);
+    logger.info({ goalId: pendingGoal.id, attempts }, 'clarification: max attempts reached, proceeding with best decomposition');
     decomposed.needs_clarification = false;
   }
 
@@ -281,7 +282,7 @@ async function processClarification(userEmail, userName, replyText, pendingGoal)
   // TSK-073: pre-match notification
   if (matches.length > 0) {
     await sendPreMatchNotification(pendingGoal, decomposed, matches).catch(err =>
-      console.warn('pre-match notification failed (non-fatal):', err.message)
+      logger.warn({ err }, 'pre-match notification failed (non-fatal)')
     );
   }
 
@@ -368,7 +369,7 @@ This is just a heads-up so you're not caught off-guard. We'll follow up with ful
       }),
     });
     await logEmail('outbound', FROM, helper.email, `New goal in your area — ${decomposed.summary.slice(0, 60)}`, goal.id, null);
-    console.log(`pre-match notification sent to ${helper.email} for goal ${goal.id}`);
+    logger.info({ goalId: goal.id }, 'pre-match notification sent to helper');
   }
 }
 
@@ -469,10 +470,10 @@ async function sendHelperIntroById(goalId, matchId) {
 
   // Phase 2: create panel + panel_member for this helper (panel-first model)
   await ensurePanelMember(goalId, helper, match).catch(err =>
-    console.warn('ensurePanelMember failed (non-fatal):', err.message)
+    logger.warn({ err }, 'ensurePanelMember failed (non-fatal)')
   );
 
-  console.log(`sendHelperIntroById: introduced match ${matchId}`);
+  logger.info({ matchId }, 'sendHelperIntroById: introduced match');
 }
 
 /**
@@ -574,7 +575,7 @@ This email was sent automatically. Do not forward it externally.`;
 
   await logEmail('outbound', FROM, panelEmail, `[eskp.in] Sensitive goal requires review — ${sensitiveLabel}`, goal.id, null);
 
-  console.log(`sensitive-flag: domain=${sensitiveDomain} goalId=${goal.id} email=${user.email}`);
+  logger.info({ sensitiveDomain, goalId: goal.id }, 'sensitive-flag: goal held for review');
 
   return { goal, user };
 }
@@ -613,7 +614,7 @@ If you want to try again in the future, just send us a new message.
   });
 
   await logEmail('outbound', FROM, userEmail, 'Your request has been closed', goal.id, null);
-  console.log(`closeGoal: goal ${goal.id} closed at user request`);
+  logger.info({ goalId: goal.id }, 'closeGoal: goal closed at user request');
 }
 
 /**
@@ -694,7 +695,7 @@ ${rawText.substring(0, 2000)}${rawText.length > 2000 ? '\n[truncated]' : ''}
 
   await logEmail('outbound', FROM, panelEmail, '[eskp.in] AI opt-out goal — manual review needed', goal.id, null);
 
-  console.log(`ai-opt-out: goal ${goal.id} created for manual review (user: ${user.email})`);
+  logger.info({ goalId: goal.id }, 'ai-opt-out: goal created for manual review');
   return { goal, user };
 }
 

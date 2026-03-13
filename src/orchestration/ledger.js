@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 
 /**
@@ -17,7 +18,7 @@ function logUsage(response, role, goalId) {
       response.provider,
       response.cost_usd || 0,
     ]
-  ).catch(err => console.error('ledger: token_usage log error:', err.message));
+  ).catch(err => logger.error({ err }, 'ledger: token_usage log error'));
 }
 
 /**

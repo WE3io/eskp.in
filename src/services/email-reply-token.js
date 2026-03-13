@@ -14,6 +14,7 @@
  * The 12-char token gives ~281 trillion combinations — sufficient for this use case.
  */
 const crypto = require('crypto');
+const logger = require('../logger');
 
 const SECRET = process.env.REPLY_TOKEN_SECRET;
 const REPLY_DOMAIN = process.env.EMAIL_REPLY_DOMAIN || 'mail.eskp.in';
@@ -28,7 +29,7 @@ const FALLBACK_REPLY_TO = process.env.EMAIL_REPLY_TO || 'hello@mail.eskp.in';
  */
 function generateReplyTo(goalId) {
   if (!SECRET) {
-    console.warn('email-reply-token: REPLY_TOKEN_SECRET not set — using generic reply-to');
+    logger.warn('email-reply-token: REPLY_TOKEN_SECRET not set — using generic reply-to');
     return FALLBACK_REPLY_TO;
   }
   const hmac = crypto

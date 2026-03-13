@@ -1,4 +1,5 @@
 require('dotenv').config();
+const logger = require('../logger');
 const { pool } = require('./connection');
 
 const migrations = [
@@ -249,7 +250,7 @@ async function migrate() {
       await client.query(sql);
     }
     await client.query('COMMIT');
-    console.log(`Migrations complete — ${migrations.length} statements applied.`);
+    logger.info({ count: migrations.length }, 'Migrations complete');
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;
@@ -259,4 +260,4 @@ async function migrate() {
   }
 }
 
-migrate().catch(e => { console.error(e); process.exit(1); });
+migrate().catch(e => { logger.fatal({ err: e }, 'Migration failed'); process.exit(1); });

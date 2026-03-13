@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 const { detectSensitiveDomain } = require('./sensitive-flag');
 const { infer } = require('../orchestration');
@@ -62,7 +63,7 @@ async function findMatches(decomposed, { localOnly = false } = {}) {
   if (!localOnly) {
     const summaryCheck = detectSensitiveDomain(decomposed.summary || '');
     if (summaryCheck.flagged) {
-      console.log(`match: sensitive domain '${summaryCheck.domain}' detected in summary — using local tag-overlap only`);
+      logger.info({ domain: summaryCheck.domain }, 'match: sensitive domain detected in summary — using local tag-overlap only');
       localOnly = true;
     }
   }
@@ -74,7 +75,7 @@ async function findMatches(decomposed, { localOnly = false } = {}) {
   try {
     return await semanticRank(decomposed, helpers);
   } catch (err) {
-    console.warn('match: semantic ranking failed, falling back to tag-overlap:', err.message);
+    logger.warn({ err }, 'match: semantic ranking failed, falling back to tag-overlap');
     return tagOverlapRank(decomposed, helpers);
   }
 }

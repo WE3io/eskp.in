@@ -9,6 +9,7 @@
  * those addresses can't submit goals anyway.
  */
 
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 
 /**
@@ -28,7 +29,7 @@ async function suppressEmail(email, reason) {
     [email.toLowerCase().trim(), reason]
   );
   if (rowCount > 0) {
-    console.log(`email-suppression: suppressed ${email} (reason: ${reason})`);
+    logger.info({ reason }, 'email-suppression: address suppressed');
   }
   return rowCount > 0;
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
+const logger = require('../logger');
 const { processGoal, processGoalSensitive, processGoalManual, processClarification, closeGoal, recordInbound } = require('../services/platform');
 const { isHelperApplication, processHelperApplication } = require('../services/helper-application');
 const { detectHardExclusion, sendWarmReferral } = require('../services/hard-exclusion');
@@ -63,7 +64,7 @@ router.post('/email', verifySecret, async (req, res) => {
       if (goal) {
         if (goal.status === 'pending_clarification') {
           await processClarification(userEmail, userName, text, goal);
-          console.log(`reply-token: clarification reply for goal ${goal.id}`);
+          logger.info({ goalId: goal.id }, 'reply-token: clarification reply');
           return res.json({ ok: true, type: 'clarification-reply', goalId: goal.id });
         }
         // Close request: user replied "close" to any goal email
@@ -73,11 +74,11 @@ router.post('/email', verifySecret, async (req, res) => {
         }
         // For any other status (matched, introduced, etc.) log the reply
         // but do not create a new goal. Operator can review via email logs.
-        console.log(`reply-token: inbound reply to goal ${goal.id} (status: ${goal.status}), logged`);
+        logger.info({ goalId: goal.id, status: goal.status }, 'reply-token: inbound reply logged');
         return res.json({ ok: true, type: 'goal-reply', goalId: goal.id });
       }
       // Token valid but goal not found — fall through to subject routing
-      console.warn(`reply-token: valid token but goal ${replyContext.goalId} not found, falling through`);
+      logger.warn({ goalId: replyContext.goalId }, 'reply-token: valid token but goal not found, falling through');
     }
 
     // ── Subject-based routing (new submissions and explicit requests) ─────────
@@ -105,7 +106,7 @@ router.post('/email', verifySecret, async (req, res) => {
     const AI_OPT_OUT_RE = /\b(?:no\s+ai|without\s+ai|opt\s*out|don'?t\s+use\s+ai|manual\s+(?:only|process|review|handling)|human\s+only|no\s+artificial\s+intelligence)\b/i;
     if (AI_OPT_OUT_RE.test(subject || '') || AI_OPT_OUT_RE.test(text.slice(0, 500))) {
       const result = await processGoalManual(userEmail, userName, text);
-      console.log(`ai-opt-out: detected in email from ${userEmail}`);
+      logger.info({ goalId: result.goal.id }, 'ai-opt-out: detected in inbound email');
       return res.json({ ok: true, type: 'manual-goal', goalId: result.goal.id });
     }
 
@@ -113,7 +114,7 @@ router.post('/email', verifySecret, async (req, res) => {
     const exclusion = detectHardExclusion(text);
     if (exclusion.triggered) {
       await sendWarmReferral(userEmail, userName, exclusion.referralKey);
-      console.log(`hard-exclusion: domain=${exclusion.domain} email=${userEmail}`);
+      logger.info({ domain: exclusion.domain }, 'hard-exclusion: warm referral sent');
       return res.json({ ok: true, type: 'hard-exclusion', domain: exclusion.domain });
     }
 
@@ -121,7 +122,7 @@ router.post('/email', verifySecret, async (req, res) => {
     const sensitive = detectSensitiveDomain(text);
     if (sensitive.flagged) {
       const result = await processGoalSensitive(userEmail, userName, text, sensitive.domain, sensitive.label);
-      console.log(`sensitive-domain: ${sensitive.domain} email=${userEmail}`);
+      logger.info({ domain: sensitive.domain, goalId: result.goal.id }, 'sensitive-domain: held for review');
       return res.json({ ok: true, type: 'sensitive-review', domain: sensitive.domain, goalId: result.goal.id });
     }
 
@@ -135,7 +136,7 @@ router.post('/email', verifySecret, async (req, res) => {
     );
     if (pendingGoals.length > 0) {
       const result = await processClarification(userEmail, userName, text, pendingGoals[0]);
-      console.log(`clarification-reply: goal ${pendingGoals[0].id} updated`);
+      logger.info({ goalId: pendingGoals[0].id }, 'clarification-reply: goal updated');
       return res.json({ ok: true, type: 'clarification-reply', goalId: pendingGoals[0].id });
     }
 
@@ -143,7 +144,7 @@ router.post('/email', verifySecret, async (req, res) => {
     const result = await processGoal(userEmail, userName, text);
     res.json({ ok: true, goalId: result.goal.id });
   } catch (err) {
-    console.error('Webhook /email error:', err);
+    logger.error({ err }, 'Webhook /email error');
     res.status(500).json({ error: 'internal error' });
   }
 });
@@ -168,7 +169,7 @@ router.post('/feedback', feedbackLimit, verifySecret, async (req, res) => {
 
     res.json({ ok: true });
   } catch (err) {
-    console.error('Webhook /feedback error:', err);
+    logger.error({ err }, 'Webhook /feedback error');
     res.status(500).json({ error: 'internal error' });
   }
 });

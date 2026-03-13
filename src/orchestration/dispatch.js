@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const openrouterAdapter = require('./adapters/openrouter');
 const anthropicAdapter = require('./adapters/anthropic');
 const ollamaAdapter = require('./adapters/ollama');
@@ -47,7 +48,7 @@ async function dispatch(resolved, messages, system, extra) {
     return await dispatchToModel(model, messages, system, overrides, extra);
   } catch (err) {
     if (fallback) {
-      console.warn(`dispatch: ${model.id} failed (${err.message}), trying fallback ${fallback.id}`);
+      logger.warn({ modelId: model.id, fallbackId: fallback.id, err }, 'dispatch: primary failed, trying fallback');
       try {
         return await dispatchToModel(fallback, messages, system, overrides, extra);
       } catch (fallbackErr) {

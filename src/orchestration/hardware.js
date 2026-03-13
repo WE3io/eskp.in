@@ -1,4 +1,5 @@
 const { execFile } = require('child_process');
+const logger = require('../logger');
 
 let _hardwareCache = null;
 
@@ -34,7 +35,7 @@ async function detectHardware() {
     _hardwareCache = result;
     return result;
   } catch (err) {
-    console.warn(`hardware: detection failed — ${err.message}`);
+    logger.warn({ err }, 'hardware: detection failed');
     return null;
   }
 }
@@ -49,7 +50,7 @@ async function recommendModels(useCase) {
     if (useCase) args.push('--use-case', useCase);
     return await runLlmfit(args);
   } catch (err) {
-    console.warn(`hardware: model recommendations failed — ${err.message}`);
+    logger.warn({ err }, 'hardware: model recommendations failed');
     return [];
   }
 }
@@ -61,7 +62,7 @@ async function fittingModels() {
   try {
     return await runLlmfit(['fit', '--perfect', '--json']);
   } catch (err) {
-    console.warn(`hardware: fitting check failed — ${err.message}`);
+    logger.warn({ err }, 'hardware: fitting check failed');
     return [];
   }
 }

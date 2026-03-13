@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 const { infer, BudgetExceededError } = require('../orchestration');
 
@@ -103,15 +104,15 @@ async function decompose(rawGoalText, goalId = null) {
     return await callModel(safeText, goalId);
   } catch (firstErr) {
     if (firstErr instanceof BudgetExceededError) {
-      console.warn(`decompose: budget exceeded. Goal ${goalId} queued.`);
+      logger.warn({ goalId }, 'decompose: budget exceeded, goal queued');
       await pool.query(`UPDATE goals SET status = 'submitted' WHERE id = $1`, [goalId]);
       throw new Error('Decomposition paused — budget cap reached. Queued for manual review.');
     }
-    console.warn(`decompose: first attempt failed (${firstErr.message}), retrying once`);
+    logger.warn({ err: firstErr }, 'decompose: first attempt failed, retrying once');
     try {
       return await callModel(safeText, goalId);
     } catch (retryErr) {
-      console.error(`decompose: retry also failed (${retryErr.message})`);
+      logger.error({ err: retryErr }, 'decompose: retry also failed');
       throw retryErr;
     }
   }

@@ -16,6 +16,7 @@
  */
 
 const crypto = require('crypto');
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 const { send } = require('./email');
 const { renderEmail, safeHtml, rawHtml } = require('./email-template');
@@ -91,7 +92,7 @@ If you didn't request this, you can ignore this email.
     html: renderEmail({ preheader: 'Your data download link is ready.', body: htmlBody }),
   });
 
-  console.log(`account: export token generated for user ${user.id}`);
+  logger.info({ userId: user.id }, 'account: export token generated');
   return { user };
 }
 
@@ -190,7 +191,7 @@ If you didn't request this, you can ignore this email — no action will be take
     html: renderEmail({ preheader: 'Confirm your account deletion request.', body: htmlBody }),
   });
 
-  console.log(`account: deletion requested for user ${user.id}`);
+  logger.info({ userId: user.id }, 'account: deletion requested');
   return { user };
 }
 
@@ -282,7 +283,7 @@ async function executeDeletion(userId, userEmail, userName) {
     );
 
     await client.query('COMMIT');
-    console.log(`account: deletion executed for user ${userId} — ${totalRows} rows affected`);
+    logger.info({ userId, totalRows }, 'account: deletion executed');
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;

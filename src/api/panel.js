@@ -8,6 +8,7 @@
 const express = require('express');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const logger = require('../logger');
 const {
   createPanelInvitation,
   validateInvitationToken,
@@ -101,7 +102,7 @@ router.post('/invite', express.json({ limit: '16kb' }), async (req, res) => {
     res.json({ success: true, panelMemberId: result.panelMember.id });
   } catch (err) {
     const status = err.status || 500;
-    console.error('POST /panel/invite error:', err.message);
+    logger.error({ err }, 'POST /panel/invite error');
     res.status(status).json({ error: status === 403 ? 'Not authorised' : 'Failed to send invitation' });
   }
 });
@@ -130,7 +131,7 @@ router.get('/invite/accept', async (req, res) => {
     // Redirect to onboarding (which handles actual acceptance)
     return res.redirect(`/panel/onboarding?t=${encodeURIComponent(token)}`);
   } catch (err) {
-    console.error('GET /panel/invite/accept error:', err.message);
+    logger.error({ err }, 'GET /panel/invite/accept error');
     res.status(500).send(simpleHtmlPage('Error', 'Something went wrong. Please try again.'));
   }
 });
@@ -147,7 +148,7 @@ router.get('/invite/decline', async (req, res) => {
     await declinePanelInvitation(token);
     res.send(simpleHtmlPage('Invitation declined', "You've declined the invitation. No further emails will be sent about this.", true));
   } catch (err) {
-    console.error('GET /panel/invite/decline error:', err.message);
+    logger.error({ err }, 'GET /panel/invite/decline error');
     res.status(500).send(simpleHtmlPage('Error', 'Something went wrong. Please try again.'));
   }
 });
@@ -177,7 +178,7 @@ router.get('/onboarding', async (req, res) => {
     // Serve the static onboarding page
     res.sendFile(path.join(__dirname, '../../public/panel/onboarding.html'));
   } catch (err) {
-    console.error('GET /panel/onboarding error:', err.message);
+    logger.error({ err }, 'GET /panel/onboarding error');
     res.status(500).send(simpleHtmlPage('Error', 'Something went wrong. Please try again.'));
   }
 });
@@ -197,7 +198,7 @@ router.post('/onboarding/complete', express.urlencoded({ extended: false }), asy
       .redirect('/panel/dashboard');
   } catch (err) {
     const status = err.status || 500;
-    console.error('POST /panel/onboarding/complete error:', err.message);
+    logger.error({ err }, 'POST /panel/onboarding/complete error');
     res.status(status).send(simpleHtmlPage('Error', err.message || 'Something went wrong. Please try again.'));
   }
 });
@@ -235,7 +236,7 @@ router.get('/api/dashboard', requirePanelSession, async (req, res) => {
     const rows = await getDashboardData(req.panelMember.id);
     res.json(rows);
   } catch (err) {
-    console.error('GET /panel/api/dashboard error:', err.message);
+    logger.error({ err }, 'GET /panel/api/dashboard error');
     res.status(500).json({ error: 'Failed to load dashboard' });
   }
 });
@@ -250,7 +251,7 @@ router.get('/api/thread/:id', requirePanelSession, async (req, res) => {
     res.json(data);
   } catch (err) {
     const status = err.status || 500;
-    console.error('GET /panel/api/thread/:id error:', err.message);
+    logger.error({ err }, 'GET /panel/api/thread/:id error');
     res.status(status).json({ error: status === 403 ? 'Forbidden' : 'Failed to load thread' });
   }
 });
@@ -265,7 +266,7 @@ router.post('/api/flag/:panelMemberId', requirePanelSession, async (req, res) =>
     res.json({ success: true, deduplicated: result.deduplicated });
   } catch (err) {
     const status = err.status || 500;
-    console.error('POST /panel/api/flag/:panelMemberId error:', err.message);
+    logger.error({ err }, 'POST /panel/api/flag/:panelMemberId error');
     res.status(status).json({ error: status === 403 ? 'Forbidden' : 'Failed to process request' });
   }
 });

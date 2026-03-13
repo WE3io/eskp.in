@@ -9,6 +9,7 @@
  * must include WHERE panel_member_id = $1 from the authenticated session.
  */
 const crypto = require('crypto');
+const logger = require('../logger');
 const { pool } = require('../db/connection');
 const { send } = require('./email');
 const { renderEmail, safeHtml, rawHtml, escHtml } = require('./email-template');
@@ -106,7 +107,7 @@ async function createPanelInvitation(goalId, inviterUserId, { email, name, roleL
     expiresAt,
   });
 
-  console.log(`panel: invitation sent to ${email} for goal ${goalId} (member ${member.id})`);
+  logger.info({ goalId, memberId: member.id }, 'panel: invitation sent');
   return { panelMember: member, inviteUrl };
 }
 
@@ -234,7 +235,7 @@ async function completeOnboardingAndAccept(token) {
           <p><strong>${memberName}</strong> has accepted your invitation and is now part of your advisory panel.</p>
           <p style="color:#7A6E68;font-size:14px;">They'll be in touch with you directly. If you have any questions, reply to this email.</p>`,
       }),
-    }).catch(err => console.warn('panel: inviter notification failed (non-fatal):', err.message));
+    }).catch(err => logger.warn({ err }, 'panel: inviter notification failed (non-fatal)'));
   }
 
   const sessionToken = await createSession(updated.id);
@@ -466,7 +467,7 @@ If there's anything we can do on the platform side, just reply to this email.
     html: renderEmail({ preheader: 'Support is always available to you.', body: htmlBody }),
   });
 
-  console.log(`panel: flagForSupport — sent check-in to ${userEmail} (goal ${goalId})`);
+  logger.info({ goalId }, 'panel: flagForSupport — sent check-in');
   return { deduplicated: false };
 }
 
@@ -507,7 +508,7 @@ async function ensurePanelMember(goalId, helper, match) {
 
   if (!member) {
     // Already exists — just return
-    console.log(`panel: ensurePanelMember — member already exists for helper ${match.helper_id} on goal ${goalId}`);
+    logger.info({ helperId: match.helper_id, goalId }, 'panel: ensurePanelMember — member already exists');
     return;
   }
 
@@ -523,7 +524,7 @@ async function ensurePanelMember(goalId, helper, match) {
     [member.id, match.id]
   );
 
-  console.log(`panel: ensurePanelMember — created panel member ${member.id} for helper ${match.helper_id} on goal ${goalId}`);
+  logger.info({ memberId: member.id, helperId: match.helper_id, goalId }, 'panel: ensurePanelMember — created');
 }
 
 module.exports = {

@@ -7,6 +7,7 @@
 
 const express = require('express');
 const router = express.Router();
+const logger = require('../logger');
 const { getExportData, confirmDeletion } = require('../services/account');
 
 // GET /account/export?token=xxx
@@ -26,7 +27,7 @@ router.get('/export', async (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename="eskp-data-export.json"');
     res.json(data);
   } catch (err) {
-    console.error('/account/export error:', err);
+    logger.error({ err }, '/account/export error');
     res.status(500).json({ error: 'internal error' });
   }
 });
@@ -46,7 +47,7 @@ router.get('/delete/confirm', async (req, res) => {
     }
     res.send(deletionPage('Account deleted', 'Your account and all associated data have been permanently deleted. A confirmation has been sent to your email.', true));
   } catch (err) {
-    console.error('/account/delete/confirm error:', err);
+    logger.error({ err }, '/account/delete/confirm error');
     res.status(500).send(deletionPage('Error', `Something went wrong. Please contact ${process.env.PANEL_EMAIL || 'panel@eskp.in'}.`, false));
   }
 });

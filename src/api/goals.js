@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
+const logger = require('../logger');
 const { processGoal } = require('../services/platform');
 const { pool } = require('../db/connection');
 
@@ -39,7 +40,7 @@ router.post('/', postLimit, async (req, res) => {
     const result = await processGoal(email.trim(), name?.trim() || null, goal);
     res.json({ ok: true, goalId: result.goal.id });
   } catch (err) {
-    console.error('POST /goals error:', err);
+    logger.error({ err }, 'POST /goals error');
     res.status(500).json({ error: 'internal error' });
   }
 });

@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
+const pinoHttp = require('pino-http');
+const logger = require('./logger');
 const { testConnection } = require('./db/connection');
 const { constructEvent } = require('./services/payments');
 const { sendHelperIntroById } = require('./services/platform');
@@ -13,6 +15,14 @@ const PORT = process.env.PORT || 3000;
 // Trust Cloudflare proxy for accurate IP rate limiting
 app.set('trust proxy', 1);
 
+// Structured request logging — skip /health to reduce noise
+app.use(pinoHttp({
+  logger,
+  autoLogging: {
+    ignore: (req) => req.url === '/health',
+  },
+}));
+
 // Stripe webhook — registered BEFORE express.json() so req.body is raw Buffer
 // express.raw() is applied inline as route middleware; express.json() never sees this request
 app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -21,7 +31,7 @@ app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async (r
   try {
     event = constructEvent(req.body, sig);
   } catch (err) {
-    console.error('Stripe signature failed:', err.message);
+    logger.error({ err }, 'Stripe signature failed');
     return res.status(400).json({ error: 'Webhook signature verification failed' });
   }
 
@@ -31,7 +41,7 @@ app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async (r
       try {
         await sendHelperIntroById(goal_id, match_id);
       } catch (err) {
-        console.error('sendHelperIntroById failed:', err);
+        logger.error({ err }, 'sendHelperIntroById failed');
         return res.status(500).json({ error: 'internal error' });
       }
     }
@@ -68,17 +78,17 @@ app.post('/webhooks/resend', express.raw({ type: 'application/json' }), async (r
         return sig && crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(computed));
       });
       if (!valid) {
-        console.warn('Resend webhook: invalid signature');
+        logger.warn('Resend webhook: invalid signature');
         return res.status(401).json({ error: 'Invalid signature' });
       }
     } catch (err) {
-      console.error('Resend webhook signature check error:', err.message);
+      logger.error({ err }, 'Resend webhook signature check error');
       return res.status(400).json({ error: 'Signature verification failed' });
     }
   } else {
     // No secret configured — only allow in development
     if (process.env.NODE_ENV === 'production') {
-      console.error('Resend webhook: RESEND_WEBHOOK_SECRET not set in production');
+      logger.error('Resend webhook: RESEND_WEBHOOK_SECRET not set in production');
       return res.status(500).json({ error: 'Webhook secret not configured' });
     }
   }
@@ -91,20 +101,20 @@ app.post('/webhooks/resend', express.raw({ type: 'application/json' }), async (r
   }
 
   const { type, data } = event;
-  console.log(`Resend webhook: received event ${type}`);
+  logger.info({ eventType: type }, 'Resend webhook: received event');
 
   if (type === 'email.bounced') {
     const email = data?.to?.[0] || data?.email_to?.[0];
     if (email) {
       await suppressEmail(email, 'bounce').catch(err =>
-        console.error('Failed to suppress bounced email:', err.message)
+        logger.error({ err }, 'Failed to suppress bounced email')
       );
     }
   } else if (type === 'email.complained') {
     const email = data?.to?.[0] || data?.email_to?.[0];
     if (email) {
       await suppressEmail(email, 'complaint').catch(err =>
-        console.error('Failed to suppress complained email:', err.message)
+        logger.error({ err }, 'Failed to suppress complained email')
       );
     }
   }
@@ -176,7 +186,7 @@ app.get('/api/match-feedback', async (req, res) => {
         : 'Sorry the match didn\'t work out. We\'ll use this to do better.';
     return res.send(feedbackPage(message, true));
   } catch (err) {
-    console.error('/api/match-feedback error:', err.message);
+    logger.error({ err }, '/api/match-feedback error');
     return res.status(500).send(feedbackPage('Something went wrong. Please try again.', false));
   }
 });
@@ -199,5 +209,5 @@ a{color:#C4622D;text-decoration:none;font-weight:500;}</style>
 }
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Platform running on port ${PORT}`);
+  logger.info({ port: PORT }, 'Platform running');
 });

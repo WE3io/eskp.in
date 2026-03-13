@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const { getMonthlySpend } = require('./ledger');
 
 const MONTHLY_BUDGET = parseFloat(process.env.MONTHLY_TOKEN_BUDGET || 30);
@@ -51,7 +52,7 @@ function evaluateGate(scope, spent, cap) {
   if (pctUsed >= WARN_THRESHOLD) {
     const dayOfMonth = new Date().getDate();
     if (dayOfMonth < 21) {
-      console.warn(`budget: ${scope} at ${(pctUsed * 100).toFixed(1)}% before day 21`);
+      logger.warn({ scope, pctUsed: (pctUsed * 100).toFixed(1) }, 'budget: high usage before day 21');
     }
     return { ok: true, action: 'warn', scope, spent, cap, remaining };
   }

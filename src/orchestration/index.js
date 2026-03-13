@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const { getConfig, resetConfig } = require('./config');
 const { resolveRole, listModels, getModel } = require('./registry');
 const { dispatch } = require('./dispatch');
@@ -27,7 +28,7 @@ async function infer({ role, messages, system, goalId, tools, tool_choice, metad
   if (!budget.ok) {
     // Budget exhausted — try local fallback if configured
     if (resolved.budgetFallback) {
-      console.warn(`infer: budget exhausted for ${role}, attempting local fallback via ${resolved.budgetFallback.id}`);
+      logger.warn({ role, fallback: resolved.budgetFallback.id }, 'infer: budget exhausted, attempting local fallback');
       try {
         const localHealth = await checkOllamaHealth(resolved.budgetFallback.endpoint);
         if (!localHealth.healthy) {
@@ -49,10 +50,10 @@ async function infer({ role, messages, system, goalId, tools, tool_choice, metad
         const response = await dispatch(localResolved, messages, system, extra);
 
         logUsage(response, role, goalId);
-        console.log(`infer: ${role} served by local fallback ${resolved.budgetFallback.id} (budget exhausted)`);
+        logger.info({ role, fallback: resolved.budgetFallback.id }, 'infer: served by local fallback (budget exhausted)');
         return response;
       } catch (localErr) {
-        console.warn(`infer: local fallback failed for ${role}: ${localErr.message}`);
+        logger.warn({ role, err: localErr }, 'infer: local fallback failed');
         // Fall through to throw BudgetExceededError
       }
     }
@@ -63,7 +64,7 @@ async function infer({ role, messages, system, goalId, tools, tool_choice, metad
     );
   }
   if (budget.action === 'warn') {
-    console.warn(`infer: budget warning for ${role} — ${budget.scope} at $${budget.spent.toFixed(4)}/$${budget.cap.toFixed(2)}`);
+    logger.warn({ role, scope: budget.scope, spent: budget.spent, cap: budget.cap }, 'infer: budget warning');
   }
 
   // 3. Dispatch to model (with fallback on failure)

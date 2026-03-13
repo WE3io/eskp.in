@@ -1,6 +1,7 @@
 /**
  * Normalises provider-specific responses into a unified shape.
  */
+const logger = require('../logger');
 
 function normaliseOpenRouter(raw, modelId, startTime) {
   const choice = raw.choices && raw.choices[0];
@@ -67,7 +68,7 @@ function normaliseOllama(raw, modelId, startTime) {
         arguments: parsed,
       }];
     } catch (parseErr) {
-      console.warn(`ollama: failed to parse JSON tool response: ${parseErr.message}`);
+      logger.warn({ err: parseErr }, 'ollama: failed to parse JSON tool response');
       // Fall through with empty tool_calls; caller handles missing tool_call
     }
   }
