@@ -41,7 +41,8 @@ set +a
 NOTIFY_ON_SUCCESS="${NOTIFY_ON_SUCCESS:-false}"
 
 # ── Route Claude CLI through OpenRouter for unified cost tracking ──────────────
-# Overrides the direct Anthropic key for the Claude CLI subprocess only.
+# OpenRouter's "Anthropic Skin" maintains full Anthropic Messages API compatibility,
+# so Claude CLI works directly. See: openrouter.ai/docs/guides/coding-agents/claude-code-integration
 # The Node.js app container still reads ANTHROPIC_API_KEY from .env for the
 # Anthropic fallback adapter.
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
