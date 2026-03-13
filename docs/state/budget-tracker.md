@@ -4,12 +4,12 @@
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $30 | $0.0140 | $29.9860 | 0.05% | ✅ OK |
-| **Total** | **$30** | **$0.0140** | **$29.9860** | **0.05%** | **✅ OK** |
+| Anthropic API tokens | $30 | $0.0000 | $30.0000 | 0.00% | ✅ OK |
+| **Total** | **$30** | **$0.0000** | **$30.0000** | **0.00%** | **✅ OK** |
 
 ### Usage detail (from local token_usage table)
 ```
-  claude-haiku-4-5-20251001: 8 calls, 6,814 in / 2,128 out = $0.0140
+DB query failed: column "provider" does not exist
 ```
 
 ### Pricing reference
@@ -20,7 +20,7 @@
 | claude-opus-4-6 | $15.00 | $75.00 |
 
 ### Month progress
-Day 12 of ~31 (~39% of month elapsed)
+Day 13 of ~31 (~42% of month elapsed)
 
 ## Budget Alert Threshold
 - 70% of budget before the 21st → reduce activity, notify panel@eskp.in
@@ -36,10 +36,10 @@ Day 12 of ~31 (~39% of month elapsed)
 
 | Month | Budget | Spent | Revenue | Net |
 |-------|--------|-------|---------|-----|
-| March 2026 | $30 | $0.0140 | $0 | -$0.0140 |
+| March 2026 | $30 | $0.0000 | $0 | -$0.0000 |
 
 ---
 
-*Last updated: 2026-03-12T20:00:01.706Z*
+*Last updated: 2026-03-13T00:00:01.867Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*
