@@ -134,6 +134,8 @@ Not the right fit? Reply to this email and we'll take another look.
 To confirm and get the introduction, complete a one-time £10 payment:
 ${paymentUrl}
 
+Know someone else who could use this? They can email their goal to hello@mail.eskp.in — no account needed.
+
 — The eskp.in team${privacyFooter}`
     : `${greeting}
 
@@ -173,6 +175,7 @@ We're looking for the right person and will get back to you within 24 hours. If 
            Pay £10 and get introduced
          </a>
        </p>`)}
+       <p style="color:#7A6E68;font-size:13px;">Know someone else who could use this? They can email their goal to <a href="mailto:hello@mail.eskp.in" style="color:#C4622D;">hello@mail.eskp.in</a> — no account needed.</p>
        ${rawHtml(privacyNote)}`
     : safeHtml`<p>Hi${user.name ? ` ${user.name}` : ''},</p>
        <p>We received your message. Here's how we've understood your goal — <strong>reply if anything looks off</strong>:</p>

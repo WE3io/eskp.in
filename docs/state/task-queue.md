@@ -268,5 +268,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-169 | Art 8.1 gap: budget-check.js should email panel when >70% budget used before 21st — use flag file to deduplicate across 4h auto-sessions | **done** 2026-03-14 | Email alert added to budget-check.js; .budget-alert-sent flag file prevents repeat per month; .gitignore updated |
 | TSK-170 | Art 8.1 gap: email panel when phase transition eligibility first detected (budget-check.js already detects condition, no email sent) | **done** 2026-03-14 | Phase transition alert email added; .phase-transition-alert-sent flag fires once only |
 | TSK-171 | Inbound email per-sender rate limit — 5 emails/hour per address; silent drop after limit; spam flood protection | **done** 2026-03-14 | checkSenderRateLimit() in webhooks.js; 65 spam goals + 1 spam user cleaned up; deployed |
+| TSK-172 | Add referral nudge to match notification email — "Know someone else who could use this?" before privacy footer | **done** 2026-03-14 | Added to sendAcknowledgement() in platform.js (HTML + plain text); extends TSK-165 pattern to earlier funnel stage |
+| TSK-173 | Add `referral_source` optional text column to goals table; surface in `pnpm stats` | open | P3 — instrumentation for growth channel attribution; no urgency at 12 goals |
+| TSK-174 | Add clarification response rate to `pnpm stats` — % of pending_clarification goals that receive a follow-up inbound email | open | P3 — funnel measurement; implement when volume warrants |
 
-*Last updated: 2026-03-14 (forty-third auto-session — TSK-171 spam rate-limit; self-directed rotation next)*
+*Last updated: 2026-03-14 (forty-third auto-session — TSK-171 spam rate-limit; TSK-172 referral nudge; Growth+Communication self-directed)*
