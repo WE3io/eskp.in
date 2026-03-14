@@ -12,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 
 const MONTHLY_BUDGET = parseFloat(process.env.MONTHLY_TOKEN_BUDGET || 30);
+const INFRA_COST_GBP = parseFloat(process.env.INFRA_MONTHLY_GBP || 4.00);
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const PRICING = {
@@ -116,6 +117,69 @@ async function main() {
 
   const usageDetail = usageLines.length > 0 ? usageLines.join('\n') : (usageNote || 'No usage');
 
+  // --- Phase transition detection (TSK-127) ---
+  let revenueHistory = [];
+  let currentMonthRevenueGBP = 0;
+  let selfFundingMonths = 0;
+  let phaseEligible = false;
+  let phaseStatus = 'Phase 1 (Funded)';
+
+  try {
+    const { rows: revRows } = await pool.query(`
+      SELECT DATE_TRUNC('month', paid_at) AS month,
+             COUNT(*) AS payment_count,
+             COUNT(*) * 10.00 AS revenue_gbp
+      FROM matches
+      WHERE paid_at IS NOT NULL
+      GROUP BY 1
+      ORDER BY 1 DESC
+      LIMIT 3
+    `);
+    revenueHistory = revRows.map(r => ({
+      month: r.month,
+      payment_count: parseInt(r.payment_count),
+      revenue_gbp: parseFloat(r.revenue_gbp),
+    }));
+
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thisMonth = revenueHistory.find(r =>
+      new Date(r.month).getTime() === currentMonthStart.getTime()
+    );
+    currentMonthRevenueGBP = thisMonth ? thisMonth.revenue_gbp : 0;
+
+    // Phase transition: last 2 *complete* months must both have revenue >= estimated ops cost
+    const estimatedMonthlyOpsCostGBP = INFRA_COST_GBP + (MONTHLY_BUDGET / 1.27);
+    const completeMonths = revenueHistory.filter(r =>
+      new Date(r.month).getTime() < currentMonthStart.getTime()
+    );
+    if (completeMonths.length >= 2) {
+      selfFundingMonths = completeMonths.slice(0, 2).filter(m =>
+        m.revenue_gbp > 0 && m.revenue_gbp >= estimatedMonthlyOpsCostGBP
+      ).length;
+      phaseEligible = selfFundingMonths >= 2;
+    }
+
+    if (phaseEligible) {
+      phaseStatus = 'Phase 2 (Self-funding) ELIGIBLE';
+      console.log('\n🎉 PHASE TRANSITION ELIGIBLE: revenue has covered ops costs for 2 consecutive months. Notify panel.');
+    } else if (selfFundingMonths > 0) {
+      phaseStatus = `Phase 1 (Funded) — ${selfFundingMonths}/2 self-funded months`;
+    }
+  } catch (err) {
+    console.warn(`Warning: Revenue query failed: ${err.message}`);
+  }
+
+  const apiCostGBP = spentUSD / 1.27;
+  const totalOpsCostGBP = INFRA_COST_GBP + apiCostGBP;
+  const estimatedMonthlyOpsCostGBP = INFRA_COST_GBP + (MONTHLY_BUDGET / 1.27);
+
+  const historyExtra = revenueHistory.filter(r =>
+    new Date(r.month).getTime() < new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+  ).map(r => {
+    const mo = new Date(r.month).toLocaleString('en-GB', { month: 'long', year: 'numeric' });
+    return `| ${mo} | — | — | £${r.revenue_gbp.toFixed(2)} GBP | — |`;
+  }).join('\n');
+
   const trackerPath = path.join(__dirname, '../docs/state/budget-tracker.md');
   const content = `# Budget Tracker
 
@@ -145,9 +209,11 @@ Day ${dayOfMonth} of ~31 (~${pctMonthElapsed}% of month elapsed)
 - 70% of budget before the 21st → reduce activity, notify panel@eskp.in
 
 ## Revenue
-- Platform revenue: $0
-- Phase status: Phase 1 (Funded)
-- Months of self-funding: 0/2 required for Phase 2
+- Platform revenue (current month): £${currentMonthRevenueGBP.toFixed(2)} GBP
+- Operational costs (est.): £${totalOpsCostGBP.toFixed(2)} GBP (infra £${INFRA_COST_GBP.toFixed(2)} + API £${apiCostGBP.toFixed(2)})
+- Break-even threshold: £${estimatedMonthlyOpsCostGBP.toFixed(2)} GBP/month
+- Phase status: ${phaseStatus}
+- Months of self-funding: ${selfFundingMonths}/2 required for Phase 2${phaseEligible ? ' 🎉' : ''}
 
 ---
 
@@ -155,7 +221,8 @@ Day ${dayOfMonth} of ~31 (~${pctMonthElapsed}% of month elapsed)
 
 | Month | Budget | Spent | Revenue | Net |
 |-------|--------|-------|---------|-----|
-| ${monthName} | $${MONTHLY_BUDGET} | $${spentUSD.toFixed(4)} | $0 | -$${spentUSD.toFixed(4)} |
+| ${monthName} | $${MONTHLY_BUDGET} | $${spentUSD.toFixed(4)} | £${currentMonthRevenueGBP.toFixed(2)} GBP | ${currentMonthRevenueGBP > 0 ? `£${(currentMonthRevenueGBP - totalOpsCostGBP).toFixed(2)} GBP` : `-$${spentUSD.toFixed(4)}`} |
+${historyExtra}
 
 ---
 
