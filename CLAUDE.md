@@ -121,6 +121,7 @@ Match statuses: proposed → introduced → accepted/declined/completed.
 | `docs/research/` | Technical research notes (19 files) |
 | `docs/updates/` | Build-in-public posts and recruitment drafts |
 | `docs/backlog/` | Work item definitions by phase (phase-1/2/3); each has a Status line (draft/done) |
+| `docs/copy/shared-strings.md` | Canonical nav, footer, CTA, tagline, pricing copy — use when creating/editing HTML pages |
 
 ---
 

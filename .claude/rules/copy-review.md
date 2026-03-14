@@ -13,6 +13,15 @@ Before modifying any public-facing copy (HTML pages, blog posts, email templates
 
 3. **Example diversity**: Ensure examples span at least 2 different goal archetypes (not all tech/startup). Refer to the ICP archetype table for options.
 
+## Shared Copy
+
+When creating or editing HTML pages, use canonical strings from `docs/copy/shared-strings.md`:
+- Navigation block (exact HTML)
+- Footer block (exact HTML)
+- Pricing note, tagline, platform strapline, response SLA, blog CTA box
+
+Do not invent new copy for these components — copy from shared-strings.md.
+
 ## Language
 
 - Prefer "experience", "perspective", "conversation" over "advice" or "expert"
