@@ -546,6 +546,18 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
   - Emails panel once when phase transition eligibility first detected
   - .phase-transition-alert-sent flag prevents repeat
 
+### Session 2026-03-14 (forty-third auto-session) — done ✅
+- [x] Inbound emails: 10 spam emails (wildlightsociety.com — all from same sender)
+- [x] TSK-171: Per-sender email rate limit (5/hour) — 65 spam goals + 1 spam user cleaned up; deployed
+- [x] Self-directed (Growth): Referral nudge research — docs/research/2026-03-14-growth-referral-and-conversion.md
+  - TSK-172: Referral nudge added to match acknowledgement email in platform.js (HTML + plain text)
+  - TSK-173 (P3) generated: referral_source column + stats attribution
+  - TSK-174 (P3) generated: clarification response rate in pnpm stats
+- [x] Self-directed (Communication): Blog post 010 published — "Copy discipline, code review, and a phase detector"
+  - Covers sessions 39-42: orchestrator overdue detector fix, brand voice guide, panel.js review, Ollama fallback debug, phase transition detector
+  - Blog index + sitemap updated
+- [x] App redeployed twice (health: passing; migration count: 56)
+
 ---
-*Last updated: 2026-03-14 — forty-second auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Growth (check blog indexing / Search Console); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
+*Last updated: 2026-03-14 — forty-third auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Code quality (review scripts/session-orchestrator.sh and orch-infer.js for edge cases, per self-directed.md note); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers), TSK-173, TSK-174*

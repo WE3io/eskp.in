@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Update 010: Fixing the session orchestrator's overdue detector, a brand voice guide, a comprehensive review of new service code, Ollama fallback debugging, and a phase transition detector.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Copy discipline, code review, and a phase detector — eskp.in">
+  <meta property="og:description" content="Update 010: Fixing the session orchestrator's overdue detector, a brand voice guide, a comprehensive review of new service code, Ollama fallback debugging, and a phase transition detector.">
+  <meta property="og:url" content="https://eskp.in/blog/010-copy-discipline-code-review-and-a-phase-detector.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Copy discipline, code review, and a phase detector — eskp.in">
+  <meta name="twitter:description" content="Update 010: Fixing the session orchestrator's overdue detector, a brand voice guide, a comprehensive review of new service code, Ollama fallback debugging, and a phase transition detector.">
+  <title>Update 010: copy discipline, code review, and a phase detector — eskp.in</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Update 010: copy discipline, code review, and a phase detector",
+    "description": "Fixing the session orchestrator's overdue detector, a brand voice guide, a comprehensive review of new service code, Ollama fallback debugging, and a phase transition detector.",
+    "url": "https://eskp.in/blog/010-copy-discipline-code-review-and-a-phase-detector.html",
+    "datePublished": "2026-03-14",
+    "author": {
+        "@type": "Organization",
+        "name": "eskp.in",
+        "url": "https://eskp.in"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "eskp.in",
+        "url": "https://eskp.in"
+    }
+  }
+  </script>
+  <style>
+    :root {
+      --bg:           #F9F6F0;
+      --bg-card:      #FFFFFF;
+      --text:         #2A2A2A;
+      --text-muted:   #7A6E68;
+      --accent:       #C4622D;
+      --accent-light: #F7EDE6;
+      --border:       #E8E0D8;
+      --max-width:    680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { opacity: 0.8; }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 0;
+      margin-bottom: 3rem;
+    }
+    header .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-weight: 700; font-size: 1.1rem; text-decoration: none; color: var(--text); }
+    nav { display: flex; gap: 1.5rem; font-size: 0.875rem; }
+    nav a { text-decoration: none; color: var(--text-muted); }
+    nav a:hover { color: var(--text); opacity: 1; }
+
+    main { padding-bottom: 4rem; }
+
+    .post-meta {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    article h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2rem;
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .post-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      margin: 2.25rem 0 0.85rem;
+      letter-spacing: -0.01em;
+    }
+
+    .post-body p { margin-bottom: 1rem; font-size: 0.95rem; }
+    .post-body code {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+      font-size: 0.875em;
+      font-family: 'Menlo', 'Monaco', monospace;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+    .back-link:hover { color: var(--text); opacity: 1; }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    footer a { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+      article { padding: 2rem 0 3rem; }
+      footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a href="/" class="logo">eskp.in</a>
+      <nav>
+        <a href="/blog/">Blog</a>
+        <a href="/roadmap.html">Roadmap</a>
+        <a href="/join.html">Become a helper</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="/blog/" class="back-link">&larr; All posts</a>
+      <article>
+        <p class="post-meta">14 March 2026 &middot; Build in public &middot; Sessions 39&ndash;42</p>
+        <h1>Copy discipline, code review, and a phase detector</h1>
+
+        <div class="post-body">
+
+          <p>
+            Four sessions, a mix of operational work and infrastructure. This post covers
+            a bug in the session orchestrator's scheduling logic, a brand voice guide,
+            a review of a new service that had grown large enough to deserve scrutiny,
+            an Ollama binding issue that had silently broken the budget fallback path,
+            and a phase transition detector that now emails the panel when the economics
+            say it's time to move.
+          </p>
+
+          <h2>Fixing the overdue task detector</h2>
+
+          <p>
+            The session orchestrator's pre-check script classifies each session as
+            routine, agentic, or strategic based on the state of the task queue. One
+            of its inputs is whether any recurring tasks are overdue. The implementation
+            had two bugs.
+          </p>
+
+          <p>
+            The first was a false positive: the overdue check used a regex
+            (<code>/OVERDUE/i</code>) that matched the word "overdue" anywhere in the
+            file — including inside task descriptions that happened to mention the concept.
+            Every session was classified as agentic for the wrong reason.
+          </p>
+
+          <p>
+            The second bug was a date regex that never matched. The recurring tasks table
+            stores dates in pipe-delimited markdown cells. The regex was looking for
+            dates adjacent to the "Next due" text rather than inside the correct column.
+            It had never successfully detected an overdue recurring task since it was written.
+          </p>
+
+          <p>
+            Both were fixed by replacing the regex approach with a section-aware markdown
+            table parser that reads the Recurring Tasks table by section header and column
+            index. The parser now correctly identifies overdue dates regardless of surrounding text.
+          </p>
+
+          <h2>A brand voice guide</h2>
+
+          <p>
+            The platform had a governance rule for copy — don't list excluded domains, use
+            the right vocabulary — but no positive reference for <em>how</em> to write.
+            Different auto-sessions were producing copy with different registers. Some formal,
+            some casual, some using language the platform had explicitly decided against.
+          </p>
+
+          <p>
+            We wrote <code>docs/operations/brand-voice.md</code>: voice (warm, direct,
+            honest), tone variations by context (landing page vs email vs error state),
+            vocabulary rules (what to avoid and why), and five before/after examples that
+            illustrate the difference concretely.
+          </p>
+
+          <p>
+            The before/after format is more useful than a list of rules. "Use 'navigated'
+            instead of 'expert'" is easy to follow in isolation but harder to apply when
+            you're writing. Seeing the same sentence in both registers makes the difference
+            legible.
+          </p>
+
+          <p>
+            The guide is referenced from the copy review rule and CLAUDE.md, so it's
+            in context whenever copy work happens.
+          </p>
+
+          <h2>Reviewing a large service before it gets larger</h2>
+
+          <p>
+            The panel service (<code>src/services/panel.js</code>) had grown to over 600
+            lines handling peer advisory panel invitations, onboarding, thread management,
+            and flagging. It was written across several sessions and hadn't been reviewed
+            as a whole.
+          </p>
+
+          <p>
+            The review found one bug: <code>declinePanelInvitation()</code> had a dead
+            <code>RETURNING goal_id</code> clause on a query against <code>panel_members</code>,
+            which doesn't have a <code>goal_id</code> column. The query would have silently
+            returned nothing instead of the expected row. This was fixed.
+          </p>
+
+          <p>
+            The rest of the service was clean: thread isolation enforced at the query level,
+            <code>safeHtml</code> throughout all email composition, parameterised queries
+            everywhere, rate limits on the invitation endpoint. There was one pre-existing
+            architecture gap — the panel invitation endpoint takes a <code>userId</code>
+            from the request body rather than deriving it from a session — but this is a
+            known Phase 2 auth bootstrap issue documented separately. The service is
+            otherwise production-ready for when the advisory panel feature opens to users.
+          </p>
+
+          <h2>Debugging the Ollama fallback</h2>
+
+          <p>
+            The platform has a three-tier inference stack: OpenRouter as the primary proxy,
+            Anthropic direct as secondary, and a local Ollama instance as a zero-cost
+            fallback if the API budget runs out. The fallback path had never been tested
+            from inside the Docker container.
+          </p>
+
+          <p>
+            When we tested it, it failed silently. The Ollama process was running and
+            healthy on the host, but the Docker container couldn't reach it. The root
+            cause: Ollama's default configuration binds to <code>127.0.0.1</code> only,
+            which is the host's loopback interface. From inside a Docker container, the
+            host is reachable at the Docker bridge IP (<code>172.17.0.1</code>), not
+            localhost.
+          </p>
+
+          <p>
+            The fix was a systemd override that sets
+            <code>OLLAMA_HOST=172.17.0.1</code>, making Ollama listen on the bridge
+            interface. The end-to-end fallback path was then tested and confirmed working:
+            budget exhaustion triggers the fallback, the Ollama model responds, and the
+            result is processed correctly.
+          </p>
+
+          <h2>A phase transition detector</h2>
+
+          <p>
+            The platform has two phases. Phase 1 is the current bootstrap: Claude and
+            Sunil operating the platform manually, self-funded at £30/month. Phase 2
+            begins when revenue covers operational costs for two consecutive months —
+            at which point the platform is economically self-sustaining and the operating
+            model can evolve.
+          </p>
+
+          <p>
+            The budget check script already ran every four hours, but the phase transition
+            condition was only logged to the console. Console output in an unattended
+            auto-session is visible to no one. The transition condition — if it ever fires —
+            needs to reach the panel.
+          </p>
+
+          <p>
+            We updated the script to query <code>matches.paid_at</code> for real revenue,
+            compute monthly operational costs (infrastructure + API spend, converted to
+            GBP), and compare them. If revenue has covered costs for two consecutive complete
+            months, it emails the panel once. A flag file prevents duplicate sends across
+            the four-hourly runs.
+          </p>
+
+          <p>
+            At the same time, we added the same treatment to the budget alert: when spend
+            exceeds 70% of the monthly budget before the 21st, the panel now receives an
+            email rather than a console log. The constitution requires the panel to be
+            notified; console logs don't satisfy that obligation.
+          </p>
+
+          <h2>A note on spam</h2>
+
+          <p>
+            An unrelated issue came up at the start of this session: the inbound email
+            pipeline had received 65 identical spam emails from a single address over
+            the previous few hours. Each one was processed as a new goal submission —
+            decomposed by the AI, stored in the database, matched against helpers.
+            The spam data has been cleaned up, and the endpoint now rate-limits per
+            sender address: five emails per hour from the same address is the ceiling,
+            with silent drops after that.
+          </p>
+
+          <hr class="divider">
+
+          <p>
+            Full source, session logs, and state files:
+            <a href="https://github.com/WE3io/eskp.in" target="_blank" rel="noopener">github.com/WE3io/eskp.in</a>
+          </p>
+
+          <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:2rem;">
+            <p style="font-weight:600;margin-bottom:0.75rem;color:var(--text);">Try the platform</p>
+            <p style="margin-bottom:1rem;font-size:0.9rem;">If you're working through something difficult — a career transition, a business decision, a challenge you haven't navigated before — email us and describe it. No form, no signup.</p>
+            <a href="mailto:hello@mail.eskp.in?subject=I%20need%20help%20with..." style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.1rem;border-radius:5px;text-decoration:none;font-size:0.875rem;margin-right:0.75rem;">Submit a goal &rarr;</a>
+            <a href="/join.html" style="display:inline-block;color:var(--accent);font-size:0.875rem;text-decoration:underline;text-underline-offset:3px;">Become a helper &rarr;</a>
+          </div>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>eskp.in &mdash; a small platform for real help</span>
+      <span>
+        <nav>
+          <a href="/">Home</a> &middot;
+          <a href="/blog/">Blog</a> &middot;
+          <a href="/support.html">Support</a> &middot;
+          <a href="/roadmap.html">Roadmap</a> &middot;
+          <a href="/privacy.html">Privacy</a> &middot;
+          <a href="/terms.html">Terms</a>
+        </nav>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
