@@ -267,5 +267,6 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-168 | Review Art 4.4 constitutional obligation — is autonomous social posting an obligation or optional capability? Flag to panel if ambiguous | **done** 2026-03-14 | Art 4.4 interpretation gap flagged to panel (email id: 862ecc12); 3 interpretations outlined; awaiting Sunil response to clarify |
 | TSK-169 | Art 8.1 gap: budget-check.js should email panel when >70% budget used before 21st — use flag file to deduplicate across 4h auto-sessions | **done** 2026-03-14 | Email alert added to budget-check.js; .budget-alert-sent flag file prevents repeat per month; .gitignore updated |
 | TSK-170 | Art 8.1 gap: email panel when phase transition eligibility first detected (budget-check.js already detects condition, no email sent) | **done** 2026-03-14 | Phase transition alert email added; .phase-transition-alert-sent flag fires once only |
+| TSK-171 | Inbound email per-sender rate limit — 5 emails/hour per address; silent drop after limit; spam flood protection | **done** 2026-03-14 | checkSenderRateLimit() in webhooks.js; 65 spam goals + 1 spam user cleaned up; deployed |
 
-*Last updated: 2026-03-14 (forty-second auto-session — TSK-145 (witnessed reflection baseline), TSK-125 (Sentry defer), TSK-127 (phase detector), TSK-169/170 (budget+phase alert emails), Art 7+8 mission alignment review)*
+*Last updated: 2026-03-14 (forty-third auto-session — TSK-171 spam rate-limit; self-directed rotation next)*

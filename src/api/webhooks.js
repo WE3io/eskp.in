@@ -28,6 +28,25 @@ const feedbackLimit = rateLimit({
   message: { error: 'Rate limit exceeded' },
 });
 
+// Per-sender rate limiter for inbound emails — prevents spam flooding
+// Tracks send counts per domain per hour in memory (resets on restart, sufficient for spam defence)
+const senderRateMap = new Map(); // domain -> [timestamps]
+const EMAIL_SENDER_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const EMAIL_SENDER_MAX = 5; // max 5 emails per sender domain per hour
+
+function checkSenderRateLimit(fromEmail) {
+  const key = (fromEmail || '').toLowerCase().trim();
+  const now = Date.now();
+  const cutoff = now - EMAIL_SENDER_WINDOW_MS;
+  const timestamps = (senderRateMap.get(key) || []).filter(t => t > cutoff);
+  if (timestamps.length >= EMAIL_SENDER_MAX) {
+    return false; // rate limited
+  }
+  timestamps.push(now);
+  senderRateMap.set(key, timestamps);
+  return true; // allowed
+}
+
 // Inbound email from Cloudflare Worker — protected by WEBHOOK_SECRET
 router.post('/email', verifySecret, async (req, res) => {
   try {
@@ -46,6 +65,12 @@ router.post('/email', verifySecret, async (req, res) => {
     const nameMatch = from.match(/^(.+?)\s*<(.+?)>$/);
     const userName = nameMatch ? nameMatch[1].trim() : null;
     const userEmail = nameMatch ? nameMatch[2].trim() : from.trim();
+
+    // Per-sender rate limit: drop repeated emails from same address (spam defence)
+    if (!checkSenderRateLimit(userEmail)) {
+      logger.warn({ from, subject }, 'inbound email: sender rate limit exceeded, dropping');
+      return res.json({ ok: true, type: 'rate-limited' });
+    }
 
     // Log the inbound email
     await recordInbound(from, to, subject, text, raw || {});
