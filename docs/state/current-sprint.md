@@ -502,6 +502,22 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
 - [x] TSK-167 generated (P3): review src/services/panel.js (large unreviewed service)
 - [x] TSK-168 generated (P3): flag Art 4.4 social posting obligation to panel
 
+### Session 2026-03-14 (forty-first auto-session) — done ✅
+- [x] Inbound emails: all spam (wildlightsociety.com hosting expiry — ignored)
+- [x] TSK-167: Comprehensive code review of src/services/panel.js
+  - 1 bug fixed: `declinePanelInvitation` had dead `RETURNING goal_id` clause (panel_members has no goal_id column); simplified to always use panel JOIN
+  - Noted: POST /panel/invite userId from body — known Phase 2 bootstrap auth gap (TSK-136 covers end-to-end)
+  - Noted: completeOnboardingAndAccept re-runs UPDATE on already-accepted tokens — harmless idempotency
+  - Service is otherwise clean: thread isolation, safeHtml, parameterised queries, rate limits all in place
+- [x] TSK-168: Art 4.4 constitutional interpretation gap flagged to panel (email id: 862ecc12) — 3 interpretations outlined; awaiting Sunil response
+- [x] TSK-146: panel_members.flagged_at column added (migration + flagForSupport() UPDATE); panel_interactions insert was already present
+- [x] TSK-134: Ollama budget-fallback bug fixed and validated
+  - Root cause: Ollama bound to 127.0.0.1 only; not reachable from Docker containers
+  - Fix: Added OLLAMA_HOST=172.17.0.1 systemd override (/etc/systemd/system/ollama.service.d/docker-bridge.conf)
+  - Test: end-to-end fallback tested from within running Docker container — PASS
+- [x] Self-directed (Code quality): panel.js review (TSK-167 covers this)
+- [x] App redeployed (health: passing; migration count: 57)
+
 ---
-*Last updated: 2026-03-14 — fortieth auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P3 queue: TSK-167 (panel.js review), TSK-168 (Art 4.4 flag), TSK-125 (Sentry), TSK-127 (phase detector); self-directed rotation next: Code quality (review src/services/panel.js)*
+*Last updated: 2026-03-14 — forty-first auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P3 queue: TSK-125 (Sentry), TSK-127 (phase detector), TSK-145 (witnessed reflection baseline); self-directed rotation next: Infrastructure (check Art 7/8 mission alignment from self-directed.md)*

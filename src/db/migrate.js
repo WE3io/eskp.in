@@ -240,6 +240,9 @@ const migrations = [
 
   `ALTER TABLE emails ADD COLUMN IF NOT EXISTS panel_member_id UUID REFERENCES panel_members(id)`,
   `CREATE INDEX IF NOT EXISTS idx_emails_panel_member_id ON emails(panel_member_id)`,
+
+  // TSK-146: flagged_at column on panel_members for operational awareness queries
+  `ALTER TABLE panel_members ADD COLUMN IF NOT EXISTS flagged_at TIMESTAMPTZ`,
 ];
 
 async function migrate() {

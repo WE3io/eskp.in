@@ -250,19 +250,18 @@ async function declinePanelInvitation(token) {
     `UPDATE panel_members
      SET status = 'declined'
      WHERE invitation_token = $1 AND status = 'invited'
-     RETURNING id, goal_id, panel_id`,
+     RETURNING id, panel_id`,
     [token]
   );
   if (!rows.length) return { success: false };
 
   const member = rows[0];
 
-  // Get goal_id via panel if needed
   const { rows: panelRows } = await pool.query(
     `SELECT goal_id FROM panels WHERE id = $1`,
     [member.panel_id]
   );
-  const goalId = member.goal_id || panelRows[0]?.goal_id;
+  const goalId = panelRows[0]?.goal_id;
 
   if (goalId) {
     await pool.query(
@@ -431,6 +430,11 @@ async function flagForSupport(panelMemberId, requestingId) {
     `INSERT INTO panel_interactions (panel_member_id, goal_id, interaction_type)
      VALUES ($1, $2, 'flagged')`,
     [panelMemberId, goalId]
+  );
+
+  await pool.query(
+    `UPDATE panel_members SET flagged_at = NOW() WHERE id = $1`,
+    [panelMemberId]
   );
 
   // Send user a warm, non-alarming check-in email (no reference to flag or concern)
