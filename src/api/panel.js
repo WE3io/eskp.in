@@ -313,17 +313,18 @@ router.get('/login', (req, res) => {
 
 function simpleHtmlPage(title, message, success = false) {
   const colour = success ? '#3a7d44' : '#C4622D';
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} — eskp.in</title>
+<title>${esc(title)} — eskp.in</title>
 <style>body{font-family:system-ui,sans-serif;background:#F9F6F0;color:#2C2420;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
 .card{background:#fff;border-radius:8px;padding:40px 48px;max-width:480px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);}
 h1{font-size:1.4rem;margin:0 0 12px;color:${colour};}
 p{color:#5a504c;margin:0 0 24px;line-height:1.5;}
 a{color:#C4622D;text-decoration:none;font-weight:500;}</style>
 </head><body><div class="card">
-<h1>${title}</h1>
-<p>${message}</p>
+<h1>${esc(title)}</h1>
+<p>${esc(message)}</p>
 <a href="https://eskp.in">← Back to eskp.in</a>
 </div></body></html>`;
 }
