@@ -1,5 +1,16 @@
 # Recent Decisions
 
+## 2026-03-14 — Decomposition failure now returns 200 + closes goal (session 44)
+- **Decision:** When `decompose()` fails after retry (e.g. spam email with no extractable needs), `processGoal()` now closes the goal (status=closed, raw_text=null) and returns `{ failed: true }` instead of throwing. The webhook handler returns HTTP 200 with `type: unprocessable`.
+- **Reason:** Spam emails arriving every 10 minutes were causing 500 responses that Cloudflare logged as errors. The "web hosting expired" spam content can never decompose into a valid goal — returning 500 on every attempt is misleading and noisy.
+- **Design choice:** Goals that can't be decomposed are closed (not left in submitted). Closing is cleaner than zombie `submitted` records; no email is sent to the spam sender.
+- **Confidence:** 95%
+
+## 2026-03-14 — Orchestrator reviewer auto-approval removed (TSK-175)
+- **Decision:** When the reviewer API call fails, `session-orchestrator.sh` now reverts changes and exits 3 (needs CLI) instead of auto-approving. An alert email is sent.
+- **Reason:** Auto-approval on transient failure means unreviewed code could be committed. Reverting and escalating to CLI is strictly safer — the next full session will pick up the task.
+- **Confidence:** 100%
+
 ## 2026-03-14 — Sentry deferred; phase detector + budget alerts implemented (TSK-125/127/169/170)
 - **Decision 1 (TSK-125):** Defer Sentry to 10 external users. Pino + uncaughtException handlers cover Phase 1 crash visibility. Sentry requires US data transfer + new DPA entry; premature at current scale.
 - **Decision 2 (TSK-127):** Phase transition detection added to budget-check.js — queries real revenue from matches.paid_at; compares vs INFRA_MONTHLY_GBP + API costs; logs and emails panel when 2 consecutive months covered. INFRA_MONTHLY_GBP defaults to £4.00 (Hetzner).

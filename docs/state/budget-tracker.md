@@ -4,14 +4,14 @@
 
 | Item | Budget | Spent | Remaining | % Used | Status |
 |------|--------|-------|-----------|--------|--------|
-| Anthropic API tokens | $30 | $3.7662 | $26.2338 | 12.55% | ✅ OK |
-| **Total** | **$30** | **$3.7662** | **$26.2338** | **12.55%** | **✅ OK** |
+| Anthropic API tokens | $30 | $4.0245 | $25.9755 | 13.42% | ✅ OK |
+| **Total** | **$30** | **$4.0245** | **$25.9755** | **13.42%** | **✅ OK** |
 
 ### Usage detail (from local token_usage table)
 ```
-  anthropic/claude-4.5-haiku-20251001 [openrouter]: 137 calls, 1,141,488 in / 35,633 out = $1.3197
+  anthropic/claude-4.5-haiku-20251001 [openrouter]: 145 calls, 1,209,792 in / 37,641 out = $1.3980
   anthropic/claude-opus-4-6 [openrouter]: 3 calls, 45,000 in / 9,000 out = $1.3500
-  anthropic/claude-sonnet-4-6 [openrouter]: 6 calls, 210,000 in / 30,000 out = $1.0800
+  anthropic/claude-sonnet-4-6 [openrouter]: 7 calls, 245,000 in / 35,000 out = $1.2600
   claude-haiku-4-5-20251001: 8 calls, 6,814 in / 2,128 out = $0.0140
   deepseek/deepseek-v3.2-20251201 [openrouter]: 2 calls, 3,655 in / 4,262 out = $0.0026
 ```
@@ -31,7 +31,7 @@ Day 14 of ~31 (~45% of month elapsed)
 
 ## Revenue
 - Platform revenue (current month): £0.00 GBP
-- Operational costs (est.): £6.97 GBP (infra £4.00 + API £2.97)
+- Operational costs (est.): £7.17 GBP (infra £4.00 + API £3.17)
 - Break-even threshold: £27.62 GBP/month
 - Phase status: Phase 1 (Funded)
 - Months of self-funding: 0/2 required for Phase 2
@@ -42,11 +42,11 @@ Day 14 of ~31 (~45% of month elapsed)
 
 | Month | Budget | Spent | Revenue | Net |
 |-------|--------|-------|---------|-----|
-| March 2026 | $30 | $3.7662 | £0.00 GBP | -$3.7662 |
+| March 2026 | $30 | $4.0245 | £0.00 GBP | -$4.0245 |
 
 
 ---
 
-*Last updated: 2026-03-14T16:12:30.808Z*
+*Last updated: 2026-03-14T20:06:15.826Z*
 *Run `pnpm budget` to refresh*
 *Source: local token_usage table (accurate from 2026-03-08 onwards)*

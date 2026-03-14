@@ -558,6 +558,21 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
   - Blog index + sitemap updated
 - [x] App redeployed twice (health: passing; migration count: 56)
 
+### Session 2026-03-14 (forty-fourth auto-session) — done ✅
+- [x] Inbound emails: 5 spam emails from support@wildlightsociety.com ("Your Web Hosting Has Expired")
+  - Rate limiter working: 6th email (17:01) correctly dropped; first 5 allowed then blocked
+  - All 5 decomposed but failed ("needs must be a non-empty array") → webhook returned 500 to Cloudflare
+  - Cleaned up: 5 goals, 5 emails, 1 user deleted from DB
+- [x] Bug fix: webhook /email now returns 200 (type: unprocessable) when decomposition fails
+  - processGoal() returns { failed: true } instead of throwing; goal closed + raw_text nulled
+  - Previously returned 500, causing Cloudflare error logs on every spam email
+  - Deployed; commit a5a3fdc
+- [x] Self-directed (Code quality): Comprehensive review of session-orchestrator.sh + orch-infer.js
+  - docs/research/2026-03-14-orchestrator-code-review.md — 8 findings
+  - TSK-175 (DONE): Reviewer API failure now exits 3 (needs CLI) not auto-approves
+  - TSK-176 (DONE): Coder validation accepts <file> XML blocks in addition to ``` fences
+  - Commit c5a9537
+
 ---
-*Last updated: 2026-03-14 — forty-third auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Code quality (review scripts/session-orchestrator.sh and orch-infer.js for edge cases, per self-directed.md note); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers), TSK-173, TSK-174*
+*Last updated: 2026-03-14 — forty-fourth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Infrastructure (check OS package updates, unattended-upgrades log, per self-directed.md note); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers), TSK-173, TSK-174*
