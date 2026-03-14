@@ -1,17 +1,18 @@
 # Copy Review Rules
 
-## Exclusion-Register Alignment
+## When this fires
 
-Before modifying any public-facing copy (HTML pages, blog posts, email templates, social media drafts):
+Before creating or editing any public-facing copy (HTML pages, blog posts, email templates, social media drafts).
 
-1. **Check against the exclusion register** (`docs/operations/exclusion-register.md`). Hard-excluded domains must never appear as:
-   - Use case categories or example goals
-   - Enumerated domains in CTAs or marketing copy
-   - Implied platform capabilities
+## Copy review checklist
 
-2. **Check against the ICP** (`docs/operations/icp.md`). Copy should reflect the goal archetypes listed there and avoid boundary cases without appropriate framing.
+Run this checklist before marking any copy task done:
 
-3. **Example diversity**: Ensure examples span at least 2 different goal archetypes (not all tech/startup). Refer to the ICP archetype table for options.
+- [ ] **Excluded domains**: No hard-excluded domain (legal, financial/investment, immigration, medical diagnosis, psychological therapy) appears as a use case, example goal, or enumerated category. Check `docs/operations/exclusion-register.md`.
+- [ ] **ICP alignment**: Copy reflects the goal archetypes in `docs/operations/icp.md` (Career, Business, Technical, Creative, Education, Life transitions, Parenting/family). Boundary cases have appropriate framing.
+- [ ] **Example diversity**: If examples are shown, at least 2 different archetypes represented. Not all tech/startup. Check ICP archetype table for options.
+- [ ] **Language**: No "advice", "expert", "adviser", "professional service". Uses "experience", "perspective", "conversation", "someone who's navigated it before".
+- [ ] **Shared copy**: Nav, footer, and CTA blocks copied from `docs/copy/shared-strings.md` (not reinvented).
 
 ## Shared Copy
 

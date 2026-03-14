@@ -81,8 +81,8 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 
 | ID | Task | Status | Notes |
 |---|---|---|---|
-| TSK-151 | Extract shared copy into single-sourced `docs/copy/shared-strings.md` — CTA blurb, nav, footer; auto-sessions copy from here | open | Prevents drift; 9+ files currently have identical strings that diverge |
-| TSK-152 | Add ICP + representation check to copy review — checklist in `.claude/rules/` covering excluded domains, ICP alignment, example diversity | open | Depends on TSK-149 |
+| TSK-151 | Extract shared copy into single-sourced `docs/copy/shared-strings.md` — CTA blurb, nav, footer; auto-sessions copy from here | **done** 2026-03-14 | docs/copy/shared-strings.md created; CLAUDE.md + copy-review.md reference it |
+| TSK-152 | Add ICP + representation check to copy review — checklist in `.claude/rules/` covering excluded domains, ICP alignment, example diversity | **done** 2026-03-14 | copy-review.md refactored to 5-item checklist; added excluded domains, ICP alignment, example diversity, language, shared-copy checks |
 | TSK-155 | Fix index.html — remove Legal use case, replace with non-excluded category; replace 3 tech-heavy examples with diverse ICP examples; broaden Technical card | **done** 2026-03-13 | Legal→Education; 3 diverse examples; Technical broadened |
 | TSK-156 | Update blog CTA string across all 8 posts — remove "legal" from domain enumeration; replace with non-domain-specific phrasing | **done** 2026-03-13 | 8 files updated with non-domain-specific phrasing |
 | TSK-157 | Review join.html Legal expertise framing — not removal; add experience-sharing clarification distinct from regulated advice | **done** 2026-03-13 | Legal→Education on join.html |
