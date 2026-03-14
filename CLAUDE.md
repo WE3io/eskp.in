@@ -122,6 +122,7 @@ Match statuses: proposed → introduced → accepted/declined/completed.
 | `docs/updates/` | Build-in-public posts and recruitment drafts |
 | `docs/backlog/` | Work item definitions by phase (phase-1/2/3); each has a Status line (draft/done) |
 | `docs/copy/shared-strings.md` | Canonical nav, footer, CTA, tagline, pricing copy — use when creating/editing HTML pages |
+| `docs/operations/brand-voice.md` | Voice, tone, vocabulary rules, before/after examples — use when writing any public-facing copy |
 
 ---
 

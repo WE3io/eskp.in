@@ -28,3 +28,7 @@ Do not invent new copy for these components — copy from shared-strings.md.
 - Prefer "experience", "perspective", "conversation" over "advice" or "expert"
 - Frame helpers as "someone who's navigated it before", not "advisers" or "professionals"
 - Never imply the platform replaces professional services
+
+## Voice and tone
+
+For complete voice, register, before/after examples, and per-surface tone guidance, see `docs/operations/brand-voice.md`.
