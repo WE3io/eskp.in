@@ -75,22 +75,28 @@ async function main() {
   }
 
   // 3. Check for overdue recurring tasks → agentic (varied operations)
+  // Recurring tasks table format: | Task | Frequency | Last completed | Next due | SLA |
+  // The "Next due" date is the 4th pipe-delimited cell in each table row.
   try {
     const queue = fs.readFileSync(TASK_QUEUE, 'utf8');
     const today = new Date().toISOString().slice(0, 10);
-    const dueDatePattern = /Next due[:\s]*(\d{4}-\d{2}-\d{2})/gi;
-    let match;
     let hasOverdue = false;
-    while ((match = dueDatePattern.exec(queue)) !== null) {
-      if (match[1] <= today) {
-        reasons.push(`recurring task due: ${match[1]}`);
+    const lines = queue.split('\n');
+    // Find the recurring tasks section header
+    let inRecurringTable = false;
+    for (const line of lines) {
+      if (/##\s*Recurring Tasks/i.test(line)) { inRecurringTable = true; continue; }
+      if (inRecurringTable && /^##/.test(line)) { inRecurringTable = false; break; }
+      if (!inRecurringTable) continue;
+      if (!line.startsWith('|')) continue;
+      const cols = line.split('|');
+      if (cols.length < 5) continue;
+      const nextDue = cols[4].trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(nextDue) && nextDue <= today) {
+        reasons.push(`recurring task due: ${nextDue}`);
         hasOverdue = true;
         break;
       }
-    }
-    if (/OVERDUE/i.test(queue)) {
-      reasons.push('overdue recurring tasks');
-      hasOverdue = true;
     }
     if (hasOverdue && sessionType !== 'strategic') {
       sessionType = 'agentic';
