@@ -261,6 +261,6 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-119 | Outcome tracking design — measure whether goals are achieved | open | P3 — defer to first external users; Art 10.4.1 empirical honesty |
 | TSK-120 | Safe email builder (safeHtml tagged template + rawHtml marker) | **done** 2026-03-11 | Auto-escapes all interpolated values by default; eliminates XSS-in-email bug class; helper-digest.js deduplication |
 | TSK-121 | Migrate all email templates to safeHtml tagged template | **done** 2026-03-11 | All 7 files migrated (38 escHtml calls → safeHtml); helper-digest.js loop sections retain escHtml |
-| TSK-165 | Add "Know someone who could help?" soft CTA to post-introduction follow-up email | open | P3 — demand-to-supply flywheel; from cold-start research |
+| TSK-165 | Add "Know someone who could help?" soft CTA to post-introduction follow-up email | **done** 2026-03-14 | Added helper recruitment paragraph + styled link to intro check-in email in scripts/followup.js |
 
 *Last updated: 2026-03-13 (thirty-eighth auto-session — TSK-140/141/142/143/144/148/162 done: panel GDPR hygiene, rate limiting, roadmap, orchestrator alerting, ROPA complete)*

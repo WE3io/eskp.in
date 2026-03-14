@@ -106,6 +106,10 @@ We'd love to hear how it's going — you can also just reply to this email with 
 
 If the introduction didn't work out for any reason, let us know and we'll see what else we can do.
 
+—
+
+Know someone who has navigated challenges like this and might enjoy helping others? Point them to eskp.in/join.html — the network grows one person at a time.
+
 — The eskp.in team`;
 
     const htmlBody = safeHtml`
@@ -115,6 +119,10 @@ If the introduction didn't work out for any reason, let us know and we'll see wh
       <p>You can also just <strong>reply to this email</strong> with a line or two — whatever's easier.</p>
       <p style="color:#7A6E68;font-size:14px;background:#F9F6F0;border-left:3px solid #C4622D;padding:10px 14px;margin:16px 0;">
         If the introduction didn't work out for any reason, let us know and we'll see what else we can do.
+      </p>
+      <p style="color:#7A6E68;font-size:13px;margin:20px 0 0;border-top:1px solid #eee;padding-top:16px;">
+        Know someone who has navigated challenges like this and might enjoy helping others?
+        <a href="https://eskp.in/join.html" style="color:#C4622D;">Point them to eskp.in/join.html</a> — the network grows one person at a time.
       </p>`;
 
     if (!DRY_RUN) {
