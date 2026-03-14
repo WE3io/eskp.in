@@ -490,6 +490,18 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
   - Bug fix: simpleHtmlPage() in panel.js interpolated title/message directly into HTML without escaping; added esc() helper (XSS-in-HTML class, same as TSK-099/104/110/116)
 - [x] App healthy (no deploy needed — only scripts/panel.js changed; panel routes load dynamically)
 
+### Session 2026-03-14 (fortieth auto-session) — done ✅
+- [x] Operational review (session 40 milestone): docs/research/operational-review-2026-03-14-session40.md — avg 4.9 tasks/session (sessions 31–39); XSS class resolved; 5 blockers cleared by Sunil; panel + orchestration shipped
+- [x] Infrastructure rotation: disk 31%, memory OK, 0 CVEs, all containers healthy; 36.68MB Docker images pruned; B2 backups confirmed
+- [x] TSK-133: verified superseded by TSK-164 (budget-report auto-discovers operations via GROUP BY) — marked done
+- [x] TSK-135: verified already implemented in TSK-131 (section-aware recurring tasks parser) — marked done
+- [x] TSK-154: docs/operations/brand-voice.md — voice, tone, vocabulary rules, before/after examples, per-surface rules
+- [x] TSK-153: content audit added as rotation category in self-directed.md (quarterly cadence)
+- [x] TSK-166: Third helper network escalation sent to Sunil (email id: 2e75814f) — LinkedIn draft ready to post; concrete ask made; LinkedIn draft copy updated (removed excluded domain references)
+- [x] Self-directed (Mission alignment): Art 4 + Art 6 reviewed — docs/research/2026-03-14-mission-alignment-art4-art6.md; substantially aligned; X/LinkedIn posting gap blocked on Sunil; Art 6 dogfood gap noted (TSK-136 already covers it)
+- [x] TSK-167 generated (P3): review src/services/panel.js (large unreviewed service)
+- [x] TSK-168 generated (P3): flag Art 4.4 social posting obligation to panel
+
 ---
-*Last updated: 2026-03-14 — thirty-ninth auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P2 open: TSK-125 (Sentry), TSK-133 (orchestration spend in budget-report), TSK-153/154 (content audit rotation, brand voice); infrastructure rotation next*
+*Last updated: 2026-03-14 — fortieth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P3 queue: TSK-167 (panel.js review), TSK-168 (Art 4.4 flag), TSK-125 (Sentry), TSK-127 (phase detector); self-directed rotation next: Code quality (review src/services/panel.js)*

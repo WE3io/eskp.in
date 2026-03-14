@@ -21,10 +21,10 @@ If you have real expertise in any of these areas and you'd be willing to help so
 → Software engineering, product, or startup decisions
 → Career transitions or job search strategy
 → Business development or early-stage growth
-→ Legal adjacent (not regulated advice — practical experience)
-→ Finance adjacent (same — not regulated, but real-world experience)
+→ Education — learning paths, professional development, skills strategy
+→ Creative projects — getting unstuck, outside perspective, shipping
 → Design, UX, or brand
-→ Mental health adjacent peer support
+→ Practical life decisions — relocation, life transitions, big changes
 
 You won't be paid by the platform. The person who wants your help pays £10 for the introduction — that's it. What you choose to do after is between you and them.
 
