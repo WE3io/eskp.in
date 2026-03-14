@@ -271,5 +271,7 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-172 | Add referral nudge to match notification email — "Know someone else who could use this?" before privacy footer | **done** 2026-03-14 | Added to sendAcknowledgement() in platform.js (HTML + plain text); extends TSK-165 pattern to earlier funnel stage |
 | TSK-173 | Add `referral_source` optional text column to goals table; surface in `pnpm stats` | open | P3 — instrumentation for growth channel attribution; no urgency at 12 goals |
 | TSK-174 | Add clarification response rate to `pnpm stats` — % of pending_clarification goals that receive a follow-up inbound email | open | P3 — funnel measurement; implement when volume warrants |
+| TSK-175 | Fix session-orchestrator.sh — on reviewer API failure, exit 3 (needs CLI) instead of auto-approving | **done** 2026-03-14 | Security: auto-approval on reviewer failure means unreviewed code gets committed; fixed to exit 3 |
+| TSK-176 | Fix orch-infer.js — coder validation should accept `<file` XML blocks as valid output format | **done** 2026-03-14 | Validation now checks for either ``` or `<file ` blocks |
 
-*Last updated: 2026-03-14 (forty-third auto-session — TSK-171 spam rate-limit; TSK-172 referral nudge; Growth+Communication self-directed)*
+*Last updated: 2026-03-14 (forty-fourth auto-session — spam cleanup; decomp-failure 500 fix; orchestrator code review + fixes TSK-175/176)*

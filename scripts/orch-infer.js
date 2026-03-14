@@ -95,9 +95,11 @@ async function main() {
       console.error('Validation failed: empty response');
       process.exit(2);
     }
-    // For coder role, expect code fences in output
-    if (role === 'coder' && !text.includes('```') && text.length < 50) {
-      console.error('Validation failed: coder response appears too short and has no code fences');
+    // For coder role, expect code fences or XML file blocks in output
+    const hasCodeFences = text.includes('```');
+    const hasFileBlocks = text.includes('<file ');
+    if (role === 'coder' && !hasCodeFences && !hasFileBlocks) {
+      console.error('Validation failed: coder response has no code fences or <file> blocks');
       process.exit(2);
     }
   }

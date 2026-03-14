@@ -271,8 +271,11 @@ ${TRUNCATED_DIFF}
 REVIEW=$(node scripts/orch-infer.js --role reviewer \
   --system "${REVIEW_SYSTEM}" \
   --input "${REVIEW_INPUT}" 2>/dev/null) || {
-  log "WARN: Reviewer failed — proceeding without review"
-  REVIEW="APPROVED"
+  log "ERROR: Reviewer API failed — reverting and escalating to CLI session"
+  git reset HEAD -- . 2>/dev/null || true
+  git checkout -- . 2>/dev/null || true
+  alert_failure "Reviewer API call failed (transient or budget issue)" "${TASK_ID}"
+  exit 3
 }
 
 log "Review result: ${REVIEW}"
