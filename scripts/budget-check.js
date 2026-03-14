@@ -10,6 +10,7 @@ require('dotenv').config({ quiet: true });
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
+const { send } = require('../src/services/email');
 
 const MONTHLY_BUDGET = parseFloat(process.env.MONTHLY_TOKEN_BUDGET || 30);
 const INFRA_COST_GBP = parseFloat(process.env.INFRA_MONTHLY_GBP || 4.00);
@@ -108,8 +109,43 @@ async function main() {
   console.log(`\nBudget used: ${pctBudgetUsed.toFixed(2)}% ($${spentUSD.toFixed(4)} / $${MONTHLY_BUDGET})`);
   console.log(`Remaining: $${remaining.toFixed(4)}`);
 
+  // TSK-169: Email panel if >70% budget used before 21st (Art 8.1 obligation).
+  // Deduplicate: write a flag file so the alert fires only once per month.
+  const alertFlagPath = path.join(__dirname, '../.budget-alert-sent');
+  const alertFlagExists = fs.existsSync(alertFlagPath);
+  const alertFlagMonth = alertFlagExists
+    ? fs.readFileSync(alertFlagPath, 'utf8').trim()
+    : '';
+  const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
   if (pctBudgetUsed > 70 && dayOfMonth < 21) {
     console.warn(`\n⚠️  ALERT: Over 70% of budget used before the 21st. Reduce activity and notify panel@eskp.in`);
+    if (alertFlagMonth !== currentMonthKey) {
+      // Send email alert once per month
+      const panelEmail = process.env.PANEL_EMAIL || 'panel@eskp.in';
+      const alertLevel = pctBudgetUsed > 90 ? 'CRITICAL' : 'WARNING';
+      try {
+        await send({
+          to: panelEmail,
+          subject: `[eskp.in] Budget alert: ${pctBudgetUsed.toFixed(1)}% used (${alertLevel})`,
+          html: `<p>Budget alert for <strong>eskp.in</strong>:</p>
+<ul>
+  <li>Spent: <strong>$${spentUSD.toFixed(4)}</strong> of $${MONTHLY_BUDGET} (${pctBudgetUsed.toFixed(1)}%)</li>
+  <li>Remaining: $${remaining.toFixed(4)}</li>
+  <li>Day of month: ${dayOfMonth}</li>
+</ul>
+<p>Action: reduce auto-session frequency or pause non-critical tasks until month-end.</p>
+<p><em>This alert fires once per month when spend exceeds 70% before the 21st (Art 8.1).</em></p>`,
+          text: `Budget alert for eskp.in:\n\nSpent: $${spentUSD.toFixed(4)} of $${MONTHLY_BUDGET} (${pctBudgetUsed.toFixed(1)}%)\nRemaining: $${remaining.toFixed(4)}\nDay of month: ${dayOfMonth}\n\nAction: reduce auto-session frequency or pause non-critical tasks until month-end.\n\nThis alert fires once per month when spend exceeds 70% before the 21st (Art 8.1).`,
+        });
+        fs.writeFileSync(alertFlagPath, currentMonthKey);
+        console.log('Budget alert email sent to panel.');
+      } catch (emailErr) {
+        console.warn(`Budget alert email failed: ${emailErr.message}`);
+      }
+    } else {
+      console.log('Budget alert already sent this month — skipping email.');
+    }
   }
 
   const status = pctBudgetUsed > 90 ? '🔴 CRITICAL' :
@@ -162,6 +198,30 @@ async function main() {
     if (phaseEligible) {
       phaseStatus = 'Phase 2 (Self-funding) ELIGIBLE';
       console.log('\n🎉 PHASE TRANSITION ELIGIBLE: revenue has covered ops costs for 2 consecutive months. Notify panel.');
+      // TSK-170: Email panel on phase transition eligibility (deduplicated by flag file)
+      const phaseFlagPath = path.join(__dirname, '../.phase-transition-alert-sent');
+      const phaseFlagExists = fs.existsSync(phaseFlagPath);
+      if (!phaseFlagExists) {
+        const panelEmail = process.env.PANEL_EMAIL || 'panel@eskp.in';
+        try {
+          await send({
+            to: panelEmail,
+            subject: '[eskp.in] Phase transition eligible — review and approve',
+            html: `<p>eskp.in has reached the Phase 1→2 transition criterion:</p>
+<ul>
+  <li>Revenue has covered operational costs for <strong>2 consecutive months</strong>.</li>
+  <li>Operational cost estimate: £${(INFRA_COST_GBP + MONTHLY_BUDGET / 1.27).toFixed(2)}/month</li>
+  <li>Self-funded months: ${selfFundingMonths}/2</li>
+</ul>
+<p>Review the platform status and approve the Phase 2 transition if appropriate (Constitution Art 5.3).</p>`,
+            text: `eskp.in has reached the Phase 1→2 transition criterion.\n\nRevenue has covered operational costs for 2 consecutive months.\nOperational cost estimate: £${(INFRA_COST_GBP + MONTHLY_BUDGET / 1.27).toFixed(2)}/month\n\nReview and approve Phase 2 transition (Constitution Art 5.3).`,
+          });
+          fs.writeFileSync(phaseFlagPath, now.toISOString());
+          console.log('Phase transition alert email sent to panel.');
+        } catch (emailErr) {
+          console.warn(`Phase transition alert email failed: ${emailErr.message}`);
+        }
+      }
     } else if (selfFundingMonths > 0) {
       phaseStatus = `Phase 1 (Funded) — ${selfFundingMonths}/2 self-funded months`;
     }

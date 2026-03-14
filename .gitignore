@@ -42,3 +42,7 @@ backups/
 # Postgres data (mounted volume, not in repo)
 postgres-data/
 .mcp.json
+
+# Budget/phase alert deduplication flags (local state files)
+.budget-alert-sent
+.phase-transition-alert-sent
