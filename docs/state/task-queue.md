@@ -268,4 +268,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-169 | Art 8.1 gap: budget-check.js should email panel when >70% budget used before 21st — use flag file to deduplicate across 4h auto-sessions | **done** 2026-03-14 | Email alert added to budget-check.js; .budget-alert-sent flag file prevents repeat per month; .gitignore updated |
 | TSK-170 | Art 8.1 gap: email panel when phase transition eligibility first detected (budget-check.js already detects condition, no email sent) | **done** 2026-03-14 | Phase transition alert email added; .phase-transition-alert-sent flag fires once only |
 
-*Last updated: 2026-03-14 (forty-second auto-session — TSK-145/125/127/169/170 done; Art 7+8 mission alignment)*
+*Last updated: 2026-03-14 (forty-second auto-session — TSK-145 (witnessed reflection baseline), TSK-125 (Sentry defer), TSK-127 (phase detector), TSK-169/170 (budget+phase alert emails), Art 7+8 mission alignment review)*

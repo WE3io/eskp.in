@@ -1,5 +1,12 @@
 # Recent Decisions
 
+## 2026-03-14 — Sentry deferred; phase detector + budget alerts implemented (TSK-125/127/169/170)
+- **Decision 1 (TSK-125):** Defer Sentry to 10 external users. Pino + uncaughtException handlers cover Phase 1 crash visibility. Sentry requires US data transfer + new DPA entry; premature at current scale.
+- **Decision 2 (TSK-127):** Phase transition detection added to budget-check.js — queries real revenue from matches.paid_at; compares vs INFRA_MONTHLY_GBP + API costs; logs and emails panel when 2 consecutive months covered. INFRA_MONTHLY_GBP defaults to £4.00 (Hetzner).
+- **Decision 3 (TSK-169/170):** Budget alert emails now sent directly to panel (not just console) when >70% budget used before 21st, and when phase transition is first detected. Deduplicated via flag files (.budget-alert-sent, .phase-transition-alert-sent).
+- **Reason:** Art 8.1 mission alignment audit found these alerts were console-only — not actionable in non-interactive auto-sessions.
+- **Confidence:** 95%
+
 ## 2026-03-14 — Shared copy strings single-source (TSK-151/152)
 - **Decision:** Created `docs/copy/shared-strings.md` as single source of truth for nav, footer, CTA, tagline, and pricing copy. Refactored copy-review rule into a 5-item checklist auto-sessions run before marking copy tasks done.
 - **Reason:** 22 public pages contain identical nav/footer blocks that drift independently across auto-sessions. Single-source reference prevents variance without requiring a template engine.

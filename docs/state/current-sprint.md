@@ -518,6 +518,34 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
 - [x] Self-directed (Code quality): panel.js review (TSK-167 covers this)
 - [x] App redeployed (health: passing; migration count: 57)
 
+### Session 2026-03-14 (forty-second auto-session) — done ✅
+- [x] Inbound emails: 5 spam emails (wildlightsociety.com hosting expiry — all logged, ignored)
+- [x] TSK-145: docs/operations/witnessed-reflection-baseline.md created
+  - DPR (directive phrasing ratio) metric defined with regex-matchable patterns
+  - Sampling protocol (30-day, 90-day timepoints), measurement SQL query, history table
+  - Trigger: first panel member with ≥20 messages
+- [x] TSK-125: Sentry evaluation — decision: defer to 10 external users
+  - Pino + uncaughtException handlers (TSK-123/124) cover Phase 1 visibility adequately
+  - Sentry requires US data transfer + DPA entry; premature at current scale
+- [x] TSK-127: Phase transition detection implemented in budget-check.js
+  - Queries matches.paid_at for real monthly revenue (GBP)
+  - Computes operational costs: INFRA_MONTHLY_GBP + API costs (USD→GBP)
+  - Alerts when revenue covers ops costs for 2 consecutive complete months
+  - Budget tracker now shows live revenue, ops costs, break-even threshold
+  - INFRA_MONTHLY_GBP env var added to .env.example (default £4.00)
+- [x] Self-directed (Mission alignment): Art 7 + Art 8 reviewed
+  - Art 7 (Technical Principles): substantially aligned; Agent SDK deferral intentional (ADR-006)
+  - Art 8 (Human Escalation): 2 console-only alert gaps found
+  - Gap 1: budget threshold alert (>70% before 21st) only logged to console, not emailed
+  - Gap 2: phase transition eligibility only logged to console, not emailed
+  - docs/research/2026-03-14-mission-alignment-art7-art8.md created
+- [x] TSK-169: Budget alert email implemented in budget-check.js
+  - Emails panel@eskp.in when >70% budget used before 21st
+  - .budget-alert-sent flag file prevents repeat emails per month
+- [x] TSK-170: Phase transition alert email implemented
+  - Emails panel once when phase transition eligibility first detected
+  - .phase-transition-alert-sent flag prevents repeat
+
 ---
-*Last updated: 2026-03-14 — forty-first auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P3 queue: TSK-125 (Sentry), TSK-127 (phase detector), TSK-145 (witnessed reflection baseline); self-directed rotation next: Infrastructure (check Art 7/8 mission alignment from self-directed.md)*
+*Last updated: 2026-03-14 — forty-second auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Growth (check blog indexing / Search Console); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
