@@ -40,8 +40,11 @@ async function processGoal(userEmail, userName, rawText) {
   try {
     decomposed = await decompose(rawText, goal.id);
   } catch (err) {
-    await pool.query(`UPDATE goals SET status = 'submitted' WHERE id = $1`, [goal.id]);
-    throw err;
+    // Mark as closed — content could not be decomposed into a valid goal (e.g. spam).
+    // Returning 'submitted' would leave the goal in a zombie state; closing is cleaner.
+    await pool.query(`UPDATE goals SET status = 'closed', raw_text = NULL, updated_at = NOW() WHERE id = $1`, [goal.id]);
+    logger.warn({ err, goalId: goal.id }, 'processGoal: decomposition failed, goal closed');
+    return { goal: { ...goal, status: 'closed' }, decomposed: null, failed: true };
   }
 
   // Clarification loop: goal is too vague to match

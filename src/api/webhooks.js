@@ -167,6 +167,10 @@ router.post('/email', verifySecret, async (req, res) => {
 
     // Default: process as a new goal
     const result = await processGoal(userEmail, userName, text);
+    if (result.failed) {
+      logger.info({ goalId: result.goal.id }, 'inbound email: decomposition failed, goal closed');
+      return res.json({ ok: true, type: 'unprocessable', goalId: result.goal.id });
+    }
     res.json({ ok: true, goalId: result.goal.id });
   } catch (err) {
     logger.error({ err }, 'Webhook /email error');
