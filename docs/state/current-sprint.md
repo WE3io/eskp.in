@@ -480,6 +480,16 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
 - [x] Research rotation: cold-start helper supply strategies — docs/research/2026-03-13-cold-start-helper-supply.md; binding constraint is helper supply; TSK-165 generated
 - [x] App redeployed (health: passing)
 
+### Session 2026-03-14 (thirty-ninth auto-session) — done ✅
+- [x] TSK-131: Fixed 2 bugs in session-precheck.js — false-positive /OVERDUE/i match (matched task descriptions, not actual overdue markers) + date regex never matched markdown table format; replaced with section-aware table parser
+- [x] TSK-132: session-orchestrator.sh dry-run tested on TSK-154 (content task); coordinator, planner→drafter routing, YAML parsing all verified. Minor: yaml fences in planner output (non-blocking). Ops tasks correctly route exit 3 (CLI needed).
+- [x] TSK-151: docs/copy/shared-strings.md created — canonical nav, footer, CTA, tagline, pricing copy for 22 public pages; CLAUDE.md + copy-review.md reference it
+- [x] TSK-152: copy-review.md refactored into 5-item checklist (excluded domains, ICP alignment, example diversity, language, shared copy)
+- [x] TSK-165: Demand-to-supply flywheel CTA added to post-intro follow-up email — "Know someone who could help?" + link to /join.html
+- [x] Self-directed (Code quality): pnpm audit 0 CVEs; reviewed apply-code-output.js, orch-infer.js, budget-report.js, src/orchestration/, src/api/panel.js
+  - Bug fix: simpleHtmlPage() in panel.js interpolated title/message directly into HTML without escaping; added esc() helper (XSS-in-HTML class, same as TSK-099/104/110/116)
+- [x] App healthy (no deploy needed — only scripts/panel.js changed; panel routes load dynamically)
+
 ---
-*Last updated: 2026-03-13 — thirty-eighth auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P2 open: TSK-125 (Sentry), TSK-131/132 (orchestrator verification), TSK-151/152/153/154 (copy/brand); code quality rotation next*
+*Last updated: 2026-03-14 — thirty-ninth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); P2 open: TSK-125 (Sentry), TSK-133 (orchestration spend in budget-report), TSK-153/154 (content audit rotation, brand voice); infrastructure rotation next*

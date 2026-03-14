@@ -1,5 +1,15 @@
 # Recent Decisions
 
+## 2026-03-14 — Shared copy strings single-source (TSK-151/152)
+- **Decision:** Created `docs/copy/shared-strings.md` as single source of truth for nav, footer, CTA, tagline, and pricing copy. Refactored copy-review rule into a 5-item checklist auto-sessions run before marking copy tasks done.
+- **Reason:** 22 public pages contain identical nav/footer blocks that drift independently across auto-sessions. Single-source reference prevents variance without requiring a template engine.
+- **Confidence:** 90%
+
+## 2026-03-14 — session-precheck.js recurring task detection fixed
+- **Decision:** Replaced false-positive /OVERDUE/i regex + broken date regex with a section-aware markdown table parser that reads the Recurring Tasks table directly.
+- **Reason:** Two bugs: (1) /OVERDUE/i matched the word "overdue" in task descriptions, causing every session to classify as 'agentic' for the wrong reason. (2) Date regex looked for dates immediately after "Next due" text but dates are in pipe-delimited table cells. Fixed to parse table by section header + column index.
+- **Confidence:** 95%
+
 ## 2026-03-13 — Copy governance framework (TSK-149/150/155–157)
 - **Decision:** Created ICP doc (docs/operations/icp.md), copy review rule (.claude/rules/copy-review.md), and session-end exclusion-register check. Removed "Legal" from all public use case listings (landing page, join.html, 8 blog CTAs) and replaced with non-excluded categories.
 - **Reason:** Copy audit found "Legal" marketed as a use case despite being a hard-excluded domain in the exclusion register. This creates a structural gap where the platform markets services it must refuse. ICP provides a single reference for what the platform actively serves vs. what it excludes.
