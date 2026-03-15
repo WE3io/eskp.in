@@ -40,6 +40,38 @@ async function run() {
   console.log(`  Closed:                 ${g.closed}`);
   console.log(`  Sensitive flagged:      ${g.sensitive_flagged}`);
 
+  // TSK-174: Clarification response rate
+  const { rows: clarStats } = await pool.query(`
+    SELECT
+      COUNT(*) FILTER (WHERE clarification_attempts > 0)     AS sent_clarification,
+      COUNT(*) FILTER (WHERE clarification_attempts > 0
+        AND status NOT IN ('pending_clarification', 'closed')) AS received_reply
+    FROM goals
+    WHERE created_at >= NOW() - INTERVAL '30 days'
+  `);
+  const cl = clarStats[0];
+  const clarRate = cl.sent_clarification > 0
+    ? ((cl.received_reply / cl.sent_clarification) * 100).toFixed(0) + '%'
+    : 'n/a';
+  console.log(`  Clarification reply rate: ${clarRate} (${cl.received_reply}/${cl.sent_clarification})`);
+
+  // TSK-173: Referral source breakdown
+  const { rows: refStats } = await pool.query(`
+    SELECT
+      COALESCE(referral_source, '(none)') AS source,
+      COUNT(*) AS count
+    FROM goals
+    WHERE created_at >= NOW() - INTERVAL '30 days'
+    GROUP BY referral_source
+    ORDER BY count DESC
+  `);
+  if (refStats.some(r => r.source !== '(none)')) {
+    console.log('\n── Referral sources (last 30 days) ───────');
+    for (const r of refStats) {
+      console.log(`  ${r.source}: ${r.count}`);
+    }
+  }
+
   // Match quality
   const { rows: matchStats } = await pool.query(`
     SELECT

@@ -243,6 +243,9 @@ const migrations = [
 
   // TSK-146: flagged_at column on panel_members for operational awareness queries
   `ALTER TABLE panel_members ADD COLUMN IF NOT EXISTS flagged_at TIMESTAMPTZ`,
+
+  // TSK-173: referral_source for growth channel attribution
+  `ALTER TABLE goals ADD COLUMN IF NOT EXISTS referral_source TEXT`,
 ];
 
 async function migrate() {
