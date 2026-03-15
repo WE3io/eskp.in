@@ -93,7 +93,7 @@ router.post('/email', verifySecret, async (req, res) => {
           return res.json({ ok: true, type: 'clarification-reply', goalId: goal.id });
         }
         // Close request: user replied "close" to any goal email
-        if (/^\s*close\b/i.test(text.trim()) && !['closed', 'introduced'].includes(goal.status)) {
+        if (/^\s*close\b/i.test(text.trim()) && !['closed', 'introduced', 'resolved'].includes(goal.status)) {
           await closeGoal(goal, userEmail, userName);
           return res.json({ ok: true, type: 'goal-closed', goalId: goal.id });
         }
@@ -156,6 +156,7 @@ router.post('/email', verifySecret, async (req, res) => {
       `SELECT g.* FROM goals g
        JOIN users u ON u.id = g.user_id
        WHERE u.email = $1 AND g.status = 'pending_clarification'
+         AND u.deleted_at IS NULL
        ORDER BY g.created_at DESC LIMIT 1`,
       [userEmail.toLowerCase()]
     );

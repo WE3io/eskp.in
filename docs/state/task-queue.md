@@ -22,16 +22,16 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | Build-in-public post | Weekly (Friday) | 2026-03-13 | 2026-03-20 | — |
 | Backup verification (restore test) | Monthly | 2026-03-09 | 2026-04-09 | See backup-restore-log.md |
 | State file accuracy check | Every session | 2026-03-09 | Next session | Before session ends |
-| npm audit / dependency CVE check | Weekly | 2026-03-10 | 2026-03-17 | Fix critical immediately; log others |
-| Disk usage check and cleanup | Weekly | 2026-03-10 | 2026-03-17 | Alert if >80%; clean Docker images + old logs |
+| npm audit / dependency CVE check | Weekly | 2026-03-15 | 2026-03-22 | Fix critical immediately; log others |
+| Disk usage check and cleanup | Weekly | 2026-03-15 | 2026-03-22 | Alert if >80%; clean Docker images + old logs |
 | Docker image updates (postgres, nginx) | Monthly | never | 2026-04-09 | Check for security patches |
-| Ubuntu security updates (verify) | Weekly | 2026-03-10 | 2026-03-17 | Verify unattended-upgrades is current |
+| Ubuntu security updates (verify) | Weekly | 2026-03-15 | 2026-03-22 | Verify unattended-upgrades is current |
 | SSL/TLS certificate check | Monthly | never | 2026-04-09 | Verify Cloudflare origin cert expiry |
 | Server performance baseline | Monthly | never | 2026-04-09 | Record CPU, memory, disk, response times |
 | Review Anthropic changelog | Monthly | never | 2026-04-09 | Check for Claude Code updates, API changes |
 | Review Cloudflare changelog | Monthly | never | 2026-04-09 | Check for new features relevant to platform |
-| Operational review (session logs) | Every 10 sessions | 2026-03-11 (session 30) | Session 40 | Track count in docs/state/self-directed.md |
-| Public claims coherence check | Weekly | 2026-03-10 | 2026-03-17 | Verify all rows in docs/state/public-claims-register.md are still "Aligned" |
+| Operational review (session logs) | Every 10 sessions | 2026-03-14 (session 40) | Session 50 | Track count in docs/state/self-directed.md |
+| Public claims coherence check | Weekly | 2026-03-15 | 2026-03-22 | Verify all rows in docs/state/public-claims-register.md are still "Aligned" |
 | Annual algorithm audit (Art 10.2.3(d)) | Annual | never | 2027-03-08 | Audit + publish results for all algorithmic features |
 
 ---
@@ -276,4 +276,4 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-177 | Helper application auto-reply — immediately confirm receipt so applicants know their email arrived | **done** 2026-03-15 | Already implemented in helper-application.js: sendHelperAck() sends immediately; join.html has "We'll confirm receipt" note |
 | TSK-178 | Improve join.html CTA copy — reduce template anxiety; add confirm-receipt note | **done** 2026-03-15 | Already in place: cta-note reads "We'll confirm receipt and review within a few days." |
 
-*Last updated: 2026-03-15 (forty-fifth auto-session — infrastructure upgrade; TSK-173/174 implemented; research: helper join conversion)*
+*Last updated: 2026-03-15 (forty-sixth auto-session — code quality rotation; 2 bugs fixed in webhooks.js; recurring task dates updated)*

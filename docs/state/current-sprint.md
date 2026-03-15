@@ -584,6 +584,17 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
 - [x] TSK-177/178: Verified helper-application.js already sends auto-reply (sendHelperAck); join.html already has "We'll confirm receipt" — both tasks closed as already done
 - [x] Research rotation: helper join conversion — docs/research/2026-03-15-helper-join-conversion.md; binding constraint remains Sunil posting recruitment drafts; trust signals + template anxiety identified but already addressed in current join.html
 
+### Session 2026-03-15 (forty-sixth auto-session) — done ✅
+- [x] No new inbound emails; no Sunil responses to blockers
+- [x] No P0 tasks; TSK-136 (P1) still blocked on Sunil
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Recurring tasks updated: npm audit, disk, Ubuntu checks, public claims check all done; dates advanced to 2026-03-22
+- [x] Self-directed (Code quality): pnpm audit 0 CVEs; reviewed webhooks.js, followup.js, platform.js, decompose.js, stats.js, budget-check.js
+  - Bug fix: close-goal branch excluded 'introduced' but not 'resolved' — a user replying "close" to a resolved goal would overwrite its status; added 'resolved' to exclusion list
+  - Bug fix: clarification fallback query (subject-based routing) lacked `u.deleted_at IS NULL` — soft-deleted users' goals could match; added filter
+  - Both deployed (health: passing)
+  - public-claims-register: all Aligned; no changes needed
+
 ---
-*Last updated: 2026-03-15 — forty-fifth auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Code quality; P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
+*Last updated: 2026-03-15 — forty-sixth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Infrastructure; P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
