@@ -605,6 +605,22 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
   - Fixed: Support link added to all 4; all 11 blog files now consistent; deployed
   - docs/research/2026-03-15-content-audit.md
 
+### Session 2026-03-15 (forty-eighth auto-session) — done ✅
+- [x] No new inbound emails; no Sunil responses to blockers
+- [x] No P0 tasks; TSK-136 (P1) still blocked on Sunil; all P3 deferred tasks unchanged
+- [x] All phase-1 backlog items confirmed done — nothing to promote
+- [x] Self-directed (Mission alignment): full Art 9 + Art 10/11 review (first update since session 29)
+  - Art 9: compliant — informal amendment process has worked correctly (2 amendments, both by consensus)
+  - Art 10: fully compliant; all 4 algorithmic transparency sub-requirements now met (TSK-118 closed opt-out gap)
+  - Art 11.2 + 11.4: verified `public/panel/onboarding.html` — crisis recognition, warm referral, witnessed reflection all present with examples; checkbox gate; fully compliant
+  - No new gaps found; no tasks generated
+  - docs/research/2026-03-15-mission-alignment-art9-art10-11-update.md
+- [x] Self-directed (Growth): SEO + referral check
+  - eskp.in not yet Google-indexed (7 days old — normal; robots.txt + sitemap are correct)
+  - 0 referral_source values (no external users yet; referral nudges deployed but unmeasured)
+  - Key recommendation to Sunil: verify eskp.in in Google Search Console + request indexing (~5 min)
+  - docs/research/2026-03-15-growth-seo-and-referral-check.md
+
 ---
-*Last updated: 2026-03-15 — forty-seventh auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Mission alignment (Art 9 + Art 10/11); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
+*Last updated: 2026-03-15 — forty-eighth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Communication (consider blog post about advisory panel design for non-technical audience); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
