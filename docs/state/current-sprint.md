@@ -573,6 +573,17 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
   - TSK-176 (DONE): Coder validation accepts <file> XML blocks in addition to ``` fences
   - Commit c5a9537
 
+### Session 2026-03-15 (forty-fifth auto-session) — done ✅
+- [x] Infrastructure rotation: disk 31%, memory 1.2G/3.7G, 0 CVEs, all containers healthy
+  - containerd.io upgraded 2.2.1 → 2.2.2 (security update); nftables, libnftables1, linux-base also upgraded
+  - Docker service restarted cleanly; all containers back healthy within 45s
+  - Build cache pruned (197MB freed); unattended-upgrades log reviewed (curl applied 2026-03-14)
+  - Backup confirmed: latest 2026-03-14 02:00 UTC; B2 offsite active
+- [x] TSK-173: referral_source TEXT column added to goals table (migration); pnpm stats shows breakdown when non-null values exist
+- [x] TSK-174: Clarification reply rate added to pnpm stats (replied/sent with % calculation)
+- [x] TSK-177/178: Verified helper-application.js already sends auto-reply (sendHelperAck); join.html already has "We'll confirm receipt" — both tasks closed as already done
+- [x] Research rotation: helper join conversion — docs/research/2026-03-15-helper-join-conversion.md; binding constraint remains Sunil posting recruitment drafts; trust signals + template anxiety identified but already addressed in current join.html
+
 ---
-*Last updated: 2026-03-14 — forty-fourth auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Infrastructure (check OS package updates, unattended-upgrades log, per self-directed.md note); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers), TSK-173, TSK-174*
+*Last updated: 2026-03-15 — forty-fifth auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Code quality; P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*

@@ -269,9 +269,11 @@ Update it before ending any session: mark completed tasks, add new ones, refresh
 | TSK-170 | Art 8.1 gap: email panel when phase transition eligibility first detected (budget-check.js already detects condition, no email sent) | **done** 2026-03-14 | Phase transition alert email added; .phase-transition-alert-sent flag fires once only |
 | TSK-171 | Inbound email per-sender rate limit — 5 emails/hour per address; silent drop after limit; spam flood protection | **done** 2026-03-14 | checkSenderRateLimit() in webhooks.js; 65 spam goals + 1 spam user cleaned up; deployed |
 | TSK-172 | Add referral nudge to match notification email — "Know someone else who could use this?" before privacy footer | **done** 2026-03-14 | Added to sendAcknowledgement() in platform.js (HTML + plain text); extends TSK-165 pattern to earlier funnel stage |
-| TSK-173 | Add `referral_source` optional text column to goals table; surface in `pnpm stats` | open | P3 — instrumentation for growth channel attribution; no urgency at 12 goals |
-| TSK-174 | Add clarification response rate to `pnpm stats` — % of pending_clarification goals that receive a follow-up inbound email | open | P3 — funnel measurement; implement when volume warrants |
+| TSK-173 | Add `referral_source` optional text column to goals table; surface in `pnpm stats` | **done** 2026-03-15 | Migration added; pnpm stats shows breakdown when non-null values exist |
+| TSK-174 | Add clarification response rate to `pnpm stats` — % of pending_clarification goals that receive a follow-up inbound email | **done** 2026-03-15 | pnpm stats now shows clarification reply rate (replied/sent) |
 | TSK-175 | Fix session-orchestrator.sh — on reviewer API failure, exit 3 (needs CLI) instead of auto-approving | **done** 2026-03-14 | Security: auto-approval on reviewer failure means unreviewed code gets committed; fixed to exit 3 |
 | TSK-176 | Fix orch-infer.js — coder validation should accept `<file` XML blocks as valid output format | **done** 2026-03-14 | Validation now checks for either ``` or `<file ` blocks |
+| TSK-177 | Helper application auto-reply — immediately confirm receipt so applicants know their email arrived | **done** 2026-03-15 | Already implemented in helper-application.js: sendHelperAck() sends immediately; join.html has "We'll confirm receipt" note |
+| TSK-178 | Improve join.html CTA copy — reduce template anxiety; add confirm-receipt note | **done** 2026-03-15 | Already in place: cta-note reads "We'll confirm receipt and review within a few days." |
 
-*Last updated: 2026-03-14 (forty-fourth auto-session — spam cleanup; decomp-failure 500 fix; orchestrator code review + fixes TSK-175/176)*
+*Last updated: 2026-03-15 (forty-fifth auto-session — infrastructure upgrade; TSK-173/174 implemented; research: helper join conversion)*
