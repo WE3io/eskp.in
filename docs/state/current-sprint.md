@@ -595,6 +595,16 @@ Several sessions ran on 2026-03-12 that were not logged in current-sprint.md. Re
   - Both deployed (health: passing)
   - public-claims-register: all Aligned; no changes needed
 
+### Session 2026-03-15 (forty-seventh auto-session) — done ✅
+- [x] No new inbound emails; no Sunil responses to blockers
+- [x] No P0 tasks; TSK-136 (P1) still blocked on Sunil
+- [x] Infrastructure rotation: disk 31%, memory 1.2G/3.7G, 0 CVEs, all containers healthy (268ms). 0 pending OS upgrades (unattended-upgrades: no packages found). Backup 2026-03-15 02:00 clean. Docker images pruned (14.45MB freed). Budget report dry-run verified working for Monday.
+- [x] Content audit rotation (first ever): audited all 11 blog posts + index.html + join.html + roadmap.html
+  - All pages pass: no excluded domains, no language violations, strong ICP alignment
+  - Found: 4 blog files (001, 002, 003, index.html) missing Support link in footer (old format from early sessions)
+  - Fixed: Support link added to all 4; all 11 blog files now consistent; deployed
+  - docs/research/2026-03-15-content-audit.md
+
 ---
-*Last updated: 2026-03-15 — forty-sixth auto-session*
-*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Infrastructure; P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
+*Last updated: 2026-03-15 — forty-seventh auto-session*
+*Next session starts with: P1 open: TSK-136 (panel dogfood — blocked on Sunil); self-directed rotation next: Mission alignment (Art 9 + Art 10/11); P3 queue: TSK-108, TSK-109, TSK-114, TSK-115 (deferred until 3+ helpers)*
